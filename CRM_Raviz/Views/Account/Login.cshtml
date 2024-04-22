@@ -1,0 +1,188 @@
+﻿@using CRM_Raviz.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Log in";
+    Layout = null;
+}
+
+<style>
+    body{
+        margin: 0px;
+    }
+
+    .heading{
+        font-size:6vh;
+        font-family:'Trebuchet MS';
+        padding: 0px 50px;
+
+    }
+
+    .left-image {
+        background-image: linear-gradient(rgba(25, 63, 93, 0.6), rgba(25, 63, 93, 0.6)), url('../../Content/Images/rakez.jpg');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+    }
+
+    .welcome {
+        font-size: 4vh;
+        font-family: 'Trebuchet MS';
+    }
+
+    .group {
+ position: relative;
+}
+
+    .input {
+     font-size: 16px;
+     padding: 10px 10px 10px 5px;
+     display: block;
+     width: 300px;
+     border: none;
+     border-bottom: 1px solid #515151;
+     background: transparent;
+    }
+
+    .input:focus {
+     outline: none;
+    }
+
+    label {
+     color: #999;
+     font-size: 18px;
+     font-weight: normal;
+     position: absolute;
+     pointer-events: none;
+     left: 5px;
+     top: 10px;
+     transition: 0.2s ease all;
+     -moz-transition: 0.2s ease all;
+     -webkit-transition: 0.2s ease all;
+    }
+
+    .input:focus ~ label, .input:valid ~ label {
+     top: -20px;
+     font-size: 14px;
+     color: #5264AE;
+    }
+
+    .bar {
+     position: relative;
+     display: block;
+     width: 300px;
+    }
+
+    .bar:before, .bar:after {
+     content: '';
+     height: 2px;
+     width: 0;
+     bottom: 1px;
+     position: absolute;
+     background: #5264AE;
+     transition: 0.2s ease all;
+     -moz-transition: 0.2s ease all;
+     -webkit-transition: 0.2s ease all;
+    }
+
+    .bar:before {
+     left: 50%;
+    }
+
+    .bar:after {
+     right: 50%;
+    }
+
+    .input:focus ~ .bar:before, .input:focus ~ .bar:after {
+     width: 50%;
+    }
+
+    .highlight {
+     position: absolute;
+     height: 60%;
+     width: 100px;
+     top: 25%;
+     left: 0;
+     pointer-events: none;
+     opacity: 0.5;
+    }
+
+    .input:focus ~ .highlight {
+     animation: inputHighlighter 0.3s ease;
+    }
+
+    @@keyframes inputHighlighter {
+     from {
+      background: #5264AE;
+     }
+
+     to {
+      width: 0;
+      background: transparent;
+     }
+    }
+
+    .submit-btn {
+        background-color: #193f5d;
+        color: white;
+        cursor: pointer;
+        border: none;
+        width: 300px;
+        height: 30px;
+    }
+
+
+</style>
+
+<div style="display: flex; flex-direction: row; width: 100%; border: 0px;">
+    <div style="width: 50vw; background-color: darkblue; height: 100vh; display: flex; justify-content: center; align-items: center;" class="left-image">
+        <img src="~/Content/Images/logo1.png" style="height: 110px;" />
+        <img src="~/Content/Images/derbylogo.png" style="height: 190px;" />
+    </div>
+    <div>
+        <div class="heading">Login</div>
+        <div style="display: flex; justify-content: center; align-items: center; width: 50vw; height: 100vh;flex-direction: column; margin-top: -50px;">
+            <section id="loginForm">
+                <div class="welcome">Welcome back</div>
+                @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div style="padding: 20px 0px;">
+                        <div class="col-md-10 group">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "input", @required = "required" })
+
+                            <span class="highlight"></span>
+                            <span class="bar"></span>
+                            <label>Name</label>
+                        </div>
+
+                    </div>
+
+                    <div style="padding: 20px 0px;">
+                        <div class="col-md-10 group">
+                            @Html.PasswordFor(m => m.Password, new { @class = "input", @required = "required" })
+                            <span class="highlight"></span>
+                            <span class="bar"></span>
+                            <label>Password</label>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="offset-md-2 col-md-10">
+                            <input type="submit" value="Log in" class="btn submit-btn" />
+                        </div>
+                    </div>
+                }
+            </section>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
