@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @Styles.Render("~/Content/css")
@@ -8,6 +9,7 @@
     <style>
         .navbar {
             background-color: #082948;
+            height: 80px;
         }
 
         .font {
@@ -16,7 +18,7 @@
 
         .logo {
             position: fixed;
-            left: 50%;
+            left: -8%;
         }
     </style>
 
@@ -32,6 +34,7 @@
             position: relative;
             transition: 0.5s ease;
             cursor: pointer;
+            font-weight: 500;
         }
 
             .btn::before {
@@ -96,14 +99,15 @@
             display: block;
         }
 
-        .dropdown-content a{
-            width: 100px;
+        .dropdown-content a {
+            width: 120px;
             border-radius: 4px;
+            white-space: nowrap;
         }
 
             .dropdown-content a:hover {
                 background-color: #082948;
-                color:white;
+                color: white;
                 font-weight: 500;
             }
     </style>
@@ -116,33 +120,48 @@
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm">
         <div class="container">
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+
+                <div class="logo">
+                    Centered column
+                    <img src="~/Content/Images/logo1.png" style="height: 45px;" class="img-fluid align-items-center" />
+                </div>
+
                 <ul class="navbar-nav flex-grow-1">
-                    <li><button class="btn" onclick="index()">Home</button></li>
+                    <li><button class="btn" onclick="redirectToHome()">Home</button></li>
                     <li class="dropdown">
                         <button class="btn">Reports</button>
                         <div class="dropdown-content">
                             <a href="#">CRM PPF</a>
-                            <a href="#">Report 2</a>
-                            <a href="#">Report 3</a>
+                            <a href="#">Master Data</a>
                         </div>
                     </li>
                     <li><button class="btn" onclick="con()">Performance</button></li>
+                    <li><button class="btn" onclick="redirectToEdit()">Edit Allocation</button></li>
                 </ul>
 
-                <div class="logo">
-                    <!-- Centered column -->
-                    <img src="~/Content/Images/logo1.png" style="height: 50px;" class="img-fluid align-items-center" />
-                </div>
+
 
                 @Html.Partial("_LoginPartial")
             </div>
-
         </div>
+       
     </nav>
     <div class="container body-content ">
         @RenderBody()
 
     </div>
+
+    <script>
+         function redirectToEdit() {
+             window.location.href = '@Url.Action("EditAllocation", "Home")';
+        }
+
+        function redirectToHome() {
+             window.location.href = '@Url.Action("Index", "Home")';
+        }
+
+
+    </script>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

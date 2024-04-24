@@ -26,5 +26,10 @@ namespace CRM_Raviz.Controllers
 
             return View();
         }
+
+        public ActionResult EditAllocation()
+        {
+            return View();
+        }
     }
 }
