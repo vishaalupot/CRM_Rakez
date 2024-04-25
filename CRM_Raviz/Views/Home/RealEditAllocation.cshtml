@@ -13,6 +13,7 @@
 
     <style>
         @@import url('https://fonts.googleapis.com/css2?family=Jaldi&display=swap');
+
         .heading {
             color: var(--ADIB-primary);
             font-size: 40px;
@@ -61,10 +62,10 @@
                 color: white;
             }
 
-            button.btn{
-                color: white;
-                font-weight: 500;
-            }
+        button.btn {
+            color: white;
+            font-weight: 500;
+        }
     </style>
 
     <script>
@@ -80,6 +81,59 @@
             });
         });
     </script>
+
+
+    <script>
+        $(document).ready(function () {
+            // Function to update the Change Status textbox
+            function updateChangeStatus() {
+                var changeStatusText = "";
+                // Loop through each textbox and append its name and value to the changeStatusText if it has changed
+                $("input[type='text']").each(function () {
+                    var textBoxName = $(this).attr("name");
+                    var textBoxValue = $(this).val();
+                    // Check if the value has changed since the last update
+                    if ($(this).data("previous-value") !== textBoxValue) {
+                        changeStatusText += textBoxName + " => " + textBoxValue + "||";
+                        // Update the previous value data attribute to the current value
+                        $(this).data("previous-value", textBoxValue);
+                    }
+                });
+                // Loop through each dropdown and append its name and selected option to the changeStatusText if it has changed
+                $("select").each(function () {
+                    var dropDownName = $(this).attr("name");
+                    var dropDownValue = $(this).find("option:selected").text();
+                    // Check if the value has changed since the last update
+                    if ($(this).data("previous-value") !== dropDownValue) {
+                        changeStatusText += dropDownName + " => " + dropDownValue + "||";
+                        // Update the previous value data attribute to the current value
+                        $(this).data("previous-value", dropDownValue);
+                    }
+                });
+                // Update the Change Status textbox with the generated text
+                $("#ChangeStatus").val(changeStatusText);
+            }
+
+            // Call the updateChangeStatus function when a textbox loses focus
+            $("input[type='text']").on("focusout", function () {
+                updateChangeStatus();
+            });
+
+            // Call the updateChangeStatus function when a dropdown loses focus
+            $("select").on("focusout", function () {
+                updateChangeStatus();
+            });
+
+            // Call the updateChangeStatus function on page load to initialize the Change Status textbox
+            updateChangeStatus();
+
+            // Set the initial value of the Change Status textbox to empty
+            $("#ChangeStatus").val("");
+        });
+    </script>
+
+
+
 
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -106,7 +160,7 @@
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.CustomerName, new { @class = "form-control box", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.CustomerName, new { @class = "form-control box" })
             </div>
         </div>
 
@@ -117,7 +171,7 @@
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.OS_Billing, new { @class = "form-control box", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.OS_Billing, new { @class = "form-control box" })
             </div>
         </div>
 
@@ -128,7 +182,7 @@
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.License_expiry, new { @class = "form-control box", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.License_expiry, new { @class = "form-control box" })
             </div>
         </div>
 
@@ -139,7 +193,7 @@
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Nationality, new { @class = "form-control box", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.Nationality, new { @class = "form-control box" })
             </div>
         </div>
 
@@ -152,7 +206,7 @@
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Email_1, new { @class = "form-control box", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.Email_1, new { @class = "form-control box" })
             </div>
         </div>
 
@@ -165,7 +219,7 @@
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Email_2, new { @class = "form-control box", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.Email_2, new { @class = "form-control box" })
             </div>
         </div>
 
@@ -176,7 +230,7 @@
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Email_3, new { @class = "form-control box", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.Email_3, new { @class = "form-control box" })
             </div>
         </div>
 
@@ -189,19 +243,19 @@
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Mobile1, new { @class = "form-control box", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.Mobile1, new { @class = "form-control box" })
             </div>
         </div>
 
 
-        <div class="form-group col-sm-12 col-md-4 col-xl-6">
+        <div class="form-group col-sm-12 col-md-4 col-xl-3"">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-3">
                     @Html.LabelFor(model => model.Mobile2, "Mobile 2", htmlAttributes: new { @class = "control-label label" })
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Mobile2, new { @class = "form-control box", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.Mobile2, new { @class = "form-control box" })
             </div>
         </div>
 
@@ -212,7 +266,7 @@
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Mobile3, new { @class = "form-control box", @readonly = "readonly", @style = "width: 600px;" })
+                @Html.TextBoxFor(model => model.Mobile3, new { @class = "form-control box",  @style = "width: 600px;" })
             </div>
         </div>
 
@@ -282,7 +336,7 @@
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Comments, new { @class = "form-control box", @readonly = "readonly", @style = "width: 800px; height: 200px;padding-top: 0;" })
+                @Html.TextBoxFor(model => model.Comments, new { @class = "form-control box",  @style = "width: 800px; height: 200px;padding-top: 0;" })
             </div>
         </div>
 
@@ -293,7 +347,7 @@
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.ChangeStatus, new { @class = "form-control box", @readonly = "readonly", @style = "width: 800px; height: 200px;padding-top: 0;" })
+                @Html.TextBoxFor(model => model.ChangeStatus, new { @class = "form-control box", @style = "width: 800px; height: 200px; padding-top: 0;"})
             </div>
         </div>
 
