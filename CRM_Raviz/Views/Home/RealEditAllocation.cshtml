@@ -41,7 +41,8 @@
             margin-top: 7px;
             margin-bottom: 10px;
             border: 1px groove #569F9F;
-            font-weight: 700;
+            font-weight: 600 !important;
+            font-size: 14px !important;
         }
 
         input, select, textarea {
@@ -50,7 +51,7 @@
         }
 
         .SubBtn {
-            background-color: #012b2b !important;
+            background-color: #082948 !important;
             color: white !important;
             font-family: 'Jaldi', sans-serif !important;
             font-size: 20px !important;
@@ -77,6 +78,20 @@
                     $('#secondDropdown').show(); // Show the second dropdown
                 } else {
                     $('#secondDropdown').hide(); // Hide the second dropdown
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Function to show or hide the second dropdown based on the selection of the first dropdown
+            $('#Disposition').change(function () {
+                var selectedValue = $(this).val();
+                if ((selectedValue === 'CALLBACK LANGUAGE') || (selectedValue === 'CALLBACK')  ) { // Replace 'YOUR_TRIGGER_OPTION' with the value that should trigger showing the second dropdown
+                    $('#callbackDateTime').show(); // Show the second dropdown
+                } else {
+                    $('#callbackDateTime').hide(); // Hide the second dropdown
                 }
             });
         });
@@ -151,8 +166,6 @@
         @Html.HiddenFor(model => model.Id)
 
         <br />
-
-        <div class="subHeading">Case Details</div>
         <div class="form-group  col-sm-12 col-md-4 col-xl-3">
             <div class="row">
                 <div class="col-md-12">
@@ -248,9 +261,9 @@
         </div>
 
 
-        <div class="form-group col-sm-3 col-md-4 col-xl-6">
+        <div class="form-group col-sm-12 col-md-4 col-xl-3">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-12">
                     @Html.LabelFor(model => model.Mobile2, "Mobile 2", htmlAttributes: new { @class = "control-label label" })
                 </div>
             </div>
@@ -259,14 +272,14 @@
             </div>
         </div>
 
-        <div class="form-group  col-sm-12 col-md-4 col-xl-6">
+        <div class="form-group col-sm-12 col-md-4 col-xl-3">
             <div class="row">
                 <div class="col-md-12">
                     @Html.LabelFor(model => model.Mobile3, "Mobile 3", htmlAttributes: new { @class = "control-label label" })
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Mobile3, new { @class = "form-control box",  @style = "width: 600px;" })
+                @Html.TextBoxFor(model => model.Mobile3, new { @class = "form-control box" })
             </div>
         </div>
 
@@ -328,15 +341,30 @@
             </div>
         </div>
 
+        <div class="form-group col-sm-12 col-md-4 col-xl-3" id="callbackDateTime" style="display:none;">
+            <div class="row">
+                <div class="col-md-12">
+                    @Html.LabelFor(model => model.CallbackTime, "Callback", htmlAttributes: new { @class = "control-label label" })
+                </div>
+            </div>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.CallbackTime, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control box", type = "datetime-local", pattern = @"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}", title = "Please enter a valid datetime in the format yyyy-MM-ddTHH:mm" })
+                <!-- You can adjust the formatting and attributes as needed -->
+                @Html.ValidationMessageFor(model => model.CallbackTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
-        <div class="form-group  col-sm-12 col-md-4 col-xl-12" >
+
+
+
+        <div class="form-group  col-sm-12 col-md-4 col-xl-12">
             <div class="row">
                 <div class="col-md-12">
                     @Html.LabelFor(model => model.Comments, "Comments", htmlAttributes: new { @class = "control-label label" })
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Comments, new { @class = "form-control box",  @style = "width: 800px; height: 200px;padding-top: 0;" })
+                @Html.TextBoxFor(model => model.Comments, new { @class = "form-control box", @style = "width: 800px; height: 200px;padding-top: 0;" })
             </div>
         </div>
 
@@ -347,7 +375,13 @@
                 </div>
             </div>
             <div class="col-md-12">
-                @Html.TextBoxFor(model => model.ChangeStatus, new { @class = "form-control box", @style = "width: 800px; height: 200px; padding-top: 0;"})
+                @Html.TextBoxFor(model => model.ChangeStatus, new { @class = "form-control box", @style = "width: 800px; height: 200px; padding-top: 0;" })
+            </div>
+        </div>
+
+        <div class="form-group col-sm-12 col-md-4" style="margin: 50px 0px;">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Submit" class="btn SubBtn" style="width:150px; height: 50px" />
             </div>
         </div>
 

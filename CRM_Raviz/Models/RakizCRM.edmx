@@ -88,6 +88,7 @@
           <Property Name="SubDisposition" Type="varchar(max)" />
           <Property Name="Comments" Type="varchar(max)" />
           <Property Name="ChangeStatus" Type="varchar(max)" />
+          <Property Name="CallbackTime" Type="datetime" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
           <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
@@ -305,6 +306,7 @@
           <Property Name="SubDisposition" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="ChangeStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CallbackTime" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -373,6 +375,7 @@
           <EntitySetMapping Name="RecordDatas">
             <EntityTypeMapping TypeName="RakezCRM.RecordData">
               <MappingFragment StoreEntitySet="RecordData">
+                <ScalarProperty Name="CallbackTime" ColumnName="CallbackTime" />
                 <ScalarProperty Name="ChangeStatus" ColumnName="ChangeStatus" />
                 <ScalarProperty Name="Comments" ColumnName="Comments" />
                 <ScalarProperty Name="SubDisposition" ColumnName="SubDisposition" />

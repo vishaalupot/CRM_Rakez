@@ -69,6 +69,7 @@ namespace CRM_Raviz.Controllers
             recordData.SubDisposition = form["SubDisposition"].ToString();
             recordData.Comments = form["Comments"].ToString();
             recordData.ChangeStatus = form["ChangeStatus"].ToString();
+            recordData.CallbackTime = DateTime.Parse(form["CallbackTime"]);
             db.Entry(recordData).State = System.Data.Entity.EntityState.Modified;
 
             db.SaveChanges();

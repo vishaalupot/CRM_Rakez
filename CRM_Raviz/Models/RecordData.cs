@@ -37,5 +37,6 @@ namespace CRM_Raviz.Models
         public string SubDisposition { get; set; }
         public string Comments { get; set; }
         public string ChangeStatus { get; set; }
+        public Nullable<System.DateTime> CallbackTime { get; set; }
     }
 }
