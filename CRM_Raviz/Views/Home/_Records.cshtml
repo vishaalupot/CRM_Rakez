@@ -1,0 +1,142 @@
+﻿@model IEnumerable<CRM_Raviz.Models.RecordData>
+
+<script src="/Scripts/jquery-3.4.1.min.js"></script>
+<link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+
+         $(".submitBtn").click(function () {
+    // Use SweetAlert to confirm before sending data
+    Swal.fire({
+        title: 'Confirmation',
+        text: 'Do you want to send data to PDA?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // User clicked "Yes," proceed with the AJAX request
+            let data = $(this).data("id");
+            let url = '@Url.Action("searchCases", "Home", new { id = "_id_" })';
+            url = url.replace("_id_", data);
+
+            $.ajax({
+                url: url,
+                type: "Post",
+                success: function (result) {
+                    location.reload();
+                    /* alert("Success");*/
+                },
+                error: function (error) {
+                    /*alert("error")*/
+                    location.reload();
+                }
+            });
+        }
+    });
+});
+
+             $(".deleteBtn").click(function () {
+                let data = $(this).data("id");
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let url = '@Url.Action("duDeleteCase","Du")';
+                        let ajaxdata = { id: data };
+                        $.ajax({
+                            url: url,
+                            data: ajaxdata,
+                            type: "Post",
+                            success: function (result) {
+                                location.reload();
+                            },
+                            error: function (error) {
+                                location.reload();
+                            }
+                        });
+                    }
+    });
+});
+    });
+</script>
+<script>
+    function updateSelectedRole(selectedRole) {
+        document.getElementById('callingViewHiddenField').value = selectedRole;
+    }
+</script>
+<style>
+
+    .icons {
+        transition-duration: 0.3s;
+    }
+
+        .icons:hover {
+            transform: scale(1.2);
+        }
+</style>
+
+<div>
+    @using (Html.BeginForm("RealEditAllocation", "Home", FormMethod.Post))
+    {
+        <table>
+            <tr>
+                <td class="tableHead">Account no</td>
+                <td class="tableHead">Customer Name</td>
+                <td class="tableHead">Bounced Cheque</td>
+                <td class="tableHead">B.Cheque Penalties</td>
+                <td class="tableHead">IP Telephone Billing</td>
+                <td class="tableHead">Utility Billing</td>
+                <td class="tableHead">Others</td>
+                <td class="tableHead">O/S Balance</td>
+                <td class="tableHead">License expiry</td>
+                <td class="tableHead">Nationality</td>
+                <td class="tableHead">Email</td>
+                <td class="tableHead">Mobile</td>
+                <td class="tableHead">Actions</td>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.AccountNo, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.CustomerName, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.BCheque, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.BCheque_P, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.IPTelephone_Billing, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.Utility_Billing, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.Others, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.OS_Billing, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.License_expiry, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.Nationality, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.Email_1, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Email_2, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Email_3, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.Mobile1, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Mobile2, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Mobile3, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Mobile4, new { @class = "tablecont" })</td>
+                    <td>
+                        @Html.HiddenFor(modelItem => item.Id)
+                        <a href='@Url.Action("RealEditAllocation", "Home", new { id = item.Id })' >
+                            <img src="~/Content/Images/edit1.png" style="width: 20px; height: 20px; cursor: pointer;" data-id='@item.Id' class="submitBtn icons" />
+                        </a>
+                    </td>
+                </tr>
+            }
+        </table>
+
+    }
+</div>
+
+
+
+
+
+

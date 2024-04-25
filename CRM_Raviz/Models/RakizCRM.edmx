@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="RakezCRM.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="RakezCRM.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AspNetRoles">
           <Key>
             <PropertyRef Name="Id" />
@@ -60,6 +60,34 @@
           <Property Name="UserRole" Type="nchar" MaxLength="100" />
           <Property Name="Images" Type="image" />
           <Property Name="EmpCode" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="RecordData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AccountNo" Type="varchar(max)" />
+          <Property Name="CustomerName" Type="varchar(max)" />
+          <Property Name="BCheque" Type="varchar(max)" />
+          <Property Name="BCheque_P" Type="varchar(max)" />
+          <Property Name="IPTelephone_Billing" Type="varchar(max)" />
+          <Property Name="Utility_Billing" Type="varchar(max)" />
+          <Property Name="Others" Type="varchar(max)" />
+          <Property Name="OS_Billing" Type="varchar(max)" />
+          <Property Name="License_expiry" Type="varchar(max)" />
+          <Property Name="Contact_Person" Type="varchar(max)" />
+          <Property Name="Nationality" Type="varchar(max)" />
+          <Property Name="Mobile1" Type="varchar(max)" />
+          <Property Name="Mobile2" Type="varchar(max)" />
+          <Property Name="Mobile3" Type="varchar(max)" />
+          <Property Name="Mobile4" Type="varchar(max)" />
+          <Property Name="Email_1" Type="varchar(max)" />
+          <Property Name="Email_2" Type="varchar(max)" />
+          <Property Name="Email_3" Type="varchar(max)" />
+          <Property Name="Disposition" Type="varchar(max)" />
+          <Property Name="SubDisposition" Type="varchar(max)" />
+          <Property Name="Comments" Type="varchar(max)" />
+          <Property Name="ChangeStatus" Type="varchar(max)" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
           <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
@@ -123,6 +151,7 @@
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RecordData" EntityType="Self.RecordData" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
@@ -140,8 +169,7 @@
             <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="RakezCRM" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -248,7 +276,36 @@
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
           </AssociationSet>
+          <EntitySet Name="RecordDatas" EntityType="RakezCRM.RecordData" />
         </EntityContainer>
+        <EntityType Name="RecordData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AccountNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="BCheque" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="BCheque_P" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="IPTelephone_Billing" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Utility_Billing" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Others" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="OS_Billing" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="License_expiry" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Contact_Person" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Nationality" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile1" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile2" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile3" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile4" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Email_1" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Email_2" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Email_3" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Disposition" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SubDisposition" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ChangeStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -313,6 +370,35 @@
               <ScalarProperty Name="Id" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="RecordDatas">
+            <EntityTypeMapping TypeName="RakezCRM.RecordData">
+              <MappingFragment StoreEntitySet="RecordData">
+                <ScalarProperty Name="ChangeStatus" ColumnName="ChangeStatus" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="SubDisposition" ColumnName="SubDisposition" />
+                <ScalarProperty Name="Disposition" ColumnName="Disposition" />
+                <ScalarProperty Name="Email_3" ColumnName="Email_3" />
+                <ScalarProperty Name="Email_2" ColumnName="Email_2" />
+                <ScalarProperty Name="Email_1" ColumnName="Email_1" />
+                <ScalarProperty Name="Mobile4" ColumnName="Mobile4" />
+                <ScalarProperty Name="Mobile3" ColumnName="Mobile3" />
+                <ScalarProperty Name="Mobile2" ColumnName="Mobile2" />
+                <ScalarProperty Name="Mobile1" ColumnName="Mobile1" />
+                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
+                <ScalarProperty Name="Contact_Person" ColumnName="Contact_Person" />
+                <ScalarProperty Name="License_expiry" ColumnName="License_expiry" />
+                <ScalarProperty Name="OS_Billing" ColumnName="OS_Billing" />
+                <ScalarProperty Name="Others" ColumnName="Others" />
+                <ScalarProperty Name="Utility_Billing" ColumnName="Utility_Billing" />
+                <ScalarProperty Name="IPTelephone_Billing" ColumnName="IPTelephone_Billing" />
+                <ScalarProperty Name="BCheque_P" ColumnName="BCheque_P" />
+                <ScalarProperty Name="BCheque" ColumnName="BCheque" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
