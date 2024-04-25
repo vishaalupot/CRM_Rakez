@@ -207,6 +207,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RakizCRM.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\RecordData.cs">
+      <DependentUpon>RakizCRM.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -233,6 +236,7 @@
     <Content Include="Content\Images\call-back.png" />
     <Content Include="Content\Images\derbylogo.png" />
     <Content Include="Content\Images\derbylogo1.png" />
+    <Content Include="Content\Images\edit1.png" />
     <Content Include="Content\Images\logo.png" />
     <Content Include="Content\Images\logo1.png" />
     <Content Include="Content\Images\placeholder.png" />
@@ -316,6 +320,8 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\EditAllocation.cshtml" />
+    <Content Include="Views\Home\_Records.cshtml" />
+    <Content Include="Views\Home\RealEditAllocation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
