@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<CRM_Raviz.Models.RecordData>
-
+@using CRM_Raviz.Models
 <script src="/Scripts/jquery-3.4.1.min.js"></script>
 <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript">
@@ -124,7 +124,7 @@
                     <td>@Html.DisplayFor(modelItem => item.Mobile1, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Mobile2, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Mobile3, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Mobile4, new { @class = "tablecont" })</td>
                     <td>
                         @Html.HiddenFor(modelItem => item.Id)
-                        <a href='@Url.Action("RealEditAllocation", "Home", new { id = item.Id })' >
+                        <a href='@Url.Action("RealEditAllocation", "Home", new { id = item.Id })'>
                             <img src="~/Content/Images/edit1.png" style="width: 20px; height: 20px; cursor: pointer;" data-id='@item.Id' class="submitBtn icons" />
                         </a>
                     </td>
@@ -132,6 +132,54 @@
             }
         </table>
 
+
+        @*<table>
+            <tr>
+                <td class="tableHead">Account no</td>
+                <td class="tableHead">Customer Name</td>
+                <td class="tableHead">Bounced Cheque</td>
+                <td class="tableHead">B.Cheque Penalties</td>
+                <td class="tableHead">IP Telephone Billing</td>
+                <td class="tableHead">Utility Billing</td>
+                <td class="tableHead">Others</td>
+                <td class="tableHead">O/S Balance</td>
+                <td class="tableHead">License expiry</td>
+                <td class="tableHead">Nationality</td>
+                <td class="tableHead">Email</td>
+                <td class="tableHead">Mobile</td>
+                <td class="tableHead">Actions</td>
+            </tr>
+            @{
+
+                List<EventTable> events = (List<EventTable>)ViewBag.Results2;
+                if (events != null)
+                {
+                    foreach (var item in events)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.AccountNo, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.CustomerName, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.Date, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.Time, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.Dispo, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.SubDispo, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.CallbackTime, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.Comments, new { @class = "tablecont" })</td>
+                            <td>
+                                @Html.HiddenFor(modelItem => item.Id)
+                                <a href='@Url.Action("RealEditAllocation", "Home", new { id = item.Id })'>
+                                    <img src="~/Content/Images/edit1.png" style="width: 20px; height: 20px; cursor: pointer;" data-id='@item.Id' class="submitBtn icons" />
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+
+
+            }
+
+
+        </table>*@
     }
 </div>
 

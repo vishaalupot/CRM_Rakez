@@ -206,7 +206,9 @@
         margin: 5px;
     }
 
-
+    #History{
+        padding-top:50px; 
+    }
 
 </style>
 <script type="text/javascript">
@@ -223,6 +225,7 @@
               if (e.which === 13) {
                   e.preventDefault();
                   searchCases();
+                  searchCases2();
               }
           });
 
@@ -250,13 +253,33 @@
               }
           });
       }
+      function searchCases2() {
+          console.log("Button clicked");
+          var query = $("#searchInput").val();
+          var url = '@Url.Action("_History", "Home")';
+          url = url.replace("_query_", query);
+          console.log(url);
+         /* alert(query)*/
+          $.ajax({
+              url: url,
+              data: { query: query },
+              type: "Post",
+              success: function (result) {
+
+                  $("#History").html(result);
+              },
+              error: function (e) {
+                  alert("Error fetching search results");
+              }
+          });
+      }
 
 </script>
 <div class="body">
     <div class="search">
         <form class="form">
             <label for="search">
-                <input required="" autocomplete="off" placeholder="Search..." id="search" type="text">
+                <input required="" autocomplete="off" placeholder="Search..." id="searchInput" type="text">
                 <div class="icon">
                     <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="swap-on">
                         <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round"></path>
@@ -297,7 +320,12 @@
                 <div id="VerifyList">
 
                 </div>
+
+
             </div>
+        </div>
+        <div id="History">
+
         </div>
     </div>
 </div>

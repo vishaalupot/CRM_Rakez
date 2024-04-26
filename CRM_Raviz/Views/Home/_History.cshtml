@@ -1,0 +1,66 @@
+﻿
+@model IEnumerable<CRM_Raviz.Models.EventTable>
+<script src="/Scripts/jquery-3.4.1.min.js"></script>
+<link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    });
+</script>
+<script>
+    function updateSelectedRole(selectedRole) {
+        document.getElementById('callingViewHiddenField').value = selectedRole;
+    }
+</script>
+<style>
+
+    .icons {
+        transition-duration: 0.3s;
+    }
+
+        .icons:hover {
+            transform: scale(1.2);
+        }
+</style>
+
+<div>
+    @using (Html.BeginForm("RealEditAllocation", "Home", FormMethod.Post))
+    {
+        <table>
+            <tr>
+                <td class="tableHead">Account no</td>
+                <td class="tableHead">Customer Name</td>
+                <td class="tableHead">Date</td>
+                <td class="tableHead">Time</td>
+                <td class="tableHead">Disposition</td>
+                <td class="tableHead">Subdisposition</td>
+                <td class="tableHead">Callback</td>
+                <td class="tableHead">Commments</td>
+
+            </tr>
+
+            @foreach (var item in Model)
+            {
+
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.AccountNo, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.CustomerName, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.Date, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.Time, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.Dispo, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.SubDispo, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.CallbackTime, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.Comments, new { @class = "tablecont" })</td>
+                </tr>
+            }
+
+
+        </table>
+    }
+    </div>
+
+
+
+
+
+

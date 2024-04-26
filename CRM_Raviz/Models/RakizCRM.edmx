@@ -61,6 +61,22 @@
           <Property Name="Images" Type="image" />
           <Property Name="EmpCode" Type="nvarchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="EventTable">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AccountNo" Type="varchar(max)" />
+          <Property Name="CustomerName" Type="varchar(max)" />
+          <Property Name="Date" Type="date" />
+          <Property Name="Time" Type="time" Precision="7" />
+          <Property Name="Dispo" Type="varchar(max)" />
+          <Property Name="SubDispo" Type="varchar(max)" />
+          <Property Name="Comments" Type="varchar(max)" />
+          <Property Name="ChangeStatus" Type="varchar(max)" />
+          <Property Name="CallbackTime" Type="datetime" />
+          <Property Name="Record_Id" Type="int" />
+        </EntityType>
         <EntityType Name="RecordData">
           <Key>
             <PropertyRef Name="Id" />
@@ -152,6 +168,7 @@
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EventTable" EntityType="Self.EventTable" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RecordData" EntityType="Self.RecordData" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
@@ -278,6 +295,7 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
           </AssociationSet>
           <EntitySet Name="RecordDatas" EntityType="RakezCRM.RecordData" />
+          <EntitySet Name="EventTables" EntityType="RakezCRM.EventTable" />
         </EntityContainer>
         <EntityType Name="RecordData">
           <Key>
@@ -307,6 +325,22 @@
           <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="ChangeStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="CallbackTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="EventTable">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AccountNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="Time" Type="Time" Precision="7" />
+          <Property Name="Dispo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SubDispo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ChangeStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CallbackTime" Type="DateTime" Precision="3" />
+          <Property Name="Record_Id" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -396,6 +430,23 @@
                 <ScalarProperty Name="IPTelephone_Billing" ColumnName="IPTelephone_Billing" />
                 <ScalarProperty Name="BCheque_P" ColumnName="BCheque_P" />
                 <ScalarProperty Name="BCheque" ColumnName="BCheque" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EventTables">
+            <EntityTypeMapping TypeName="RakezCRM.EventTable">
+              <MappingFragment StoreEntitySet="EventTable">
+                <ScalarProperty Name="Record_Id" ColumnName="Record_Id" />
+                <ScalarProperty Name="CallbackTime" ColumnName="CallbackTime" />
+                <ScalarProperty Name="ChangeStatus" ColumnName="ChangeStatus" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="SubDispo" ColumnName="SubDispo" />
+                <ScalarProperty Name="Dispo" ColumnName="Dispo" />
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
                 <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

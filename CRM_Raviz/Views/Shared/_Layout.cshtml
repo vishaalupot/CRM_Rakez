@@ -135,7 +135,7 @@
                             <a href="#">Master Data</a>
                         </div>
                     </li>
-                    <li><button class="btn" onclick="con()">Performance</button></li>
+                    <li><button class="btn" onclick="redirectToUpload()">Upload Cases</button></li>
                     <li><button class="btn" onclick="redirectToEdit()">Edit Allocation</button></li>
                 </ul>
 
@@ -158,6 +158,10 @@
 
         function redirectToHome() {
              window.location.href = '@Url.Action("Index", "Home")';
+        }
+
+         function redirectToUpload() {
+             window.location.href = '@Url.Action("UploadCases", "Home")';
         }
 
 
