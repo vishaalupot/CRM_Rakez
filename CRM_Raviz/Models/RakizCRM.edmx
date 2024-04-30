@@ -61,6 +61,19 @@
           <Property Name="Images" Type="image" />
           <Property Name="EmpCode" Type="nvarchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="BouncedRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AccountNo" Type="varchar(max)" />
+          <Property Name="ChequeNumber" Type="varchar(max)" />
+          <Property Name="ReasonCode" Type="varchar(max)" />
+          <Property Name="Text" Type="varchar(max)" />
+          <Property Name="DateBounced" Type="date" />
+          <Property Name="ChequeDate" Type="date" />
+          <Property Name="TotalAmount" Type="varchar(max)" />
+        </EntityType>
         <EntityType Name="EventTable">
           <Key>
             <PropertyRef Name="Id" />
@@ -77,6 +90,7 @@
           <Property Name="CallbackTime" Type="datetime" />
           <Property Name="Record_Id" Type="int" />
           <Property Name="Agent" Type="varchar(max)" />
+          <Property Name="ModifiedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="RecordData">
           <Key>
@@ -107,6 +121,14 @@
           <Property Name="ChangeStatus" Type="varchar(max)" />
           <Property Name="CallbackTime" Type="datetime" />
           <Property Name="Agent" Type="varchar(max)" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="CloseAccount" Type="varchar(max)" />
+          <Property Name="DormantAccount" Type="varchar(max)" />
+          <Property Name="InsufficientFunds" Type="varchar(max)" />
+          <Property Name="OtherReason" Type="varchar(max)" />
+          <Property Name="SignatureIrregular" Type="varchar(max)" />
+          <Property Name="TechnicalReason" Type="varchar(max)" />
+          <Property Name="BOthers" Type="varchar(max)" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
           <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
@@ -170,6 +192,7 @@
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BouncedRecord" EntityType="Self.BouncedRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EventTable" EntityType="Self.EventTable" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RecordData" EntityType="Self.RecordData" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
@@ -298,6 +321,7 @@
           </AssociationSet>
           <EntitySet Name="RecordDatas" EntityType="RakezCRM.RecordData" />
           <EntitySet Name="EventTables" EntityType="RakezCRM.EventTable" />
+          <EntitySet Name="BouncedRecords" EntityType="RakezCRM.BouncedRecord" />
         </EntityContainer>
         <EntityType Name="RecordData">
           <Key>
@@ -328,6 +352,14 @@
           <Property Name="ChangeStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="CallbackTime" Type="DateTime" Precision="3" />
           <Property Name="Agent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="CloseAccount" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DormantAccount" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="InsufficientFunds" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="OtherReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SignatureIrregular" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="TechnicalReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="BOthers" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="EventTable">
           <Key>
@@ -345,6 +377,20 @@
           <Property Name="CallbackTime" Type="DateTime" Precision="3" />
           <Property Name="Record_Id" Type="Int32" />
           <Property Name="Agent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="BouncedRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AccountNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ChequeNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ReasonCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DateBounced" Type="DateTime" Precision="0" />
+          <Property Name="ChequeDate" Type="DateTime" Precision="0" />
+          <Property Name="TotalAmount" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -413,6 +459,14 @@
           <EntitySetMapping Name="RecordDatas">
             <EntityTypeMapping TypeName="RakezCRM.RecordData">
               <MappingFragment StoreEntitySet="RecordData">
+                <ScalarProperty Name="BOthers" ColumnName="BOthers" />
+                <ScalarProperty Name="TechnicalReason" ColumnName="TechnicalReason" />
+                <ScalarProperty Name="SignatureIrregular" ColumnName="SignatureIrregular" />
+                <ScalarProperty Name="OtherReason" ColumnName="OtherReason" />
+                <ScalarProperty Name="InsufficientFunds" ColumnName="InsufficientFunds" />
+                <ScalarProperty Name="DormantAccount" ColumnName="DormantAccount" />
+                <ScalarProperty Name="CloseAccount" ColumnName="CloseAccount" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="Agent" ColumnName="Agent" />
                 <ScalarProperty Name="CallbackTime" ColumnName="CallbackTime" />
                 <ScalarProperty Name="ChangeStatus" ColumnName="ChangeStatus" />
@@ -444,6 +498,7 @@
           <EntitySetMapping Name="EventTables">
             <EntityTypeMapping TypeName="RakezCRM.EventTable">
               <MappingFragment StoreEntitySet="EventTable">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="Agent" ColumnName="Agent" />
                 <ScalarProperty Name="Record_Id" ColumnName="Record_Id" />
                 <ScalarProperty Name="CallbackTime" ColumnName="CallbackTime" />
@@ -454,6 +509,20 @@
                 <ScalarProperty Name="Time" ColumnName="Time" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BouncedRecords">
+            <EntityTypeMapping TypeName="RakezCRM.BouncedRecord">
+              <MappingFragment StoreEntitySet="BouncedRecord">
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="ChequeDate" ColumnName="ChequeDate" />
+                <ScalarProperty Name="DateBounced" ColumnName="DateBounced" />
+                <ScalarProperty Name="Text" ColumnName="Text" />
+                <ScalarProperty Name="ReasonCode" ColumnName="ReasonCode" />
+                <ScalarProperty Name="ChequeNumber" ColumnName="ChequeNumber" />
                 <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

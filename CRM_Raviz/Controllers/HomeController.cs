@@ -187,8 +187,8 @@ namespace CRM_Raviz.Controllers
             if (true)
             {
                 eventTable = new EventTable();
-                eventTable.Date = DateTime.Now;
-                eventTable.Time = DateTime.Now.TimeOfDay;
+                //eventTable.Date = DateTime.Now;
+                //eventTable.Time = DateTime.Now.TimeOfDay;
                 eventTable.CustomerName = form["CustomerName"].ToString();
                 eventTable.Agent = form["Agent"].ToString();
                 eventTable.AccountNo = form["AccountNo"].ToString();
@@ -196,6 +196,7 @@ namespace CRM_Raviz.Controllers
                 eventTable.SubDispo = form["SubDisposition"].ToString();
                 eventTable.Comments = form["Comments"].ToString();
                 eventTable.ChangeStatus = form["ChangeStatus"].ToString();
+                eventTable.ModifiedDate = DateTime.Now;
                 if (!string.IsNullOrEmpty(form["CallbackTime"]))
                 {
                     eventTable.CallbackTime = DateTime.Parse(form["CallbackTime"]);
@@ -225,6 +226,7 @@ namespace CRM_Raviz.Controllers
             recordData.SubDisposition = form["SubDisposition"].ToString();
             recordData.Comments = form["Comments"].ToString();
             recordData.ChangeStatus = form["ChangeStatus"].ToString();
+            recordData.ModifiedDate = DateTime.Now;
             if (!string.IsNullOrEmpty(form["CallbackTime"]))
             {
                 eventTable.CallbackTime = DateTime.Parse(form["CallbackTime"]);
@@ -304,10 +306,72 @@ namespace CRM_Raviz.Controllers
             return PartialView("_History", results2);
         }
 
+        //[HttpPost]
+        //public ActionResult UploadCases(HttpPostedFileBase file)
+        //{
+        //    CPVDBEntities db = new CPVDBEntities();
+        //    if (file != null && file.ContentLength > 0)
+        //    {
+        //        try
+        //        {
+        //            using (var package = new ExcelPackage(file.InputStream))
+        //            {
+        //                ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
+        //                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+        //                int rowCount = worksheet.Dimension.Rows;
+
+        //                for (int row = 1; row <= rowCount; row++)
+        //                {
+        //                    var caseEntity = new RecordData
+        //                    {
+        //                        AccountNo = worksheet.Cells[row, 1].Value?.ToString(),
+        //                        CustomerName = worksheet.Cells[row, 2].Value?.ToString(),
+        //                        BCheque = worksheet.Cells[row, 3].Value?.ToString(),
+        //                        BCheque_P = worksheet.Cells[row, 4].Value?.ToString(),
+        //                        IPTelephone_Billing = worksheet.Cells[row, 5].Value?.ToString(),
+        //                        Utility_Billing = worksheet.Cells[row, 6].Value?.ToString(),
+        //                        Others = worksheet.Cells[row, 7].Value?.ToString(),
+        //                        OS_Billing = worksheet.Cells[row, 8].Value?.ToString(),
+        //                        License_expiry = worksheet.Cells[row, 9].Value?.ToString(),
+        //                        Contact_Person = worksheet.Cells[row, 11].Value?.ToString(),
+        //                        Nationality = worksheet.Cells[row, 12].Value?.ToString(),
+        //                        Mobile1 = worksheet.Cells[row, 13].Value?.ToString(),
+        //                        Mobile2 = worksheet.Cells[row, 14].Value?.ToString(),
+        //                        Mobile3 = worksheet.Cells[row, 15].Value?.ToString(),
+        //                        Mobile4 = worksheet.Cells[row, 16].Value?.ToString(),
+        //                        Email_1 = worksheet.Cells[row, 17].Value?.ToString(),
+        //                        Email_2 = worksheet.Cells[row, 18].Value?.ToString(),
+        //                        Email_3 = worksheet.Cells[row, 19].Value?.ToString(),
+        //                    };
+
+        //                    db.RecordDatas.Add(caseEntity);
+        //                }
+
+        //                db.SaveChanges();
+        //            }
+        //            ViewBag.Message = "File uploaded successfully.";
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            ViewBag.Error = $"Error: {ex.Message}";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        ViewBag.Error = "Please upload a valid Excel file.";
+        //    }
+
+        //    return View();
+        //}
+
+
         [HttpPost]
         public ActionResult UploadCases(HttpPostedFileBase file)
         {
-            CPVDBEntities db = new CPVDBEntities();
+            CPVDBEntities dbSheet1 = new CPVDBEntities(); // Database context for the first sheet
+            CPVDBEntities dbSheet2 = new CPVDBEntities(); // Database context for the second sheet
+
             if (file != null && file.ContentLength > 0)
             {
                 try
@@ -316,37 +380,69 @@ namespace CRM_Raviz.Controllers
                     {
                         ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
-                        ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-                        int rowCount = worksheet.Dimension.Rows;
+                        // Process the first sheet
+                        ExcelWorksheet worksheet1 = package.Workbook.Worksheets["Sheet1"];
+                        int rowCount1 = worksheet1.Dimension.Rows;
 
-                        for (int row = 1; row <= rowCount; row++)
+                        for (int row = 2; row <= rowCount1; row++) // Start from row 2 to skip headers
                         {
-                            var caseEntity = new RecordData
+                            var caseEntity1 = new RecordData
                             {
-                                AccountNo = worksheet.Cells[row, 1].Value?.ToString(),
-                                CustomerName = worksheet.Cells[row, 2].Value?.ToString(),
-                                BCheque = worksheet.Cells[row, 3].Value?.ToString(),
-                                BCheque_P = worksheet.Cells[row, 4].Value?.ToString(),
-                                IPTelephone_Billing = worksheet.Cells[row, 5].Value?.ToString(),
-                                Utility_Billing = worksheet.Cells[row, 6].Value?.ToString(),
-                                Others = worksheet.Cells[row, 7].Value?.ToString(),
-                                OS_Billing = worksheet.Cells[row, 8].Value?.ToString(),
-                                License_expiry = worksheet.Cells[row, 9].Value?.ToString(),
-                                Contact_Person = worksheet.Cells[row, 11].Value?.ToString(),
-                                Nationality = worksheet.Cells[row, 12].Value?.ToString(),
-                                Mobile1 = worksheet.Cells[row, 13].Value?.ToString(),
-                                Mobile2 = worksheet.Cells[row, 14].Value?.ToString(),
-                                Mobile3 = worksheet.Cells[row, 15].Value?.ToString(),
-                                Mobile4 = worksheet.Cells[row, 16].Value?.ToString(),
-                                Email_1 = worksheet.Cells[row, 17].Value?.ToString(),
-                                Email_2 = worksheet.Cells[row, 18].Value?.ToString(),
-                                Email_3 = worksheet.Cells[row, 19].Value?.ToString(),
+                                AccountNo = worksheet1.Cells[row, 1].Value?.ToString(),
+                                CustomerName = worksheet1.Cells[row, 2].Value?.ToString(),
+                                BCheque = worksheet1.Cells[row, 3].Value?.ToString(),
+                                BCheque_P = worksheet1.Cells[row, 4].Value?.ToString(),
+                                IPTelephone_Billing = worksheet1.Cells[row, 5].Value?.ToString(),
+                                Utility_Billing = worksheet1.Cells[row, 6].Value?.ToString(),
+                                Others = worksheet1.Cells[row, 7].Value?.ToString(),
+                                OS_Billing = worksheet1.Cells[row, 8].Value?.ToString(),
+                                License_expiry = worksheet1.Cells[row, 9].Value?.ToString(),
+                                Contact_Person = worksheet1.Cells[row, 11].Value?.ToString(),
+                                Nationality = worksheet1.Cells[row, 12].Value?.ToString(),
+                                Mobile1 = worksheet1.Cells[row, 13].Value?.ToString(),
+                                Mobile2 = worksheet1.Cells[row, 14].Value?.ToString(),
+                                Mobile3 = worksheet1.Cells[row, 15].Value?.ToString(),
+                                Mobile4 = worksheet1.Cells[row, 16].Value?.ToString(),
+                                Email_1 = worksheet1.Cells[row, 17].Value?.ToString(),
+                                Email_2 = worksheet1.Cells[row, 18].Value?.ToString(),
+                                Email_3 = worksheet1.Cells[row, 19].Value?.ToString(),
+                                CloseAccount = worksheet1.Cells[row, 20].Value?.ToString(),
+                                DormantAccount = worksheet1.Cells[row, 21].Value?.ToString(),
+                                InsufficientFunds = worksheet1.Cells[row, 22].Value?.ToString(),
+                                OtherReason= worksheet1.Cells[row, 23].Value?.ToString(),
+                                SignatureIrregular = worksheet1.Cells[row, 24].Value?.ToString(),
+                                TechnicalReason = worksheet1.Cells[row, 25].Value?.ToString(),
                             };
 
-                            db.RecordDatas.Add(caseEntity);
+                            dbSheet1.RecordDatas.Add(caseEntity1);
                         }
 
-                        db.SaveChanges();
+                        dbSheet1.SaveChanges();
+
+                        // Process the second sheet
+                        ExcelWorksheet worksheet2 = package.Workbook.Worksheets["Sheet2"];
+                        int rowCount2 = worksheet2.Dimension.Rows;
+
+                        for (int row = 2; row <= rowCount2; row++) // Start from row 2 to skip headers
+                        {
+                            var caseEntity2 = new BouncedRecord // Assuming you have a different model for the second sheet
+                            {
+                                AccountNo = worksheet2.Cells[row, 1].Value?.ToString(),
+                                ChequeNumber = worksheet2.Cells[row, 2].Value?.ToString(),
+                                DateBounced = (DateTime?)worksheet2.Cells[row, 3].Value,
+                                TotalAmount = worksheet2.Cells[row, 4].Value?.ToString(),
+                                ReasonCode = worksheet2.Cells[row, 5].Value?.ToString(),
+                                Text = worksheet2.Cells[row, 6].Value?.ToString(),
+                                //ChequeDate = (DateTime)worksheet2.Cells[row, 6].Value,
+
+                            };
+
+                            dbSheet2.BouncedRecords.Add(caseEntity2);
+                        }
+
+
+
+                        dbSheet2.SaveChanges();
                     }
                     ViewBag.Message = "File uploaded successfully.";
                 }

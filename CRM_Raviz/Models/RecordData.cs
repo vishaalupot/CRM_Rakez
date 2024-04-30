@@ -39,5 +39,13 @@ namespace CRM_Raviz.Models
         public string ChangeStatus { get; set; }
         public Nullable<System.DateTime> CallbackTime { get; set; }
         public string Agent { get; set; }
+        public Nullable<System.DateTime> ModifiedDate { get; set; }
+        public string CloseAccount { get; set; }
+        public string DormantAccount { get; set; }
+        public string InsufficientFunds { get; set; }
+        public string OtherReason { get; set; }
+        public string SignatureIrregular { get; set; }
+        public string TechnicalReason { get; set; }
+        public string BOthers { get; set; }
     }
 }

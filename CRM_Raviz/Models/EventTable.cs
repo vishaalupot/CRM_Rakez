@@ -26,5 +26,6 @@ namespace CRM_Raviz.Models
         public Nullable<System.DateTime> CallbackTime { get; set; }
         public Nullable<int> Record_Id { get; set; }
         public string Agent { get; set; }
+        public Nullable<System.DateTime> ModifiedDate { get; set; }
     }
 }

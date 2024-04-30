@@ -219,6 +219,9 @@
     <Compile Include="Models\AspNetUserLogin.cs">
       <DependentUpon>RakizCRM.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\BouncedRecord.cs">
+      <DependentUpon>RakizCRM.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\EventTable.cs">
       <DependentUpon>RakizCRM.tt</DependentUpon>
     </Compile>
