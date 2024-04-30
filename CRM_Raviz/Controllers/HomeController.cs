@@ -2,7 +2,9 @@
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 
@@ -10,6 +12,29 @@ namespace CRM_Raviz.Controllers
 {
     public class HomeController : Controller
     {
+        public ActionResult CRMPPF()
+        {
+            CPVDBEntities db = new CPVDBEntities();
+            EventTable eventTable = new EventTable();   
+            return View(eventTable);
+
+        }
+        public ActionResult MasterReport()
+        {
+
+            CPVDBEntities db = new CPVDBEntities();
+            RecordData cases = new RecordData();
+
+            //var dispositionValues = db.RecordDatas.Select(r => r.Disposition).Distinct().ToList();
+            //// Pass the dispositionValues to the view
+            //ViewBag.DispositionValues = dispositionValues;
+
+
+
+
+            return View(cases);
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -38,7 +63,7 @@ namespace CRM_Raviz.Controllers
         {
 
             CPVDBEntities db = new CPVDBEntities();
-            List<RecordData> cases = db.RecordDatas.ToList();
+            List<EventTable> cases = db.EventTables.ToList();
             return PartialView(cases);
         }
 
@@ -84,21 +109,7 @@ namespace CRM_Raviz.Controllers
 
                 db.EventTables.Add(eventTable);
             }
-            //else
-            //{
-            //    eventTable.Date = DateTime.Now;
-            //    eventTable.Time = BitConverter.GetBytes(DateTime.Now.ToBinary());
-            //    eventTable.CustomerName = form["CustomerName"].ToString();
-            //    eventTable.AccountNo = form["AccountNo"].ToString();
-            //    eventTable.Dispo = form["Disposition"].ToString();
-            //    eventTable.SubDispo = form["SubDisposition"].ToString();
-            //    eventTable.Comments = form["Comments"].ToString();
-            //    eventTable.ChangeStatus = form["ChangeStatus"].ToString();
-            //    eventTable.CallbackTime = DateTime.Parse(form["CallbackTime"]);
-            //    eventTable.Record_Id = int.Parse(form["Id"].ToString());
 
-            //    db.Entry(eventTable).State = System.Data.Entity.EntityState.Modified;
-            //}
 
             recordData.CustomerName = form["CustomerName"].ToString();
             recordData.OS_Billing = form["OS_Billing"].ToString();
@@ -259,5 +270,225 @@ namespace CRM_Raviz.Controllers
             return View();
 
         }
+
+
+        public static List<string> GetFieldNames<T>() where T : class
+        {
+            List<string> fieldNames = new List<string>();
+
+            var properties = typeof(T).GetProperties();
+            foreach (var property in properties)
+            {
+                fieldNames.Add(property.Name);
+            }
+
+            return fieldNames;
+        }
+
+        public ActionResult DownloadCases(string callbackLanguage, DateTime? specificDate = null)
+        {
+            CPVDBEntities db = new CPVDBEntities();
+            HttpResponseBase Response = HttpContext.Response;
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            List<EventTable> caseTables;
+            if (specificDate.HasValue)
+            {
+                caseTables = db.EventTables.Where(et => et.Date == specificDate.Value.Date && et.SubDispo == callbackLanguage).ToList();
+            }
+            else
+            {
+                caseTables = db.EventTables.Where(et => et.SubDispo == callbackLanguage).ToList();
+            }
+
+            var header = new List<string>() { "Id", "AccountNo", "CustomerName", "Date", "Time", "Dispo", "SubDispo", "Comments", "ChangeStatus", "CallbackTime", "Record_Id" };
+
+            using (var package = new ExcelPackage())
+            {
+                int col = 1;
+                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+
+                foreach (var headerName in header)
+                {
+                    worksheet.Cells[1, col++].Value = headerName.ToString();
+                }
+
+                int row = 2;
+                foreach (var itemcase in caseTables)
+                {
+                    col = 1;
+                    foreach (var headName in header)
+                    {
+                        var property = typeof(EventTable).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
+                        object value = property.GetValue(itemcase);
+
+                        if (property.PropertyType == typeof(DateTime))
+                        {
+                            worksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
+                        }
+                        else
+                        {
+                            worksheet.Cells[row, col++].Value = value != null ? value.ToString() : string.Empty;
+                        }
+                    }
+                    row++;
+                }
+
+                Response.Clear();
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", "attachment;filename=Caselist" + (specificDate.HasValue ? specificDate.Value.ToString("yyyy-MM-dd") : DateTime.Today.ToString("yyyy-MM-dd")) + ".xlsx");
+
+                Response.BinaryWrite(package.GetAsByteArray());
+                Response.Flush();
+                Response.SuppressContent = true;
+                HttpContext.ApplicationInstance.CompleteRequest();
+
+                return File(Response.OutputStream, Response.ContentType);
+            }
+        }
+
+        public ActionResult DownloadRecordCases(string Disposition, DateTime? specificDate = null, DateTime? endDate = null)
+        {
+            CPVDBEntities db = new CPVDBEntities();
+            HttpResponseBase Response = HttpContext.Response;
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            List<RecordData> recordDatas = new List<RecordData>(); // Initialize with an empty list
+            if (specificDate.HasValue && endDate.HasValue)
+            {
+                recordDatas = db.RecordDatas
+                                .Where(et => et.CallbackTime >= specificDate.Value.Date && et.CallbackTime <= endDate.Value.Date && et.Disposition == Disposition)
+                                .ToList();
+            }
+            else if (specificDate.HasValue)
+            {
+                recordDatas = db.RecordDatas
+                                .Where(et => et.CallbackTime == specificDate.Value.Date && et.Disposition == Disposition)
+                                .ToList();
+            }
+            else if(Disposition != null)
+            {
+                recordDatas = db.RecordDatas
+                                .Where(et => et.Disposition == Disposition)
+                                .ToList();
+            }
+
+            var header = new List<string>() { "AccountNo", "CustomerName", "BCheque", "BCheque_P", "IPTelephone_Billing", "Utility_Billing", "Others", "OS_Billing", "License_expiry", "Contact_Person", "Nationality", "Mobile1", "Mobile2", "Mobile3", "Mobile4", "Email_1", "Email_2", "Email_3", "Disposition", "SubDisposition", "Comments", "ChangeStatus", "CallbackTime" };
+
+            using (var package = new ExcelPackage())
+            {
+                int col = 1;
+                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+
+                foreach (var headerName in header)
+                {
+                    worksheet.Cells[1, col++].Value = headerName.ToString();
+                }
+
+                int row = 2;
+                foreach (var itemcase in recordDatas)
+                {
+                    col = 1;
+                    foreach (var headName in header)
+                    {
+                        var property = typeof(RecordData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
+                        object value = property.GetValue(itemcase);
+
+                        if (property.PropertyType == typeof(DateTime))
+                        {
+                            worksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
+                        }
+                        else
+                        {
+                            worksheet.Cells[row, col++].Value = value != null ? value.ToString() : string.Empty;
+                        }
+                    }
+                    row++;
+                }
+
+                Response.Clear();
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", "attachment;filename=Caselist" + (specificDate.HasValue ? specificDate.Value.ToString("yyyy-MM-dd") : DateTime.Today.ToString("yyyy-MM-dd")) + ".xlsx");
+
+                Response.BinaryWrite(package.GetAsByteArray());
+                Response.Flush();
+                Response.SuppressContent = true;
+                HttpContext.ApplicationInstance.CompleteRequest();
+
+                return File(Response.OutputStream, Response.ContentType);
+            }
+        }
+
+
+        public ActionResult DownloadExcel()
+        {
+            try
+            {
+                // Create a new Excel package
+                using (var excelPackage = new ExcelPackage())
+                {
+                    // Add a worksheet
+                    var worksheet = excelPackage.Workbook.Worksheets.Add("Sheet1");
+
+                    // Add column headers
+                    string[] headers = {
+                            "Account #",
+                            "Customer Name",
+                            "Bounced cheque",
+                            "B.Chq Penalities",
+                            "IP Telephone billing",
+                            "Utility billing",
+                            "Others",
+                            "O/S Balance",
+                            "License expiry",
+                            "Contact Person",
+                            "Nationality",
+                            "Mobile1",
+                            "Mobile2",
+                            "Mobile3",
+                            "Mobile4",
+                            "Mobile5",
+                            "Email-1",
+                            "Email-2",
+                            "Email-3",
+                            "Email-4",
+                            "Email-5",
+                            "Closed Account",
+                            "Dormant Account",
+                            "Insufficient Funds",
+                            "Other Reason",
+                            "Signature Irregular",
+                            "Technical Reason",
+                            "Others"
+                        };
+
+                    for (int i = 0; i < headers.Length; i++)
+                    {
+                        worksheet.Cells[1, i + 1].Value = headers[i];
+                    }
+
+                    // Save the Excel package to a stream
+                    MemoryStream memoryStream = new MemoryStream();
+                    excelPackage.SaveAs(memoryStream);
+
+                    // Set the position of the stream back to the beginning
+                    memoryStream.Position = 0;
+
+                    // Generate a unique file name based on the current date and time
+                    string fileName = "SampleExcel_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
+
+                    // Return the Excel file as a file download response
+                    return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
+                // For simplicity, we'll just return a generic error message
+                return Content("An error occurred while generating the Excel file.");
+            }
+        }
+
+
     }
 }

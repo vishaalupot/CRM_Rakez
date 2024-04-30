@@ -1,0 +1,98 @@
+﻿@model CRM_Raviz.Models.EventTable
+
+@{
+    ViewBag.Title = "CRMPPF";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Report</title>
+    <style>
+        /* CSS for styling */
+        .heading {
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-control {
+            width: 200px;
+        }
+
+        #endDateContainer {
+            display: none;
+        }
+
+        .container1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-direction: column;
+        }
+
+        .date-input {
+            margin-right: 10px;
+        }
+
+        .body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .submit-button {
+            margin-top: 20px;
+            background: #082948;
+        }
+
+            .submit-button:hover {
+                margin-top: 20px;
+                background: #082948;
+            }
+
+
+    </style>
+</head>
+<body>
+    <h1 class="heading">Report</h1>
+
+    <div class="container1">
+        @using (Html.BeginForm("DownloadCases", "Home", FormMethod.Get))
+        {
+            <div style="margin: 10px;">
+                @Html.DropDownList("callbackLanguage", new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "NA", Value = "NA" },
+                    new SelectListItem { Text = "English", Value = "English" },
+                    new SelectListItem { Text = "Arabic", Value = "Arabic" },
+                    new SelectListItem { Text = "Hindi", Value = "Hindi" }
+                }, new { @class = "form-control box dropdown-styled", id = "SubDispo" })
+            </div>
+            <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select a date" style="margin: 10px;" name="specificDate">
+            <div style="margin: 10px">
+                <label>
+                    <input type="checkbox" id="showEndDate" name="showEndDate" /> Show End Date
+                </label>
+            </div>
+            <div id="endDateContainer" style="margin: 10px">
+                <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select end date" name="endDate">
+            </div>
+            <button type="submit" class="btn submit-button" style="margin: 10px">Submit</button>
+        }
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#showEndDate').change(function () {
+                $('#endDateContainer').toggle();
+            });
+        });
+    </script>
+</body>
+</html>

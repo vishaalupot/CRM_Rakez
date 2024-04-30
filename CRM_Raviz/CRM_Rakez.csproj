@@ -315,8 +315,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\owl.carousel.js" />
-    <Content Include="Scripts\owl.carousel.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -356,6 +354,8 @@
     <Content Include="Views\Home\RealEditAllocation.cshtml" />
     <Content Include="Views\Home\_History.cshtml" />
     <Content Include="Views\Home\UploadCases.cshtml" />
+    <Content Include="Views\Home\CRMPPF.cshtml" />
+    <Content Include="Views\Home\MasterReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

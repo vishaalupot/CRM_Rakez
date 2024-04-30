@@ -1,0 +1,162 @@
+﻿@model CRM_Raviz.Models.RecordData
+
+@{
+    ViewBag.Title = "CRMPPF";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Master Report</title>
+    <style>
+        /* CSS for styling */
+        .heading {
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-control {
+            width: 200px;
+        }
+
+        #endDateContainer {
+            display: none;
+        }
+
+        .container1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-direction: column;
+        }
+
+        .date-input {
+            margin-right: 10px;
+        }
+
+        .body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .submit-button {
+            margin-top: 20px;
+            background: #082948;
+        }
+
+            .submit-button:hover {
+                margin-top: 20px;
+                background: #082948;
+            }
+    </style>
+</head>
+<body>
+    <h1 class="heading">Report</h1>
+
+    <div class="container1">
+        @using (Html.BeginForm("DownloadRecordCases", "Home", FormMethod.Get))
+        {
+            <div style="margin: 10px;">
+                <label for="SubDispo">Disposition</label>
+                @Html.DropDownList("Disposition", new List<SelectListItem>
+                {
+                     new SelectListItem { Text = "NA", Value = "NA" },
+                     new SelectListItem { Text = "THIRD PARTY CONTACT", Value = "THIRD PARTY CONTACT" },
+                     new SelectListItem { Text = "BILL DISPUTE REFUSE TO PAY", Value = "BILL DISPUTE REFUSE TO PAY" },
+                     new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
+                     new SelectListItem { Text = "BILL REQUEST", Value = "BILL REQUEST" },
+                     new SelectListItem { Text = "LINE BUSY", Value = "LINE BUSY" },
+                     new SelectListItem { Text = "CALLBACK", Value = "CALLBACK" },
+                     new SelectListItem { Text = "CALLBACK LANGUAGE", Value = "CALLBACK LANGUAGE" },
+                     new SelectListItem { Text = "THIRD PARTY CALLBACK", Value = "THIRD PARTY CALLBACK" },
+                     new SelectListItem { Text = "SWICHTED OFF", Value = "SWICHTED OFF" },
+                     new SelectListItem { Text = "DO NOT CALL", Value = "DO NOT CALL" },
+                     new SelectListItem { Text = "FOLLOW UP", Value = "FOLLOW UP" },
+                     new SelectListItem { Text = "CUSTOMER HUNG UP", Value = "CUSTOMER HUNG UP" },
+                     new SelectListItem { Text = "INVALID NUMBER", Value = "INVALID NUMBER" },
+                     new SelectListItem { Text = "CUSTOMER OUT OF COUNTRY", Value = "CUSTOMER OUT OF COUNTRY" },
+                     new SelectListItem { Text = "PAYMENT MADE", Value = "PAYMENT MADE" },
+                     new SelectListItem { Text = "PAYMENT FOLLOWUP", Value = "PAYMENT FOLLOWUP" },
+                     new SelectListItem { Text = "PAYMENT INSTALLMENT REQUEST", Value = "PAYMENT INSTALLMENT REQUEST" },
+                     new SelectListItem { Text = "PAYMENT PLAN APPROVED", Value = "PAYMENT PLAN APPROVED" },
+                     new SelectListItem { Text = "PAYMENT REMINDER", Value = "PAYMENT REMINDER" },
+                     new SelectListItem { Text = "PROMISE TO PAY", Value = "PROMISE TO PAY" },
+                     new SelectListItem { Text = "RINGING", Value = "RINGING" },
+                     new SelectListItem { Text = "REFUSE TO PAY", Value = "REFUSE TO PAY" },
+                     new SelectListItem { Text = "STATEMENT OF ACCOUNT REQUEST", Value = "STATEMENT OF ACCOUNT REQUEST" },
+                     new SelectListItem { Text = "SWITCH OFF", Value = "SWITCH OFF" },
+                     new SelectListItem { Text = "PAYMENT MISSING", Value = "PAYMENT MISSING" }
+                }, new { @class = "form-control box dropdown-styled", id = "Disposition", onchange = "showCallbackDateInput()" })
+            </div>
+
+            <div id="callbackDateInput" style="display: none; margin: 10px;">
+                <label for="CallbackDate">Callback Date</label>
+                <input type="date" id="CallbackDate" class="form-control" />
+            </div>
+
+            <div style="margin: 10px; display: none; margin-top: 10px;"  id = "SubDisposition" >
+                <label for="SubDispo">Sub Disposition</label>
+                @Html.DropDownList("SubDisposition", new List<SelectListItem>
+                {
+                     new SelectListItem { Text = "NA", Value = "NA" },
+                     new SelectListItem { Text = "English", Value = "English" },
+                     new SelectListItem { Text = "Arabic", Value = "Arabic" },
+                     new SelectListItem { Text = "Hindi", Value = "Hindi" },
+                }, new { @class = "form-control box dropdown-styled"})
+            </div>
+
+
+            <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select a date" style="margin: 10px;" name="specificDate">
+
+            <div style="margin: 10px">
+                <label>
+                    <input type="checkbox" id="showEndDate" name="showEndDate" /> Show End Date
+                </label>
+            </div>
+
+            <div id="endDateContainer" style="margin: 10px">
+                <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select end date" name="endDate">
+            </div>
+
+            <button type="submit" class="btn submit-button" style="margin: 10px">Submit</button>
+        }
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function showCallbackDateInput() {
+            var disposition = document.getElementById("Disposition").value;
+            var callbackDateInput = document.getElementById("callbackDateInput");
+            var Subdispo = document.getElementById("SubDisposition");
+
+            // If the selected disposition is either callback or callback language, show the callback date input
+            if (disposition === "CALLBACK" || disposition === "CALLBACK LANGUAGE") {
+                callbackDateInput.style.display = "block";
+            } else {
+                callbackDateInput.style.display = "none";
+            }
+
+            if (disposition === "CALLBACK LANGUAGE") {
+                Subdispo.style.display = "block";
+            } else {
+                Subdispo.style.display = "none";
+            }
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#showEndDate').change(function () {
+                $('#endDateContainer').toggle();
+            });
+
+
+        });
+    </script>
+</body>
+</html>
