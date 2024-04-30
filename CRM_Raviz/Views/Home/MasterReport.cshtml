@@ -13,10 +13,12 @@
     <style>
         /* CSS for styling */
         .heading {
-            font-family: Arial, sans-serif;
-            font-size: 24px;
+            font-family: 'Jaldi', sans-serif;
+            font-size: 38px;
             margin-bottom: 20px;
-            text-align: center;
+            text-align: left;
+            font-weight: 600;
+            color: #082948;
         }
 
         .form-control {
@@ -29,8 +31,7 @@
 
         .container1 {
             display: flex;
-            justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 20px;
             flex-direction: column;
         }
@@ -57,74 +58,83 @@
     </style>
 </head>
 <body>
-    <h1 class="heading">Report</h1>
+    <h1 class="heading">Master Report</h1>
 
-    <div class="container1">
+    <div class="container1" style="display: flex; flex-wrap: wrap;">
         @using (Html.BeginForm("DownloadRecordCases", "Home", FormMethod.Get))
         {
-            <div style="margin: 10px;">
-                <label for="SubDispo">Disposition</label>
-                @Html.DropDownList("Disposition", new List<SelectListItem>
-                {
-                     new SelectListItem { Text = "NA", Value = "NA" },
-                     new SelectListItem { Text = "THIRD PARTY CONTACT", Value = "THIRD PARTY CONTACT" },
-                     new SelectListItem { Text = "BILL DISPUTE REFUSE TO PAY", Value = "BILL DISPUTE REFUSE TO PAY" },
-                     new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
-                     new SelectListItem { Text = "BILL REQUEST", Value = "BILL REQUEST" },
-                     new SelectListItem { Text = "LINE BUSY", Value = "LINE BUSY" },
-                     new SelectListItem { Text = "CALLBACK", Value = "CALLBACK" },
-                     new SelectListItem { Text = "CALLBACK LANGUAGE", Value = "CALLBACK LANGUAGE" },
-                     new SelectListItem { Text = "THIRD PARTY CALLBACK", Value = "THIRD PARTY CALLBACK" },
-                     new SelectListItem { Text = "SWICHTED OFF", Value = "SWICHTED OFF" },
-                     new SelectListItem { Text = "DO NOT CALL", Value = "DO NOT CALL" },
-                     new SelectListItem { Text = "FOLLOW UP", Value = "FOLLOW UP" },
-                     new SelectListItem { Text = "CUSTOMER HUNG UP", Value = "CUSTOMER HUNG UP" },
-                     new SelectListItem { Text = "INVALID NUMBER", Value = "INVALID NUMBER" },
-                     new SelectListItem { Text = "CUSTOMER OUT OF COUNTRY", Value = "CUSTOMER OUT OF COUNTRY" },
-                     new SelectListItem { Text = "PAYMENT MADE", Value = "PAYMENT MADE" },
-                     new SelectListItem { Text = "PAYMENT FOLLOWUP", Value = "PAYMENT FOLLOWUP" },
-                     new SelectListItem { Text = "PAYMENT INSTALLMENT REQUEST", Value = "PAYMENT INSTALLMENT REQUEST" },
-                     new SelectListItem { Text = "PAYMENT PLAN APPROVED", Value = "PAYMENT PLAN APPROVED" },
-                     new SelectListItem { Text = "PAYMENT REMINDER", Value = "PAYMENT REMINDER" },
-                     new SelectListItem { Text = "PROMISE TO PAY", Value = "PROMISE TO PAY" },
-                     new SelectListItem { Text = "RINGING", Value = "RINGING" },
-                     new SelectListItem { Text = "REFUSE TO PAY", Value = "REFUSE TO PAY" },
-                     new SelectListItem { Text = "STATEMENT OF ACCOUNT REQUEST", Value = "STATEMENT OF ACCOUNT REQUEST" },
-                     new SelectListItem { Text = "SWITCH OFF", Value = "SWITCH OFF" },
-                     new SelectListItem { Text = "PAYMENT MISSING", Value = "PAYMENT MISSING" }
-                }, new { @class = "form-control box dropdown-styled", id = "Disposition", onchange = "showCallbackDateInput()" })
+            <div style="display: flex; flex-wrap: wrap; flex: 1;">
+
+                <div style="margin-right: 10px;">
+                    <label for="SubDispo">Disposition</label>
+                    @Html.DropDownList("Disposition", new List<SelectListItem>
+                    {
+                         new SelectListItem { Text = "NA", Value = "NA" },
+                         new SelectListItem { Text = "THIRD PARTY CONTACT", Value = "THIRD PARTY CONTACT" },
+                         new SelectListItem { Text = "BILL DISPUTE REFUSE TO PAY", Value = "BILL DISPUTE REFUSE TO PAY" },
+                         new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
+                         new SelectListItem { Text = "BILL REQUEST", Value = "BILL REQUEST" },
+                         new SelectListItem { Text = "LINE BUSY", Value = "LINE BUSY" },
+                         new SelectListItem { Text = "CALLBACK", Value = "CALLBACK" },
+                         new SelectListItem { Text = "CALLBACK LANGUAGE", Value = "CALLBACK LANGUAGE" },
+                         new SelectListItem { Text = "THIRD PARTY CALLBACK", Value = "THIRD PARTY CALLBACK" },
+                         new SelectListItem { Text = "SWICHTED OFF", Value = "SWICHTED OFF" },
+                         new SelectListItem { Text = "DO NOT CALL", Value = "DO NOT CALL" },
+                         new SelectListItem { Text = "FOLLOW UP", Value = "FOLLOW UP" },
+                         new SelectListItem { Text = "CUSTOMER HUNG UP", Value = "CUSTOMER HUNG UP" },
+                         new SelectListItem { Text = "INVALID NUMBER", Value = "INVALID NUMBER" },
+                         new SelectListItem { Text = "CUSTOMER OUT OF COUNTRY", Value = "CUSTOMER OUT OF COUNTRY" },
+                         new SelectListItem { Text = "PAYMENT MADE", Value = "PAYMENT MADE" },
+                         new SelectListItem { Text = "PAYMENT FOLLOWUP", Value = "PAYMENT FOLLOWUP" },
+                         new SelectListItem { Text = "PAYMENT INSTALLMENT REQUEST", Value = "PAYMENT INSTALLMENT REQUEST" },
+                         new SelectListItem { Text = "PAYMENT PLAN APPROVED", Value = "PAYMENT PLAN APPROVED" },
+                         new SelectListItem { Text = "PAYMENT REMINDER", Value = "PAYMENT REMINDER" },
+                         new SelectListItem { Text = "PROMISE TO PAY", Value = "PROMISE TO PAY" },
+                         new SelectListItem { Text = "RINGING", Value = "RINGING" },
+                         new SelectListItem { Text = "REFUSE TO PAY", Value = "REFUSE TO PAY" },
+                         new SelectListItem { Text = "STATEMENT OF ACCOUNT REQUEST", Value = "STATEMENT OF ACCOUNT REQUEST" },
+                         new SelectListItem { Text = "SWITCH OFF", Value = "SWITCH OFF" },
+                         new SelectListItem { Text = "PAYMENT MISSING", Value = "PAYMENT MISSING" }
+                    }, new { @class = "form-control box dropdown-styled", id = "Disposition", onchange = "showCallbackDateInput()" })
+                </div>
+
+                <div id="callbackDateInput" style="display: none; margin-right: 10px;">
+                    <label for="CallbackDate">Callback Date</label>
+                    <input type="date" id="CallbackDate" class="form-control" />
+                </div>
+
+                <div style="margin-right: 10px; display: none;" id="SubDisposition">
+                    <label for="SubDispo">Sub Disposition</label>
+                    @Html.DropDownList("SubDisposition", new List<SelectListItem>
+                    {
+                         new SelectListItem { Text = "NA", Value = "NA" },
+                         new SelectListItem { Text = "English", Value = "English" },
+                         new SelectListItem { Text = "Arabic", Value = "Arabic" },
+                         new SelectListItem { Text = "Hindi", Value = "Hindi" },
+                    }, new { @class = "form-control box dropdown-styled" })
+                </div>
+
+                <div style="margin-right: 10px">
+                    <label for="SubDispo">Date</label>
+
+                    <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select a date" name="specificDate">
+                </div>
+
+                <div style="margin-right: 10px; justify-content: center; display: flex; align-items: center;">
+                    <label>
+                        <input type="checkbox" id="showEndDate" name="showEndDate" /> Date Range
+                    </label>
+                </div>
+
+                <div id="endDateContainer" style="margin-right: 10px">
+                    <label for="SubDispo">End Date</label>
+                    <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select end date" name="endDate">
+                </div>
+
             </div>
-
-            <div id="callbackDateInput" style="display: none; margin: 10px;">
-                <label for="CallbackDate">Callback Date</label>
-                <input type="date" id="CallbackDate" class="form-control" />
-            </div>
-
-            <div style="margin: 10px; display: none; margin-top: 10px;"  id = "SubDisposition" >
-                <label for="SubDispo">Sub Disposition</label>
-                @Html.DropDownList("SubDisposition", new List<SelectListItem>
-                {
-                     new SelectListItem { Text = "NA", Value = "NA" },
-                     new SelectListItem { Text = "English", Value = "English" },
-                     new SelectListItem { Text = "Arabic", Value = "Arabic" },
-                     new SelectListItem { Text = "Hindi", Value = "Hindi" },
-                }, new { @class = "form-control box dropdown-styled"})
-            </div>
+            <button type="submit" class="btn submit-button" style="margin-right: 10px">Submit</button>
 
 
-            <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select a date" style="margin: 10px;" name="specificDate">
-
-            <div style="margin: 10px">
-                <label>
-                    <input type="checkbox" id="showEndDate" name="showEndDate" /> Show End Date
-                </label>
-            </div>
-
-            <div id="endDateContainer" style="margin: 10px">
-                <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select end date" name="endDate">
-            </div>
-
-            <button type="submit" class="btn submit-button" style="margin: 10px">Submit</button>
         }
     </div>
 

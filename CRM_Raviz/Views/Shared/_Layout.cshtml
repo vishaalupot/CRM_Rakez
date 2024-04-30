@@ -238,17 +238,22 @@
 
       $(document).ready(function ()
       {
-          searchCases();
+          /*searchCases();*/
           $("#btnsubmit").on("click", function (e)
           {
               searchCases();
           });
 
-          $("#searchInput").keypress(function (e) {
+          $("#search").keypress(function (e) {
               if (e.which === 13) {
-                  e.preventDefault();
+
+                   window.location.href = '@Url.Action("EditAllocation", "Home")';
+
                   searchCases();
                   searchCases2();
+                  e.preventDefault();
+
+
               }
           });
 
@@ -256,7 +261,8 @@
 
 
 
-      function searchCases() {
+        function searchCases() {
+
           console.log("Button clicked");
           var query = $("#searchInput").val();
           var url = '@Url.Action("_Records", "Home")';
@@ -276,12 +282,14 @@
               }
           });
       }
-      function searchCases2() {
+        function searchCases2() {
+            console.log("hiii")
+            window.location.href = '@Url.Action("EditAllocation", "Home")';
           console.log("Button clicked");
           var query = $("#searchInput").val();
           var url = '@Url.Action("_History", "Home")';
           url = url.replace("_query_", query);
-          console.log(url);
+            console.log(url);
          /* alert(query)*/
           $.ajax({
               url: url,

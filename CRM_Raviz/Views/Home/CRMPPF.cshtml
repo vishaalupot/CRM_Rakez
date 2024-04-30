@@ -13,10 +13,12 @@
     <style>
         /* CSS for styling */
         .heading {
-            font-family: Arial, sans-serif;
-            font-size: 24px;
+            font-family: 'Jaldi', sans-serif;
+            font-size: 38px;
             margin-bottom: 20px;
-            text-align: center;
+            text-align: left;
+            font-weight: 600;
+            color: #082948;
         }
 
         .form-control {
@@ -29,10 +31,10 @@
 
         .container1 {
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: left;
+            align-items: flex-start;
             margin-bottom: 20px;
-            flex-direction: column;
+            flex-direction: row;
         }
 
         .date-input {
@@ -59,54 +61,49 @@
     </style>
 </head>
 <body>
-    <h1 class="heading">Report</h1>
+    <h1 class="heading">CRM Post Production File</h1>
 
-    <div class="container1">
+    <div class="container1" style="display: flex;">
         @using (Html.BeginForm("DownloadCases", "Home", FormMethod.Get))
         {
-            <div style="margin: 10px;">
+            <div style="display: flex; flex-wrap: wrap;">
                 @{
                     // Retrieve the AgentNames values from the ViewBag
                     var agentNames = ViewBag.AgentNames as List<string>;
                 }
 
-                @* Display the dropdown box *@
-                @*<select id="userRoleDropdown">
-                    <option value="">Select User Role</option>
-                    @foreach (var name in agentNames)
-                    {
-                        <option value="@name">@name</option>
-                    }
-                </select>*@
-
-                <div >
+                <div style="margin-right: 10px;">
                     @Html.DropDownList("Users", new SelectList(agentNames.Select(x => new { Text = x, Value = x }), "Value", "Text"), "Select User Role", new { @class = "form-control box dropdown-styled", id = "SubDispo" })
                 </div>
 
+                <div style="margin-right: 10px;">
+                    @Html.DropDownList("callbackLanguage", new List<SelectListItem>
+                    {
+                        new SelectListItem { Text = "NA", Value = "NA" },
+                        new SelectListItem { Text = "English", Value = "English" },
+                        new SelectListItem { Text = "Arabic", Value = "Arabic" },
+                        new SelectListItem { Text = "Hindi", Value = "Hindi" }
+                    }, new { @class = "form-control box dropdown-styled", id = "SubDispo" })
+                </div>
+
+                <div style="margin-right: 10px;">
+                    <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select a date" name="specificDate">
+                </div>
+
+                <div style="margin-right: 10px;">
+                    <label>
+                        <input type="checkbox" id="showEndDate" name="showEndDate" /> Show End Date
+                    </label>
+                </div>
+
+                <div id="endDateContainer" style="margin-right: 10px;">
+                    <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select end date" name="endDate">
+                </div>
             </div>
 
-            <div style="margin: 10px;">
-                @Html.DropDownList("callbackLanguage", new List<SelectListItem>
-                {
-                    new SelectListItem { Text = "NA", Value = "NA" },
-                    new SelectListItem { Text = "English", Value = "English" },
-                    new SelectListItem { Text = "Arabic", Value = "Arabic" },
-                    new SelectListItem { Text = "Hindi", Value = "Hindi" }
-                }, new { @class = "form-control box dropdown-styled", id = "SubDispo" })
+            <div>
+                <button type="submit" class="btn submit-button" >Submit</button>
             </div>
-
-            <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select a date" style="margin: 10px;" name="specificDate">
-           
-            <div style="margin: 10px">
-                <label>
-                    <input type="checkbox" id="showEndDate" name="showEndDate" /> Show End Date
-                </label>
-            </div>
-            
-            <div id="endDateContainer" style="margin: 10px">
-                <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select end date" name="endDate">
-            </div>
-            <button type="submit" class="btn submit-button" style="margin: 10px">Submit</button>
         }
     </div>
 
