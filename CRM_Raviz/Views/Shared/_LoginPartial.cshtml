@@ -16,6 +16,9 @@
             padding: 0px 0px 0px 7px;
         }
 
+        a {
+            text-decoration: none;
+        }
     </style>
 
     <style>
@@ -305,6 +308,7 @@
             transform: scale(var(--nav-active-scale));
             visibility: visible;
             opacity: 1;
+            width: max-content;
         }
     </style>
     
@@ -337,7 +341,7 @@
             <legend>Actions</legend>
             <ul>
                 <li>
-                    <button>
+                    <a href="@Url.Action("UserMaster", "Home")">
                         <svg stroke-linejoin="round" stroke-linecap="round" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="14" width="14" xmlns="http://www.w3.org/2000/svg">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                             <circle r="4" cy="7" cx="9"></circle>
@@ -345,9 +349,10 @@
                             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                         </svg>
                         <span>Users</span>
-                    </button>
+                    </a>
+                    
                 </li>
-                <li>
+                @*<li>
                     <button onclick="redirectToUpload()">
                         <svg stroke-linejoin="round" stroke-linecap="round" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="14" width="14" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
@@ -355,7 +360,7 @@
                         </svg>
                         <span>Magic Link</span>
                     </button>
-                </li>
+                </li>*@
                 <hr>
                 @*
         <li>

@@ -277,6 +277,7 @@
     <Content Include="Content\Images\search-interface-symbol.png" />
     <Content Include="Content\Images\search.png" />
     <Content Include="Content\Images\setting.png" />
+    <Content Include="Content\Images\trash.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -356,6 +357,8 @@
     <Content Include="Views\Home\UploadCases.cshtml" />
     <Content Include="Views\Home\CRMPPF.cshtml" />
     <Content Include="Views\Home\MasterReport.cshtml" />
+    <Content Include="Views\Home\UserMaster.cshtml" />
+    <Content Include="Views\Home\UserView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

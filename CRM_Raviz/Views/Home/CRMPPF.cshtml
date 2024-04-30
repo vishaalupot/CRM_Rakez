@@ -65,6 +65,27 @@
         @using (Html.BeginForm("DownloadCases", "Home", FormMethod.Get))
         {
             <div style="margin: 10px;">
+                @{
+                    // Retrieve the AgentNames values from the ViewBag
+                    var agentNames = ViewBag.AgentNames as List<string>;
+                }
+
+                @* Display the dropdown box *@
+                @*<select id="userRoleDropdown">
+                    <option value="">Select User Role</option>
+                    @foreach (var name in agentNames)
+                    {
+                        <option value="@name">@name</option>
+                    }
+                </select>*@
+
+                <div >
+                    @Html.DropDownList("Users", new SelectList(agentNames.Select(x => new { Text = x, Value = x }), "Value", "Text"), "Select User Role", new { @class = "form-control box dropdown-styled", id = "SubDispo" })
+                </div>
+
+            </div>
+
+            <div style="margin: 10px;">
                 @Html.DropDownList("callbackLanguage", new List<SelectListItem>
                 {
                     new SelectListItem { Text = "NA", Value = "NA" },
@@ -73,12 +94,15 @@
                     new SelectListItem { Text = "Hindi", Value = "Hindi" }
                 }, new { @class = "form-control box dropdown-styled", id = "SubDispo" })
             </div>
+
             <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select a date" style="margin: 10px;" name="specificDate">
+           
             <div style="margin: 10px">
                 <label>
                     <input type="checkbox" id="showEndDate" name="showEndDate" /> Show End Date
                 </label>
             </div>
+            
             <div id="endDateContainer" style="margin: 10px">
                 <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select end date" name="endDate">
             </div>

@@ -1,0 +1,285 @@
+﻿
+@{
+    ViewBag.Title = "UserMaster";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model CRM_Raviz.Models.RegisterViewModel
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width" />
+
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            background: var(--Main-color);
+        }
+
+        .element {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            align-items: center;
+            height: 100vh;
+            background: var(--Main-bgcolor);
+            padding-top: 50px;
+        }
+
+        .contents {
+            border-radius: 8px;
+            height: 70%;
+            width: max-content;
+            background-color: rgba(255, 255, 255, 0.5);
+            height: max-content;
+            margin: auto;
+        }
+    </style>
+
+    <style>
+        @@import url('https://fonts.googleapis.com/css2?family=Jaldi&display=swap');
+        @@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+
+        .form-horizontal {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .userbody-content1 {
+            display: flex;
+            flex-direction: row;
+            padding: 0px;
+            width: 95%;
+            height: 90vh;
+            background-color: #FFFFFF;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+
+        .heading {
+            color: var(--Main-font);
+            font-size: 42px;
+            font-family: 'Jaldi', sans-serif;
+            padding-top: 40px;
+            text-align: left;
+            padding-bottom: 30px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .label {
+            color: var(--Main-font);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            font-size: 15px;
+        }
+
+        .box {
+            background-color: #E3F4F4;
+            border-radius: 12px !important;
+            border-style: none;
+            /*width: 500px;
+        height: 25px;*/
+            width: 100%;
+            height: 30px;
+            margin-top: 7px;
+            margin-bottom: 10px;
+        }
+
+
+        .vertical-line {
+            margin-top: 120px;
+            height: 300px; /* Adjust the height of the line as needed */
+            border: solid 0.5px #559EBC;
+            margin-right: 50px;
+        }
+
+
+        .reg {
+            height: 100%;
+            padding-right: 100px;
+            width: 400px !important;
+            padding-left: 30px;
+        }
+
+
+
+        table td {
+            border: solid 1px #67919F;
+            border-bottom: none;
+            border-left: none;
+        }
+
+        table tr td {
+            width: 200px;
+            height: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
+        .label {
+            text-align: left;
+        }
+
+
+        .button-29 {
+            font-family: 'Jaldi', sans-serif;
+            align-items: center;
+            appearance: none;
+            background-image: linear-gradient(to bottom,#23a7c7, #00317A);
+            border: 0;
+            border-radius: 6px;
+            box-shadow: rgba(45, 35, 66, .4) 0 2px 4px,rgba(45, 35, 66, .3) 0 7px 13px -3px,rgba(58, 65, 111, .5) 0 -3px 0 inset;
+            box-sizing: border-box;
+            color: #fff;
+            cursor: pointer;
+            display: inline-flex;
+            font-family: "JetBrains Mono",monospace;
+            height: 35px;
+            justify-content: center;
+            line-height: 1;
+            list-style: none;
+            overflow: hidden;
+            padding-left: 16px;
+            padding-right: 16px;
+            position: relative;
+            text-align: left;
+            text-decoration: none;
+            transition: box-shadow .15s,transform .15s;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            white-space: nowrap;
+            will-change: box-shadow,transform;
+            font-size: 15px;
+        }
+
+            .button-29:focus {
+                box-shadow: #3c4fe0 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+            }
+
+            .button-29:hover {
+                box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+                transform: translateY(-2px);
+            }
+
+            .button-29:active {
+                box-shadow: #3c4fe0 0 3px 7px inset;
+                transform: translateY(2px);
+            }
+
+        .settings {
+            display: flex;
+            flex-direction: row;
+            font-family: 'Jaldi', sans-serif;
+            white-space: nowrap;
+            font-weight: 100;
+            font-size: 15px;
+            border-radius: 4px;
+            padding: 5px 5px;
+            width: max-content;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease; /* Add a transition for smooth scaling */
+            color: white;
+        }
+
+            .settings:hover {
+                transform: scale(1.05);
+            }
+    </style>
+</head>
+<body>
+    <div div class="element">
+
+
+        <div class="contents" style="margin-top: -50px;">
+            @using (Html.BeginForm("UserMaster", "Home", FormMethod.Post, new
+            {
+                @class = "form-horizontal",
+                role = "form"@*, style = "width: 100%"*@ }))
+            {
+
+                @Html.AntiForgeryToken()
+
+                <div class="reg" style="width: 100% !important; padding-left:50px;">
+
+                    <div style="display: flex; flex-direction: row; margin-bottom: auto; align-items: center; justify-content:center; ">
+                        @*<img src="~/Content/Images/usermaster1.png" style="width: 50px; height: 50px; padding-right: 2px; " />*@
+                        <div class="heading">User Manager</div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column;">
+                        @Html.LabelFor(m => m.FullName, "Full Name", new { @class = "label" })
+                        @Html.TextBoxFor(m => m.FullName, new { @class = "form-control box" })
+                    </div>
+
+                    <div style="display: flex; flex-direction: column;">
+                        @Html.LabelFor(m => m.EmpCode, "Employee Code", new { @class = "label" })
+                        @Html.TextBoxFor(m => m.EmpCode, new { @class = "form-control box" })
+                    </div>
+
+
+                    <div style="display: flex; flex-direction: column;">
+                        @Html.LabelFor(m => m.UserName, new { @class = "label" })
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control box" })
+                    </div>
+
+                    <div style="display: flex; flex-direction: column;">
+                        @Html.LabelFor(m => m.Password, new { @class = "label" })
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control box" })
+                    </div>
+
+                    <div style="display: flex; flex-direction: column;">
+                        @Html.LabelFor(m => m.InitialRole, new { @class = "label" })
+                        @Html.DropDownListFor(m => m.InitialRole, new SelectList(ViewBag.Roles, ""), new { @class = "form-control box" })
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; justify-content: center">
+                        <div class="col-md-offset-2 col-md-10" style="padding: 15px 0px;">
+                            <button class="button-29" role="button" type="submit">Register</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                @*<div class="vertical-line"></div>*@
+                <div style="display: flex; justify-content:center; align-items:center;">
+                    @{ Html.RenderAction("UserView", "Home"); }
+                </div>
+
+            }
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

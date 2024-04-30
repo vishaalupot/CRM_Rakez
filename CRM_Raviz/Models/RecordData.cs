@@ -38,5 +38,6 @@ namespace CRM_Raviz.Models
         public string Comments { get; set; }
         public string ChangeStatus { get; set; }
         public Nullable<System.DateTime> CallbackTime { get; set; }
+        public string Agent { get; set; }
     }
 }

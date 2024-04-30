@@ -76,6 +76,7 @@
           <Property Name="ChangeStatus" Type="varchar(max)" />
           <Property Name="CallbackTime" Type="datetime" />
           <Property Name="Record_Id" Type="int" />
+          <Property Name="Agent" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="RecordData">
           <Key>
@@ -105,6 +106,7 @@
           <Property Name="Comments" Type="varchar(max)" />
           <Property Name="ChangeStatus" Type="varchar(max)" />
           <Property Name="CallbackTime" Type="datetime" />
+          <Property Name="Agent" Type="varchar(max)" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
           <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
@@ -325,6 +327,7 @@
           <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="ChangeStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="CallbackTime" Type="DateTime" Precision="3" />
+          <Property Name="Agent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="EventTable">
           <Key>
@@ -341,6 +344,7 @@
           <Property Name="ChangeStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="CallbackTime" Type="DateTime" Precision="3" />
           <Property Name="Record_Id" Type="Int32" />
+          <Property Name="Agent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -409,6 +413,7 @@
           <EntitySetMapping Name="RecordDatas">
             <EntityTypeMapping TypeName="RakezCRM.RecordData">
               <MappingFragment StoreEntitySet="RecordData">
+                <ScalarProperty Name="Agent" ColumnName="Agent" />
                 <ScalarProperty Name="CallbackTime" ColumnName="CallbackTime" />
                 <ScalarProperty Name="ChangeStatus" ColumnName="ChangeStatus" />
                 <ScalarProperty Name="Comments" ColumnName="Comments" />
@@ -439,6 +444,7 @@
           <EntitySetMapping Name="EventTables">
             <EntityTypeMapping TypeName="RakezCRM.EventTable">
               <MappingFragment StoreEntitySet="EventTable">
+                <ScalarProperty Name="Agent" ColumnName="Agent" />
                 <ScalarProperty Name="Record_Id" ColumnName="Record_Id" />
                 <ScalarProperty Name="CallbackTime" ColumnName="CallbackTime" />
                 <ScalarProperty Name="ChangeStatus" ColumnName="ChangeStatus" />

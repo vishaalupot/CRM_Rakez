@@ -1,21 +1,120 @@
 ﻿using CRM_Raviz.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace CRM_Raviz.Controllers
 {
     public class HomeController : Controller
     {
+        private ApplicationUserManager _userManager;
+
+        public ActionResult UserMaster()
+        {
+            CPVDBEntities db = new CPVDBEntities();
+            List<string> listRoles = db.AspNetRoles.Select(s => s.Name).ToList();
+            ViewBag.Roles = listRoles;
+            return View();
+
+
+        }
+
+        [HttpPost]
+        public ActionResult DeleteUser(string id)
+        {
+            using (CPVDBEntities db = new CPVDBEntities())
+            {
+
+                AspNetUser aspNetUser = db.AspNetUsers.Find(id);
+
+
+
+                if (aspNetUser != null)
+                {
+                    db.AspNetUsers.Remove(aspNetUser);
+                }
+                db.SaveChanges();
+                List<AspNetUser> users = db.AspNetUsers.ToList();
+                return View(users);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> UserMaster(RegisterViewModel model)
+        {
+
+            var roleManager = new Microsoft.AspNet.Identity.RoleManager<IdentityRole>(new RoleStore<IdentityRole>());
+            List<string> roles = roleManager.Roles.Select(r => r.Name.Trim()).ToList();
+            ViewBag.Roles = roles;
+
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser
+                {
+                    UserName = model.UserName,
+                    FullName = model.FullName,
+                    UserRole = model.InitialRole,
+                };
+
+                model.UserRole = model.InitialRole;
+                var result = await UserManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    await UserManager.AddToRoleAsync(user.Id, model.UserRole);
+
+                    //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    return RedirectToAction("UserMaster", "Home");
+                }
+                //AddErrors(result);
+            }
+            return View(model);
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
+
+        public ActionResult UserView()
+        {
+            CPVDBEntities db = new CPVDBEntities();
+            List<AspNetUser> users = db.AspNetUsers.ToList();
+            return View(users);
+        }
+
         public ActionResult CRMPPF()
         {
             CPVDBEntities db = new CPVDBEntities();
-            EventTable eventTable = new EventTable();   
+            EventTable eventTable = new EventTable();
+
+            var AgentNames = db.AspNetUsers
+                         .Where(r => r.UserRole == "Agent")
+                         .Select(r => r.UserName)
+                         .Distinct()
+                         .ToList();
+
+            // Pass the dispositionValues to the view
+            ViewBag.AgentNames = AgentNames;
+
             return View(eventTable);
 
         }
@@ -91,6 +190,7 @@ namespace CRM_Raviz.Controllers
                 eventTable.Date = DateTime.Now;
                 eventTable.Time = DateTime.Now.TimeOfDay;
                 eventTable.CustomerName = form["CustomerName"].ToString();
+                eventTable.Agent = form["Agent"].ToString();
                 eventTable.AccountNo = form["AccountNo"].ToString();
                 eventTable.Dispo = form["Disposition"].ToString();
                 eventTable.SubDispo = form["SubDisposition"].ToString();
@@ -285,14 +385,19 @@ namespace CRM_Raviz.Controllers
             return fieldNames;
         }
 
-        public ActionResult DownloadCases(string callbackLanguage, DateTime? specificDate = null)
+        public ActionResult DownloadCases(string Users, string callbackLanguage, DateTime? specificDate = null)
         {
             CPVDBEntities db = new CPVDBEntities();
             HttpResponseBase Response = HttpContext.Response;
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             List<EventTable> caseTables;
-            if (specificDate.HasValue)
+            if(Users != "")
+            {
+                caseTables = db.EventTables.Where(et => et.Agent == Users ).ToList();
+
+            }
+            else if (specificDate.HasValue)
             {
                 caseTables = db.EventTables.Where(et => et.Date == specificDate.Value.Date && et.SubDispo == callbackLanguage).ToList();
             }

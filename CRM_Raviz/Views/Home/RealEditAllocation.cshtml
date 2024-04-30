@@ -1,4 +1,4 @@
-﻿
+﻿@using Microsoft.AspNet.Identity
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -88,7 +88,7 @@
             // Function to show or hide the second dropdown based on the selection of the first dropdown
             $('#Disposition').change(function () {
                 var selectedValue = $(this).val();
-                if ((selectedValue === 'CALLBACK LANGUAGE') || (selectedValue === 'CALLBACK')  ) { // Replace 'YOUR_TRIGGER_OPTION' with the value that should trigger showing the second dropdown
+                if ((selectedValue === 'CALLBACK LANGUAGE') || (selectedValue === 'CALLBACK')) { // Replace 'YOUR_TRIGGER_OPTION' with the value that should trigger showing the second dropdown
                     $('#callbackDateTime').show(); // Show the second dropdown
                 } else {
                     $('#callbackDateTime').hide(); // Hide the second dropdown
@@ -156,239 +156,240 @@
 </head>
 <div class="body">
 
-        @using (Html.BeginForm("RealEditAllocation", "Home", null, FormMethod.Post, new { @class = "form-control", id = "Form", @style = "border: none !important;" }))
-        {
-            @Html.AntiForgeryToken()
-    <div class="row space">
+    @using (Html.BeginForm("RealEditAllocation", "Home", null, FormMethod.Post, new { @class = "form-control", id = "Form", @style = "border: none !important;" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="row space">
 
-        <div class="heading">Update Record</div>
+            <div class="heading">Update Record</div>
 
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.AccountNo)
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.Agent, new { Value = User.Identity.GetUserName() })
+            @Html.HiddenFor(model => model.AccountNo)
 
-        <br />
-        <div class="form-group  col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
+            <br />
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.CustomerName, "Customer Name", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
                 <div class="col-md-12">
-                    @Html.LabelFor(model => model.CustomerName, "Customer Name", htmlAttributes: new { @class = "control-label label" })
+                    @Html.TextBoxFor(model => model.CustomerName, new { @class = "form-control box" })
                 </div>
             </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.CustomerName, new { @class = "form-control box" })
-            </div>
-        </div>
 
-        <div class="form-group  col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.OS_Billing, "O/S Billing", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
                 <div class="col-md-12">
-                    @Html.LabelFor(model => model.OS_Billing, "O/S Billing", htmlAttributes: new { @class = "control-label label" })
+                    @Html.TextBoxFor(model => model.OS_Billing, new { @class = "form-control box" })
                 </div>
             </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.OS_Billing, new { @class = "form-control box" })
-            </div>
-        </div>
 
-        <div class="form-group  col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.License_expiry, "License Expiry", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
                 <div class="col-md-12">
-                    @Html.LabelFor(model => model.License_expiry, "License Expiry", htmlAttributes: new { @class = "control-label label" })
+                    @Html.TextBoxFor(model => model.License_expiry, new { @class = "form-control box" })
                 </div>
             </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.License_expiry, new { @class = "form-control box" })
-            </div>
-        </div>
 
-        <div class="form-group col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
+            <div class="form-group col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Nationality, "Nationality", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
                 <div class="col-md-12">
-                    @Html.LabelFor(model => model.Nationality, "Nationality", htmlAttributes: new { @class = "control-label label" })
+                    @Html.TextBoxFor(model => model.Nationality, new { @class = "form-control box" })
                 </div>
             </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Nationality, new { @class = "form-control box" })
-            </div>
-        </div>
 
 
 
-        <div class="form-group col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
+            <div class="form-group col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Email_1, "Email 1", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
                 <div class="col-md-12">
-                    @Html.LabelFor(model => model.Email_1, "Email 1", htmlAttributes: new { @class = "control-label label" })
+                    @Html.TextBoxFor(model => model.Email_1, new { @class = "form-control box" })
                 </div>
             </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Email_1, new { @class = "form-control box" })
-            </div>
-        </div>
 
 
 
-        <div class="form-group  col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Email_2, "Email 2", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
                 <div class="col-md-12">
-                    @Html.LabelFor(model => model.Email_2, "Email 2", htmlAttributes: new { @class = "control-label label" })
+                    @Html.TextBoxFor(model => model.Email_2, new { @class = "form-control box" })
                 </div>
             </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Email_2, new { @class = "form-control box" })
-            </div>
-        </div>
 
-        <div class="form-group  col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Email_3, "Email 3", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
                 <div class="col-md-12">
-                    @Html.LabelFor(model => model.Email_3, "Email 3", htmlAttributes: new { @class = "control-label label" })
+                    @Html.TextBoxFor(model => model.Email_3, new { @class = "form-control box" })
                 </div>
             </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Email_3, new { @class = "form-control box" })
-            </div>
-        </div>
 
 
 
-        <div class="form-group  col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Mobile1, "Mobile 1", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
                 <div class="col-md-12">
-                    @Html.LabelFor(model => model.Mobile1, "Mobile 1", htmlAttributes: new { @class = "control-label label" })
+                    @Html.TextBoxFor(model => model.Mobile1, new { @class = "form-control box" })
                 </div>
             </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Mobile1, new { @class = "form-control box" })
-            </div>
-        </div>
 
 
-        <div class="form-group col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
+            <div class="form-group col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Mobile2, "Mobile 2", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
                 <div class="col-md-12">
-                    @Html.LabelFor(model => model.Mobile2, "Mobile 2", htmlAttributes: new { @class = "control-label label" })
+                    @Html.TextBoxFor(model => model.Mobile2, new { @class = "form-control box" })
                 </div>
             </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Mobile2, new { @class = "form-control box" })
-            </div>
-        </div>
 
-        <div class="form-group col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
+            <div class="form-group col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Mobile3, "Mobile 3", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
                 <div class="col-md-12">
-                    @Html.LabelFor(model => model.Mobile3, "Mobile 3", htmlAttributes: new { @class = "control-label label" })
+                    @Html.TextBoxFor(model => model.Mobile3, new { @class = "form-control box" })
                 </div>
             </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Mobile3, new { @class = "form-control box" })
-            </div>
-        </div>
 
-        <div class="form-group  col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
-                <div class="col-md-12">
-                    @Html.LabelFor(model => model.Disposition, "Disposition", htmlAttributes: new { @class = "control-label label" })
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Disposition, "Disposition", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.Disposition, new List<SelectListItem>
+                    {
+                        new SelectListItem { Text = "NA", Value = "NA" },
+                        new SelectListItem { Text = "THIRD PARTY CONTACT", Value = "THIRD PARTY CONTACT" },
+                        new SelectListItem { Text = "BILL DISPUTE REFUSE TO PAY", Value = "BILL DISPUTE REFUSE TO PAY" },
+                        new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
+                        new SelectListItem { Text = "BILL REQUEST", Value = "BILL REQUEST" },
+                        new SelectListItem { Text = "LINE BUSY", Value = "LINE BUSY" },
+                        new SelectListItem { Text = "CALLBACK", Value = "CALLBACK" },
+                        new SelectListItem { Text = "CALLBACK LANGUAGE", Value = "CALLBACK LANGUAGE" },
+                        new SelectListItem { Text = "THIRD PARTY CALLBACK", Value = "THIRD PARTY CALLBACK" },
+                        new SelectListItem { Text = "SWICHTED OFF", Value = "SWICHTED OFF" },
+                        new SelectListItem { Text = "DO NOT CALL", Value = "DO NOT CALL" },
+                        new SelectListItem { Text = "FOLLOW UP", Value = "FOLLOW UP" },
+                        new SelectListItem { Text = "CUSTOMER HUNG UP", Value = "CUSTOMER HUNG UP" },
+                        new SelectListItem { Text = "INVALID NUMBER", Value = "INVALID NUMBER" },
+                        new SelectListItem { Text = "CUSTOMER OUT OF COUNTRY", Value = "CUSTOMER OUT OF COUNTRY" },
+                        new SelectListItem { Text = "PAYMENT MADE", Value = "PAYMENT MADE" },
+                        new SelectListItem { Text = "PAYMENT FOLLOWUP", Value = "PAYMENT FOLLOWUP" },
+                        new SelectListItem { Text = "PAYMENT INSTALLMENT REQUEST", Value = "PAYMENT INSTALLMENT REQUEST" },
+                        new SelectListItem { Text = "PAYMENT PLAN APPROVED", Value = "PAYMENT PLAN APPROVED" },
+                        new SelectListItem { Text = "PAYMENT REMINDER", Value = "PAYMENT REMINDER" },
+                        new SelectListItem { Text = "PROMISE TO PAY", Value = "PROMISE TO PAY" },
+                        new SelectListItem { Text = "RINGING", Value = "RINGING" },
+                        new SelectListItem { Text = "REFUSE TO PAY", Value = "REFUSE TO PAY" },
+                        new SelectListItem { Text = "STATEMENT OF ACCOUNT REQUEST", Value = "STATEMENT OF ACCOUNT REQUEST" },
+                        new SelectListItem { Text = "SWITCH OFF", Value = "SWITCH OFF" },
+                        new SelectListItem { Text = "PAYMENT MISSING", Value = "PAYMENT MISSING" }
+                    }, new { @class = "form-control box dropdown-styled" })
+                    @Html.ValidationMessageFor(model => model.Disposition, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.Disposition, new List<SelectListItem>
-                {
-                    new SelectListItem { Text = "NA", Value = "NA" },
-                    new SelectListItem { Text = "THIRD PARTY CONTACT", Value = "THIRD PARTY CONTACT" },
-                    new SelectListItem { Text = "BILL DISPUTE REFUSE TO PAY", Value = "BILL DISPUTE REFUSE TO PAY" },
-                    new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
-                    new SelectListItem { Text = "BILL REQUEST", Value = "BILL REQUEST" },
-                    new SelectListItem { Text = "LINE BUSY", Value = "LINE BUSY" },
-                    new SelectListItem { Text = "CALLBACK", Value = "CALLBACK" },
-                    new SelectListItem { Text = "CALLBACK LANGUAGE", Value = "CALLBACK LANGUAGE" },
-                    new SelectListItem { Text = "THIRD PARTY CALLBACK", Value = "THIRD PARTY CALLBACK" },
-                    new SelectListItem { Text = "SWICHTED OFF", Value = "SWICHTED OFF" },
-                    new SelectListItem { Text = "DO NOT CALL", Value = "DO NOT CALL" },
-                    new SelectListItem { Text = "FOLLOW UP", Value = "FOLLOW UP" },
-                    new SelectListItem { Text = "CUSTOMER HUNG UP", Value = "CUSTOMER HUNG UP" },
-                    new SelectListItem { Text = "INVALID NUMBER", Value = "INVALID NUMBER" },
-                    new SelectListItem { Text = "CUSTOMER OUT OF COUNTRY", Value = "CUSTOMER OUT OF COUNTRY" },
-                    new SelectListItem { Text = "PAYMENT MADE", Value = "PAYMENT MADE" },
-                    new SelectListItem { Text = "PAYMENT FOLLOWUP", Value = "PAYMENT FOLLOWUP" },
-                    new SelectListItem { Text = "PAYMENT INSTALLMENT REQUEST", Value = "PAYMENT INSTALLMENT REQUEST" },
-                    new SelectListItem { Text = "PAYMENT PLAN APPROVED", Value = "PAYMENT PLAN APPROVED" },
-                    new SelectListItem { Text = "PAYMENT REMINDER", Value = "PAYMENT REMINDER" },
-                    new SelectListItem { Text = "PROMISE TO PAY", Value = "PROMISE TO PAY" },
-                    new SelectListItem { Text = "RINGING", Value = "RINGING" },
-                    new SelectListItem { Text = "REFUSE TO PAY", Value = "REFUSE TO PAY" },
-                    new SelectListItem { Text = "STATEMENT OF ACCOUNT REQUEST", Value = "STATEMENT OF ACCOUNT REQUEST" },
-                    new SelectListItem { Text = "SWITCH OFF", Value = "SWITCH OFF" },
-                    new SelectListItem { Text = "PAYMENT MISSING", Value = "PAYMENT MISSING" }
-                }, new { @class = "form-control box dropdown-styled" })
-                @Html.ValidationMessageFor(model => model.Disposition, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
-        <div class="form-group col-sm-12 col-md-4 col-xl-3" id="secondDropdown" style="display:none;">
-            <div class="row">
-                <div class="col-md-12">
-                    @Html.LabelFor(model => model.SubDisposition, "Subdisposition", htmlAttributes: new { @class = "control-label label" })
+            <div class="form-group col-sm-12 col-md-4 col-xl-3" id="secondDropdown" style="display:none;">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.SubDisposition, "Subdisposition", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.SubDisposition, new List<SelectListItem>
+                    {
+                        new SelectListItem { Text = "NA", Value = "NA" },
+                        new SelectListItem { Text = "English", Value = "English" },
+                        new SelectListItem { Text = "Arabic", Value = "Arabic" },
+                        new SelectListItem { Text = "Hindi", Value = "Hindi" },
+                    }, new { @class = "form-control box dropdown-styled" })
+                    @Html.ValidationMessageFor(model => model.SubDisposition, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.SubDisposition, new List<SelectListItem>
-                {
-                    new SelectListItem { Text = "NA", Value = "NA" },
-                    new SelectListItem { Text = "English", Value = "English" },
-                    new SelectListItem { Text = "Arabic", Value = "Arabic" },
-                    new SelectListItem { Text = "Hindi", Value = "Hindi" },
-                }, new { @class = "form-control box dropdown-styled" })
-                @Html.ValidationMessageFor(model => model.SubDisposition, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
-        <div class="form-group col-sm-12 col-md-4 col-xl-3" id="callbackDateTime" style="display:none;">
-            <div class="row">
-                <div class="col-md-12">
-                    @Html.LabelFor(model => model.CallbackTime, "Callback", htmlAttributes: new { @class = "control-label label" })
+            <div class="form-group col-sm-12 col-md-4 col-xl-3" id="callbackDateTime" style="display:none;">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.CallbackTime, "Callback", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.CallbackTime, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control box", type = "datetime-local", pattern = @"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}", title = "Please enter a valid datetime in the format yyyy-MM-ddTHH:mm" })
+                    <!-- You can adjust the formatting and attributes as needed -->
+                    @Html.ValidationMessageFor(model => model.CallbackTime, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.CallbackTime, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control box", type = "datetime-local", pattern = @"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}", title = "Please enter a valid datetime in the format yyyy-MM-ddTHH:mm" })
-                <!-- You can adjust the formatting and attributes as needed -->
-                @Html.ValidationMessageFor(model => model.CallbackTime, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
 
 
 
-        <div class="form-group  col-sm-12 col-md-4 col-xl-12">
-            <div class="row">
+            <div class="form-group  col-sm-12 col-md-4 col-xl-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Comments, "Comments", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
                 <div class="col-md-12">
-                    @Html.LabelFor(model => model.Comments, "Comments", htmlAttributes: new { @class = "control-label label" })
+                    @Html.TextBoxFor(model => model.Comments, new { @class = "form-control box", @style = "width: 800px; height: 200px;padding-top: 0;" })
                 </div>
             </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Comments, new { @class = "form-control box", @style = "width: 800px; height: 200px;padding-top: 0;" })
-            </div>
-        </div>
 
-        <div class="form-group  col-sm-12 col-md-4 col-xl-12">
-            <div class="row">
+            <div class="form-group  col-sm-12 col-md-4 col-xl-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.ChangeStatus, "Change Status", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
                 <div class="col-md-12">
-                    @Html.LabelFor(model => model.ChangeStatus, "Change Status", htmlAttributes: new { @class = "control-label label" })
+                    @Html.TextBoxFor(model => model.ChangeStatus, new { @class = "form-control box", @style = "width: 800px; height: 200px; padding-top: 0;" })
                 </div>
             </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.ChangeStatus, new { @class = "form-control box", @style = "width: 800px; height: 200px; padding-top: 0;" })
-            </div>
-        </div>
 
-        <div class="form-group col-sm-12 col-md-4" style="margin: 50px 0px;">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Submit" class="btn SubBtn" style="width:150px; height: 50px" />
+            <div class="form-group col-sm-12 col-md-4" style="margin: 50px 0px;">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Submit" class="btn SubBtn" style="width:150px; height: 50px" />
+                </div>
             </div>
-        </div>
 
-    </div>
-        }
-    </div>
+        </div>
+    }
+</div>
 
 
 
