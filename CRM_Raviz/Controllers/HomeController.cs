@@ -163,10 +163,14 @@ namespace CRM_Raviz.Controllers
 
 
 
-        public ActionResult RealEditAllocation(int id)
+        public ActionResult RealEditAllocation(int id, string AccountNo)
         {
             CPVDBEntities db = new CPVDBEntities();
             RecordData recordData = db.RecordDatas.Find(id);
+
+            List<BouncedRecord> bouncedRecords = db.BouncedRecords.Where(record => record.AccountNo == AccountNo).ToList();
+            ViewBag.Bounce = bouncedRecords;
+
             return View(recordData);
         }
 
@@ -192,6 +196,7 @@ namespace CRM_Raviz.Controllers
                 eventTable.Comments = form["Comments"].ToString();
                 eventTable.ChangeStatus = form["ChangeStatus"].ToString();
                 eventTable.ModifiedDate = DateTime.Now;
+                eventTable.Segments = recordData.Segments;
                 if (!string.IsNullOrEmpty(form["CallbackTime"]))
                 {
                     eventTable.CallbackTime = DateTime.Parse(form["CallbackTime"]);
@@ -207,16 +212,6 @@ namespace CRM_Raviz.Controllers
             }
 
 
-            recordData.CustomerName = form["CustomerName"].ToString();
-            recordData.OS_Billing = form["OS_Billing"].ToString();
-            recordData.License_expiry = form["License_expiry"].ToString();
-            recordData.Nationality = form["Nationality"].ToString();
-            recordData.Email_1 = form["Email_1"].ToString();
-            recordData.Email_2 = form["Email_2"].ToString();
-            recordData.Email_3 = form["Email_3"].ToString();
-            recordData.Mobile1 = form["Mobile1"].ToString();
-            recordData.Mobile2 = form["Mobile2"].ToString();
-            recordData.Mobile3 = form["Mobile3"].ToString();
             recordData.Disposition = form["Disposition"].ToString();
             recordData.SubDisposition = form["SubDisposition"].ToString();
             recordData.Comments = form["Comments"].ToString();
@@ -384,7 +379,7 @@ namespace CRM_Raviz.Controllers
 
 
         [HttpPost]
-        public ActionResult UploadCases(HttpPostedFileBase file)
+        public ActionResult UploadCases(HttpPostedFileBase file, string dropdown)
         {
             CPVDBEntities dbSheet1 = new CPVDBEntities(); // Database context for the first sheet
             CPVDBEntities dbSheet2 = new CPVDBEntities(); // Database context for the second sheet
@@ -431,6 +426,7 @@ namespace CRM_Raviz.Controllers
                                 TechnicalReason = worksheet1.Cells[row, 24].Value?.ToString(),
                                 BOthers = worksheet1.Cells[row, 25].Value?.ToString(),
                                 Agent = worksheet1.Cells[row, 26].Value?.ToString(),
+                                Segments = dropdown
                             };
 
                             dbSheet1.RecordDatas.Add(caseEntity1);

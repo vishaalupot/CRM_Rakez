@@ -47,5 +47,6 @@ namespace CRM_Raviz.Models
         public string SignatureIrregular { get; set; }
         public string TechnicalReason { get; set; }
         public string BOthers { get; set; }
+        public string Segments { get; set; }
     }
 }

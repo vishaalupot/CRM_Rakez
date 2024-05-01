@@ -87,10 +87,10 @@
 
 
         .heading {
-            font-size: 30px;
+            font-size: 43px;
             font-family: 'Jaldi', sans-serif;
             text-align: center;
-            padding: 20px 0px;
+            padding: 10px 0px;
         }
 
         .file-upload-container {
@@ -192,6 +192,19 @@
             transition: color .2s ease-in-out;
         }
 
+        .drop {
+            border: 1px solid #082948;
+            font-size: 20px;
+            font-family: 'Jaldi', sans-serif;
+            width: 200px;
+            height: 40px;
+            margin: 20px 0px;
+            transition-duration: 0.3s;
+            margin-right: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
         .down {
             background-color: #082948;
             color: #fff;
@@ -204,17 +217,38 @@
             height: 40px;
             margin: 20px 0px;
             transition-duration: 0.3s;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .down option:hover {
+           cursor: pointer;
         }
     </style>
+
+
 </head>
 <body style="padding: 0px;">
 
 
     <div>
         <div class="heading">Upload Cases</div>
-        <div style="display: flex;  flex-direction: column;">
-            @using (Html.BeginForm("UploadCases", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
+
+        @using (Html.BeginForm("UploadCases", "Home", FormMethod.Post, new { enctype = "multipart/form-data"}))
+        {
+            <div style="display: flex; align-items: center; flex-direction: row; justify-content: center; font-family: 'Jaldi', sans-serif; font-weight: 500; font-size: 22PX; ">
+                <div style="text-align:center; padding-right: 10px;"> Select Segment</div>
+                <select name="dropdown" id="dropdown" class="drop">
+                    <option value="Bounced Cheque">Bounced Cheque</option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
+
+
+
+
+            <div style="display: flex;  flex-direction: column;">
+
                 <label for="images" class="drop-container" id="dropcontainer">
                     <span class="drop-title">Drop files here</span>
                     or
@@ -224,65 +258,29 @@
 
                 </label>
 
-            }
 
 
 
+
+            </div>
+
+            @Html.Hidden("dropdown")
+        }
+        <div style="display: flex; flex-direction: row;">
+
+            <button onclick="downloadExcel()" class="down">Download Sample</button>
         </div>
-        <button onclick="downloadExcel()" class="down">Download Sample</button>
-    </div>
-    @*<script>
-            function downloadExcel() {
-                // Sample data
-                const data = [
-                    ["Account", "Customer Name", "Bounced cheque", "B.Chq Penalities", "IP Telephone billing", "Utility billing", "Others", "O/S Balance", "License expiry", "Contact Person", "Nationality", "Mobile1", "Mobile2", "Mobile3", "Mobile4", "Mobile5", "Email-1", "Email-2", "Email-3", "Email-4", "Email-5", "Closed Account", "Dormant Account", "Insufficient Funds", "Other Reason", "Signature Irregular", "Technical Reason", "Others"],
-                    // Add more rows as needed
-                ];
 
-                // Create Excel file
-                const csvContent = "data:text/csv;charset=utf-8," + data.map(row => row.join(",")).join("\n");
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", "excel_sheet.csv");
-                document.body.appendChild(link);
-                link.click();
-            }
-        </script>*@
+
+
+
+
+
+    </div>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-
-    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>*@
-    @*<script>
-            function downloadExcel() {
-                // Sample data for the first sheet
-                const dataSheet1 = [
-                    ["AccountNo", "Customer Name", "Bounced cheque", "B.Chq Penalities", "IP Telephone billing", "Utility billing", "Others", "O/S Balance", "License expiry", "Contact Person", "Nationality", "Mobile1", "Mobile2", "Mobile3", "Mobile4", "Mobile5", "Email-1", "Email-2", "Email-3", "Email-4", "Email-5", "Closed Account", "Dormant Account", "Insufficient Funds", "Other Reason", "Signature Irregular", "Technical Reason", "Others", "Agent"],
-                    // Add more rows as needed
-                ];
-
-                // Sample data for the second sheet
-                const dataSheet2 = [
-                    ["AccountNo", "Cheque Number", "Date bounced", "Amount in local currency", "Reason code", "Text"],
-                    // Add more rows as needed
-                ];
-
-                // Create a workbook
-                const workbook = XLSX.utils.book_new();
-
-                // Add the first sheet
-                const sheet1 = XLSX.utils.aoa_to_sheet(dataSheet1);
-                XLSX.utils.book_append_sheet(workbook, sheet1, "Sheet1");
-
-                // Add the second sheet
-                const sheet2 = XLSX.utils.aoa_to_sheet(dataSheet2);
-                XLSX.utils.book_append_sheet(workbook, sheet2, "Sheet2");
-
-                // Write the workbook to a file
-                XLSX.writeFile(workbook, "SampleUpload.xlsx");
-            }
-        </script>*@
-
 
     <script>
         function downloadExcel() {

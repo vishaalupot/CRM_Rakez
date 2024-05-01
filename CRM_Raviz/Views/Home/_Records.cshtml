@@ -85,6 +85,8 @@
         .icons:hover {
             transform: scale(1.2);
         }
+
+
 </style>
 
 <div>
@@ -124,7 +126,7 @@
                     <td>@Html.DisplayFor(modelItem => item.Mobile1, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Mobile2, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Mobile3, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Mobile4, new { @class = "tablecont" })</td>
                     <td>
                         @Html.HiddenFor(modelItem => item.Id)
-                        <a href='@Url.Action("RealEditAllocation", "Home", new { id = item.Id })'>
+                        <a href='@Url.Action("RealEditAllocation", "Home", new { id = item.Id, AccountNo = item.AccountNo})'>
                             <img src="~/Content/Images/edit1.png" style="width: 20px; height: 20px; cursor: pointer;" data-id='@item.Id' class="submitBtn icons" />
                         </a>
                     </td>

@@ -4,7 +4,7 @@
 }
 
 @model  CRM_Raviz.Models.RecordData
-
+@using CRM_Raviz.Models
 
 <head>
     @Styles.Render("~/Content/css")
@@ -69,7 +69,7 @@
             font-weight: 500;
         }
 
-        .body{
+        .body {
             display: flex;
             flex-direction: row;
         }
@@ -172,17 +172,37 @@
                 height: 100%;
             }
 
-            .container.body-content{
-                margin:10px;
-            }
+        .container.body-content {
+            margin: 10px;
+        }
 
         .para {
             font-family: 'Jaldi', sans-serif;
             text-align: left;
             padding-left: 10px;
-        
         }
 
+        table {
+            width: 100%;
+        }
+
+        table tr td {
+            font-family: 'Jaldi', sans-serif;
+            font-size: 16px;
+            border: 1px solid black;
+            border-radius: 8px;
+        }
+
+        table tr th {
+            border-radius: 8px;
+        }
+
+        td, th {
+            padding: 8px;
+            text-align: left;
+            font-weight: 600;
+            border-radius: 8px;
+        }
     </style>
 
     <script>
@@ -214,7 +234,7 @@
     </script>
 
 
-   
+
     <script>
         $(document).ready(function () {
 
@@ -227,7 +247,7 @@
 
                 // If the textarea is empty, set its value to the result of User.Identity.GetUserName() as the initial value
                 if (changeStatusText.trim() === "") {
-                    changeStatusText = "User => " + username  + "\n";
+                    changeStatusText = "User => " + username + "\n";
                 }
 
                 // Loop through each textbox and append its name and changed value to the changeStatusText if it has changed
@@ -427,79 +447,6 @@
                 </div>
             </div>
 
-
-
-            @*<div class="form-group col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
-                <div class="col-md-12">
-                    @Html.LabelFor(model => model.Email_1, "Email 1", htmlAttributes: new { @class = "control-label label" })
-                </div>
-            </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Email_1, new { @class = "form-control box", @readonly = true })
-            </div>
-        </div>
-
-
-
-        <div class="form-group  col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
-                <div class="col-md-12">
-                    @Html.LabelFor(model => model.Email_2, "Email 2", htmlAttributes: new { @class = "control-label label" })
-                </div>
-            </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Email_2, new { @class = "form-control box" })
-            </div>
-        </div>
-
-        <div class="form-group  col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
-                <div class="col-md-12">
-                    @Html.LabelFor(model => model.Email_3, "Email 3", htmlAttributes: new { @class = "control-label label" })
-                </div>
-            </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Email_3, new { @class = "form-control box" })
-            </div>
-        </div>*@
-
-
-
-            @*<div class="form-group  col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
-                <div class="col-md-12">
-                    @Html.LabelFor(model => model.Mobile1, "Mobile 1", htmlAttributes: new { @class = "control-label label" })
-                </div>
-            </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Mobile1, new { @class = "form-control box" })
-            </div>
-        </div>
-
-
-        <div class="form-group col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
-                <div class="col-md-12">
-                    @Html.LabelFor(model => model.Mobile2, "Mobile 2", htmlAttributes: new { @class = "control-label label" })
-                </div>
-            </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Mobile2, new { @class = "form-control box" })
-            </div>
-        </div>
-
-        <div class="form-group col-sm-12 col-md-4 col-xl-3">
-            <div class="row">
-                <div class="col-md-12">
-                    @Html.LabelFor(model => model.Mobile3, "Mobile 3", htmlAttributes: new { @class = "control-label label" })
-                </div>
-            </div>
-            <div class="col-md-12">
-                @Html.TextBoxFor(model => model.Mobile3, new { @class = "form-control box" })
-            </div>
-        </div>*@
-
             <div class="form-group  col-sm-12 col-md-4 col-xl-3">
                 <div class="row">
                     <div class="col-md-12">
@@ -581,7 +528,7 @@
                     </div>
                 </div>
                 <div class="col-md-12">
-                    @Html.TextAreaFor(model => model.Comments, new { @class = "form-control box", @style = "width: 800px; height: 200px;" })
+                    @Html.TextAreaFor(model => model.Comments, new { @class = "form-control box", @style = "width: 100%; height: 100px;" })
                 </div>
             </div>
 
@@ -592,9 +539,40 @@
                     </div>
                 </div>
                 <div class="col-md-12">
-                    @Html.TextAreaFor(model => model.ChangeStatus, new { @class = "form-control box", @style = "width: 800px; height: 200px; padding-top: 0;" })
+                    @Html.TextAreaFor(model => model.ChangeStatus, new { @class = "form-control box", @style = "width: 100%; height: 100px; padding-top: 0;" })
                 </div>
             </div>
+            <div style=" padding: 20px 10px;">
+                @{
+                    var bouncedRecords = ViewBag.Bounce as List<BouncedRecord>;
+                }
+                <div>Bounced Details</div>
+                <table>
+                    <tr>
+                        <td class="tableHead">Reason Code</td>
+                        <td class="tableHead">Text</td>
+                        <td class="tableHead">Date Bounced</td>
+                        <td class="tableHead">Cheque Number</td>
+                        <td class="tableHead">Cheque Date</td>
+                        <td class="tableHead">Total Amount</td>
+                    </tr>
+
+                    @foreach (var item in bouncedRecords)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.ReasonCode, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.Text, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.DateBounced, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.ChequeNumber, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.ChequeDate, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.TotalAmount, new { @class = "tablecont" })</td>
+
+                        </tr>
+                    }
+                </table>
+            </div>
+
+
 
             <div class="form-group col-sm-12 col-md-4" style="margin: 50px 0px;">
                 <div class="col-md-offset-2 col-md-10">
@@ -620,7 +598,7 @@
                     @Model.Mobile3 <!-- Assuming Model.Mobile3 contains the value -->
                     @Model.Mobile4 <!-- Assuming Model.Mobile4 contains the value -->
                     <br /> <br />
-                    <b>Email Ids </b> 
+                    <b>Email Ids </b>
                     @Model.Email_1 <!-- Assuming Model.Email_1 contains the value -->
                     @Model.Email_2 <!-- Assuming Model.Email_2 contains the value -->
                     @Model.Email_3 <!-- Assuming Model.Email_3 contains the value -->
@@ -630,7 +608,7 @@
 
 
     </div>
-    
+
 
 </div>
 
