@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.Identity;
 
 namespace CRM_Raviz.Controllers
 {
@@ -158,13 +159,7 @@ namespace CRM_Raviz.Controllers
             return View();
         }
 
-        public ActionResult _Records()
-        {
-
-            CPVDBEntities db = new CPVDBEntities();
-            List<EventTable> cases = db.EventTables.ToList();
-            return PartialView(cases);
-        }
+       
 
 
 
@@ -241,34 +236,56 @@ namespace CRM_Raviz.Controllers
 
 
 
-            
+
             db.SaveChanges();
             return RedirectToAction("EditAllocation");
+        }
+
+
+
+        public ActionResult _Records()
+        {
+            CPVDBEntities db = new CPVDBEntities();
+            var results1 = db.RecordDatas.ToList();
+            if (User.IsInRole("Agent"))
+            {
+                results1 = db.RecordDatas
+                   .Where(item => item.Agent == @User.Identity.GetUserName())
+                   .ToList();
+            }
+            return PartialView(results1);
         }
 
         [HttpPost]
         public ActionResult _Records(string query)
         {
             CPVDBEntities db = new CPVDBEntities();
-
             RecordData recordData = new RecordData();
-
             var results1 = db.RecordDatas.ToList();
+            var userName = User.Identity.GetUserName();
 
-            if (query != "")
+            if (query == "")
             {
-                results1 = db.RecordDatas
-                .Where(item => item.CustomerName == query ||
-                               item.AccountNo == query)
-                .ToList();
+                if (User.IsInRole("Agent"))
+                {
+                    results1 = db.RecordDatas
+                       .Where(item => item.Agent == userName)
+                       .ToList();
+                }
 
             }
-            else
+            else if (query != "")
             {
-                results1 = db.RecordDatas.ToList();
+                    results1 = db.RecordDatas
+                    .Where(item => item.CustomerName == query ||
+                                   item.AccountNo == query)
+                    .ToList();
+
             }
-
-
+                else
+                {
+                    results1 = db.RecordDatas.ToList();
+                }
             return PartialView("_Records", results1);
         }
 
@@ -381,7 +398,7 @@ namespace CRM_Raviz.Controllers
                         ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
                         // Process the first sheet
-                        ExcelWorksheet worksheet1 = package.Workbook.Worksheets["Sheet1"];
+                        ExcelWorksheet worksheet1 = package.Workbook.Worksheets["Overall Allocation"];
                         int rowCount1 = worksheet1.Dimension.Rows;
 
                         for (int row = 2; row <= rowCount1; row++) // Start from row 2 to skip headers
@@ -397,21 +414,23 @@ namespace CRM_Raviz.Controllers
                                 Others = worksheet1.Cells[row, 7].Value?.ToString(),
                                 OS_Billing = worksheet1.Cells[row, 8].Value?.ToString(),
                                 License_expiry = worksheet1.Cells[row, 9].Value?.ToString(),
-                                Contact_Person = worksheet1.Cells[row, 11].Value?.ToString(),
-                                Nationality = worksheet1.Cells[row, 12].Value?.ToString(),
-                                Mobile1 = worksheet1.Cells[row, 13].Value?.ToString(),
-                                Mobile2 = worksheet1.Cells[row, 14].Value?.ToString(),
-                                Mobile3 = worksheet1.Cells[row, 15].Value?.ToString(),
-                                Mobile4 = worksheet1.Cells[row, 16].Value?.ToString(),
-                                Email_1 = worksheet1.Cells[row, 17].Value?.ToString(),
-                                Email_2 = worksheet1.Cells[row, 18].Value?.ToString(),
-                                Email_3 = worksheet1.Cells[row, 19].Value?.ToString(),
-                                CloseAccount = worksheet1.Cells[row, 20].Value?.ToString(),
-                                DormantAccount = worksheet1.Cells[row, 21].Value?.ToString(),
-                                InsufficientFunds = worksheet1.Cells[row, 22].Value?.ToString(),
-                                OtherReason= worksheet1.Cells[row, 23].Value?.ToString(),
-                                SignatureIrregular = worksheet1.Cells[row, 24].Value?.ToString(),
-                                TechnicalReason = worksheet1.Cells[row, 25].Value?.ToString(),
+                                Contact_Person = worksheet1.Cells[row, 10].Value?.ToString(),
+                                Nationality = worksheet1.Cells[row, 11].Value?.ToString(),
+                                Mobile1 = worksheet1.Cells[row, 12].Value?.ToString(),
+                                Mobile2 = worksheet1.Cells[row, 13].Value?.ToString(),
+                                Mobile3 = worksheet1.Cells[row, 14].Value?.ToString(),
+                                Mobile4 = worksheet1.Cells[row, 15].Value?.ToString(),
+                                Email_1 = worksheet1.Cells[row, 16].Value?.ToString(),
+                                Email_2 = worksheet1.Cells[row, 17].Value?.ToString(),
+                                Email_3 = worksheet1.Cells[row, 18].Value?.ToString(),
+                                CloseAccount = worksheet1.Cells[row, 19].Value?.ToString(),
+                                DormantAccount = worksheet1.Cells[row, 20].Value?.ToString(),
+                                InsufficientFunds = worksheet1.Cells[row, 21].Value?.ToString(),
+                                OtherReason= worksheet1.Cells[row, 22].Value?.ToString(),
+                                SignatureIrregular = worksheet1.Cells[row, 23].Value?.ToString(),
+                                TechnicalReason = worksheet1.Cells[row, 24].Value?.ToString(),
+                                BOthers = worksheet1.Cells[row, 25].Value?.ToString(),
+                                Agent = worksheet1.Cells[row, 26].Value?.ToString(),
                             };
 
                             dbSheet1.RecordDatas.Add(caseEntity1);
@@ -420,7 +439,7 @@ namespace CRM_Raviz.Controllers
                         dbSheet1.SaveChanges();
 
                         // Process the second sheet
-                        ExcelWorksheet worksheet2 = package.Workbook.Worksheets["Sheet2"];
+                        ExcelWorksheet worksheet2 = package.Workbook.Worksheets["BC Details"];
                         int rowCount2 = worksheet2.Dimension.Rows;
 
                         for (int row = 2; row <= rowCount2; row++) // Start from row 2 to skip headers

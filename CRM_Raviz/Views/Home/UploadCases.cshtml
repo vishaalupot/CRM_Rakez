@@ -249,37 +249,87 @@
                 link.click();
             }
         </script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>*@
+    @*<script>
+            function downloadExcel() {
+                // Sample data for the first sheet
+                const dataSheet1 = [
+                    ["AccountNo", "Customer Name", "Bounced cheque", "B.Chq Penalities", "IP Telephone billing", "Utility billing", "Others", "O/S Balance", "License expiry", "Contact Person", "Nationality", "Mobile1", "Mobile2", "Mobile3", "Mobile4", "Mobile5", "Email-1", "Email-2", "Email-3", "Email-4", "Email-5", "Closed Account", "Dormant Account", "Insufficient Funds", "Other Reason", "Signature Irregular", "Technical Reason", "Others", "Agent"],
+                    // Add more rows as needed
+                ];
+
+                // Sample data for the second sheet
+                const dataSheet2 = [
+                    ["AccountNo", "Cheque Number", "Date bounced", "Amount in local currency", "Reason code", "Text"],
+                    // Add more rows as needed
+                ];
+
+                // Create a workbook
+                const workbook = XLSX.utils.book_new();
+
+                // Add the first sheet
+                const sheet1 = XLSX.utils.aoa_to_sheet(dataSheet1);
+                XLSX.utils.book_append_sheet(workbook, sheet1, "Sheet1");
+
+                // Add the second sheet
+                const sheet2 = XLSX.utils.aoa_to_sheet(dataSheet2);
+                XLSX.utils.book_append_sheet(workbook, sheet2, "Sheet2");
+
+                // Write the workbook to a file
+                XLSX.writeFile(workbook, "SampleUpload.xlsx");
+            }
+        </script>*@
+
+
     <script>
         function downloadExcel() {
-            // Sample data for the first sheet
-            const dataSheet1 = [
-                ["AccountNo", "Customer Name", "Bounced cheque", "B.Chq Penalities", "IP Telephone billing", "Utility billing", "Others", "O/S Balance", "License expiry", "Contact Person", "Nationality", "Mobile1", "Mobile2", "Mobile3", "Mobile4", "Mobile5", "Email-1", "Email-2", "Email-3", "Email-4", "Email-5", "Closed Account", "Dormant Account", "Insufficient Funds", "Other Reason", "Signature Irregular", "Technical Reason", "Others"],
-                // Add more rows as needed
-            ];
-
-            // Sample data for the second sheet
-            const dataSheet2 = [
-                ["AccountNo", "Cheque Number", "Date bounced", "Amount in local currency", "Reason code", "Text"],
-                // Add more rows as needed
-            ];
-
-            // Create a workbook
-            const workbook = XLSX.utils.book_new();
+            const workbook = new ExcelJS.Workbook();
 
             // Add the first sheet
-            const sheet1 = XLSX.utils.aoa_to_sheet(dataSheet1);
-            XLSX.utils.book_append_sheet(workbook, sheet1, "Sheet1");
+            const sheet1 = workbook.addWorksheet("Overall Allocation");
+            const dataSheet1 = [
+                ["AccountNo", "Customer Name", "Bounced cheque", "B.Chq Penalities", "IP Telephone billing", "Utility billing", "Others", "O/S Balance", "License expiry", "Contact Person", "Nationality", "Mobile1", "Mobile2", "Mobile3", "Mobile4", "Mobile5", "Email-1", "Email-2", "Email-3", "Email-4", "Email-5", "Closed Account", "Dormant Account", "Insufficient Funds", "Other Reason", "Signature Irregular", "Technical Reason", "Others", "Agent"]
+            ];
+            sheet1.addRows(dataSheet1);
+
+            // Style the first row of the first sheet (yellow)
+            const firstRowSheet1 = sheet1.getRow(1);
+            firstRowSheet1.eachCell((cell) => {
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FFFF00' } // Yellow color
+                };
+            });
 
             // Add the second sheet
-            const sheet2 = XLSX.utils.aoa_to_sheet(dataSheet2);
-            XLSX.utils.book_append_sheet(workbook, sheet2, "Sheet2");
+            const sheet2 = workbook.addWorksheet("BC Details");
+            const dataSheet2 = [
+                ["AccountNo", "Cheque Number", "Date bounced", "Amount in local currency", "Reason code", "Text"]
+            ];
+            sheet2.addRows(dataSheet2);
+
+            // Style the rows of the second sheet (dark blue)
+            sheet2.eachRow((row) => {
+                row.eachCell((cell) => {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: { argb: '0d6efd' } // Dark Blue color
+                    };
+                });
+            });
 
             // Write the workbook to a file
-            XLSX.writeFile(workbook, "excel_file_with_multiple_sheets.xlsx");
+            workbook.xlsx.writeBuffer().then((buffer) => {
+                saveAs(new Blob([buffer]), "SampleUpload.xlsx");
+            });
         }
     </script>
+
 
 
 

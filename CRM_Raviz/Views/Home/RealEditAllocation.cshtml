@@ -15,7 +15,7 @@
         @@import url('https://fonts.googleapis.com/css2?family=Jaldi&display=swap');
 
         .heading {
-            color: var(--ADIB-primary);
+            color: #082948;
             font-size: 40px;
             font-family: 'Jaldi', sans-serif;
             text-align: left;
@@ -34,7 +34,7 @@
         }
 
         .box {
-            background-color: #E3F4F4;
+            background-color: WHITE;
             border-style: none;
             width: 300px;
             height: 30px;
@@ -46,6 +46,7 @@
         }
 
         input, select, textarea {
+            background-color: WHITE;
             font-size: 20px;
             max-width: 1000px;
         }
@@ -67,6 +68,121 @@
             color: white;
             font-weight: 500;
         }
+
+        .body{
+            display: flex;
+            flex-direction: row;
+        }
+
+        .card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 250px;
+            border-radius: 24px;
+            line-height: 1.2;
+            transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            height: max-content;
+            gap: 24px;
+            padding: 36px;
+            border-radius: 22px;
+            color: #ffffff;
+            overflow: hidden;
+            background: #082948;
+            transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+            .content::before {
+                position: absolute;
+                content: "";
+                top: -4%;
+                left: 50%;
+                width: 90%;
+                height: 90%;
+                transform: translate(-50%);
+                background: #0d467c;
+                z-index: -1;
+                transform-origin: bottom;
+                border-radius: inherit;
+                transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+            }
+
+            .content::after {
+                position: absolute;
+                content: "";
+                top: -8%;
+                left: 50%;
+                width: 80%;
+                height: 80%;
+                transform: translate(-50%);
+                background: #e7ecff;
+                z-index: -2;
+                transform-origin: bottom;
+                border-radius: inherit;
+                transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+            }
+
+            .content svg {
+                width: 48px;
+                height: 48px;
+            }
+
+            .content .para {
+                z-index: 1;
+                opacity: 1;
+                font-size: 18px;
+                transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+            }
+
+            .content .link {
+                z-index: 1;
+                color: #fea000;
+                text-decoration: none;
+                font-family: inherit;
+                font-size: 16px;
+                transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+            }
+
+                .content .link:hover {
+                    text-decoration: underline;
+                }
+
+        .card:hover {
+            transform: translate(0px, -16px);
+        }
+
+            .card:hover .content::before {
+                rotate: -8deg;
+                top: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+            .card:hover .content::after {
+                rotate: 8deg;
+                top: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+            .container.body-content{
+                margin:10px;
+            }
+
+        .para {
+            font-family: 'Jaldi', sans-serif;
+            text-align: left;
+            padding-left: 10px;
+        
+        }
+
     </style>
 
     <script>
@@ -98,34 +214,56 @@
     </script>
 
 
+   
     <script>
         $(document).ready(function () {
-            // Function to update the Change Status textbox
+
+
+            // Function to update the Change Status textarea
             function updateChangeStatus() {
-                var changeStatusText = "";
-                // Loop through each textbox and append its name and value to the changeStatusText if it has changed
+                var username = $("#username").val();
+
+                var changeStatusText = $("#ChangeStatus").val(); // Get the current text in the Change Status textarea
+
+                // If the textarea is empty, set its value to the result of User.Identity.GetUserName() as the initial value
+                if (changeStatusText.trim() === "") {
+                    changeStatusText = "User => " + username  + "\n";
+                }
+
+                // Loop through each textbox and append its name and changed value to the changeStatusText if it has changed
                 $("input[type='text']").each(function () {
                     var textBoxName = $(this).attr("name");
                     var textBoxValue = $(this).val();
                     // Check if the value has changed since the last update
                     if ($(this).data("previous-value") !== textBoxValue) {
-                        changeStatusText += textBoxName + " => " + textBoxValue + "||";
+                        changeStatusText += textBoxName + " => " + textBoxValue + "\n";
                         // Update the previous value data attribute to the current value
                         $(this).data("previous-value", textBoxValue);
                     }
                 });
+
                 // Loop through each dropdown and append its name and selected option to the changeStatusText if it has changed
                 $("select").each(function () {
                     var dropDownName = $(this).attr("name");
                     var dropDownValue = $(this).find("option:selected").text();
                     // Check if the value has changed since the last update
                     if ($(this).data("previous-value") !== dropDownValue) {
-                        changeStatusText += dropDownName + " => " + dropDownValue + "||";
+                        changeStatusText += dropDownName + " => " + dropDownValue + "\n";
                         // Update the previous value data attribute to the current value
                         $(this).data("previous-value", dropDownValue);
                     }
                 });
-                // Update the Change Status textbox with the generated text
+
+                // Get the comments textarea value
+                var commentsValue = $("#Comments").val();
+                // Check if the comments value has changed since the last update
+                if ($("#Comments").data("previous-value") !== commentsValue) {
+                    changeStatusText += "Comments => " + commentsValue + "\n"; // Make sure to add a newline character after each change
+                    // Update the previous value data attribute to the current value
+                    $("#Comments").data("previous-value", commentsValue);
+                }
+
+                // Update the Change Status textarea with the generated text
                 $("#ChangeStatus").val(changeStatusText);
             }
 
@@ -135,17 +273,26 @@
             });
 
             // Call the updateChangeStatus function when a dropdown loses focus
-            $("select").on("focusout", function () {
+            $("select").on("change", function () {
                 updateChangeStatus();
             });
 
-            // Call the updateChangeStatus function on page load to initialize the Change Status textbox
+            // Call the updateChangeStatus function when the comments textarea loses focus
+            $("#Comments").on("focusout", function () {
+                updateChangeStatus();
+            });
+
+            // Call the updateChangeStatus function on page load to initialize the Change Status textarea
             updateChangeStatus();
 
-            // Set the initial value of the Change Status textbox to empty
+            // Set the initial value of the Change Status textarea to empty
             $("#ChangeStatus").val("");
         });
+
+
     </script>
+
+
 
 
 
@@ -155,19 +302,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
 <div class="body">
-
-    @using (Html.BeginForm("RealEditAllocation", "Home", null, FormMethod.Post, new { @class = "form-control", id = "Form", @style = "border: none !important;" }))
-    {
-        @Html.AntiForgeryToken()
+    <div>
+        @using (Html.BeginForm("RealEditAllocation", "Home", null, FormMethod.Post, new { @class = "form-control", id = "Form", @style = "border: none !important;" }))
+        {
+            @Html.AntiForgeryToken()
         <div class="row space">
 
             <div class="heading">Update Record</div>
+            <input type="hidden" id="username" value="@User.Identity.GetUserName()" />
 
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.Agent, new { Value = User.Identity.GetUserName() })
             @Html.HiddenFor(model => model.AccountNo)
 
             <br />
+
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.AccountNo, "Account Number", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    @Html.TextBoxFor(model => model.AccountNo, new { @class = "form-control box", @readonly = true })
+                </div>
+            </div>
+
             <div class="form-group  col-sm-12 col-md-4 col-xl-3">
                 <div class="row">
                     <div class="col-md-12">
@@ -175,18 +335,73 @@
                     </div>
                 </div>
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.CustomerName, new { @class = "form-control box" })
+                    @Html.TextBoxFor(model => model.CustomerName, new { @class = "form-control box", @readonly = true })
                 </div>
             </div>
 
             <div class="form-group  col-sm-12 col-md-4 col-xl-3">
                 <div class="row">
                     <div class="col-md-12">
-                        @Html.LabelFor(model => model.OS_Billing, "O/S Billing", htmlAttributes: new { @class = "control-label label" })
+                        @Html.LabelFor(model => model.BCheque, "Bounced Cheque", htmlAttributes: new { @class = "control-label label" })
                     </div>
                 </div>
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.OS_Billing, new { @class = "form-control box" })
+                    @Html.TextBoxFor(model => model.BCheque, new { @class = "form-control box", @readonly = true })
+                </div>
+            </div>
+
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.BCheque_P, "Bounced Cheque Penalties", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    @Html.TextBoxFor(model => model.BCheque_P, new { @class = "form-control box", @readonly = true })
+                </div>
+            </div>
+
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.IPTelephone_Billing, "IP Telephone Billing", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    @Html.TextBoxFor(model => model.IPTelephone_Billing, new { @class = "form-control box", @readonly = true })
+                </div>
+            </div>
+
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Utility_Billing, "Utility Billing", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    @Html.TextBoxFor(model => model.Utility_Billing, new { @class = "form-control box", @readonly = true })
+                </div>
+            </div>
+
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Others, "Others", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    @Html.TextBoxFor(model => model.Others, new { @class = "form-control box", @readonly = true })
+                </div>
+            </div>
+
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.OS_Billing, "O/S Balance", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    @Html.TextBoxFor(model => model.OS_Billing, new { @class = "form-control box", @readonly = true })
                 </div>
             </div>
 
@@ -197,7 +412,7 @@
                     </div>
                 </div>
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.License_expiry, new { @class = "form-control box" })
+                    @Html.TextBoxFor(model => model.License_expiry, new { @class = "form-control box", @readonly = true })
                 </div>
             </div>
 
@@ -208,82 +423,82 @@
                     </div>
                 </div>
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.Nationality, new { @class = "form-control box" })
+                    @Html.TextBoxFor(model => model.Nationality, new { @class = "form-control box", @readonly = true })
                 </div>
             </div>
 
 
 
-            <div class="form-group col-sm-12 col-md-4 col-xl-3">
-                <div class="row">
-                    <div class="col-md-12">
-                        @Html.LabelFor(model => model.Email_1, "Email 1", htmlAttributes: new { @class = "control-label label" })
-                    </div>
-                </div>
+            @*<div class="form-group col-sm-12 col-md-4 col-xl-3">
+            <div class="row">
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.Email_1, new { @class = "form-control box" })
+                    @Html.LabelFor(model => model.Email_1, "Email 1", htmlAttributes: new { @class = "control-label label" })
                 </div>
             </div>
+            <div class="col-md-12">
+                @Html.TextBoxFor(model => model.Email_1, new { @class = "form-control box", @readonly = true })
+            </div>
+        </div>
 
 
 
-            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
-                <div class="row">
-                    <div class="col-md-12">
-                        @Html.LabelFor(model => model.Email_2, "Email 2", htmlAttributes: new { @class = "control-label label" })
-                    </div>
-                </div>
+        <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+            <div class="row">
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.Email_2, new { @class = "form-control box" })
+                    @Html.LabelFor(model => model.Email_2, "Email 2", htmlAttributes: new { @class = "control-label label" })
                 </div>
             </div>
+            <div class="col-md-12">
+                @Html.TextBoxFor(model => model.Email_2, new { @class = "form-control box" })
+            </div>
+        </div>
 
-            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
-                <div class="row">
-                    <div class="col-md-12">
-                        @Html.LabelFor(model => model.Email_3, "Email 3", htmlAttributes: new { @class = "control-label label" })
-                    </div>
-                </div>
+        <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+            <div class="row">
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.Email_3, new { @class = "form-control box" })
+                    @Html.LabelFor(model => model.Email_3, "Email 3", htmlAttributes: new { @class = "control-label label" })
                 </div>
             </div>
+            <div class="col-md-12">
+                @Html.TextBoxFor(model => model.Email_3, new { @class = "form-control box" })
+            </div>
+        </div>*@
 
 
 
-            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
-                <div class="row">
-                    <div class="col-md-12">
-                        @Html.LabelFor(model => model.Mobile1, "Mobile 1", htmlAttributes: new { @class = "control-label label" })
-                    </div>
-                </div>
+            @*<div class="form-group  col-sm-12 col-md-4 col-xl-3">
+            <div class="row">
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.Mobile1, new { @class = "form-control box" })
+                    @Html.LabelFor(model => model.Mobile1, "Mobile 1", htmlAttributes: new { @class = "control-label label" })
                 </div>
             </div>
+            <div class="col-md-12">
+                @Html.TextBoxFor(model => model.Mobile1, new { @class = "form-control box" })
+            </div>
+        </div>
 
 
-            <div class="form-group col-sm-12 col-md-4 col-xl-3">
-                <div class="row">
-                    <div class="col-md-12">
-                        @Html.LabelFor(model => model.Mobile2, "Mobile 2", htmlAttributes: new { @class = "control-label label" })
-                    </div>
-                </div>
+        <div class="form-group col-sm-12 col-md-4 col-xl-3">
+            <div class="row">
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.Mobile2, new { @class = "form-control box" })
+                    @Html.LabelFor(model => model.Mobile2, "Mobile 2", htmlAttributes: new { @class = "control-label label" })
                 </div>
             </div>
+            <div class="col-md-12">
+                @Html.TextBoxFor(model => model.Mobile2, new { @class = "form-control box" })
+            </div>
+        </div>
 
-            <div class="form-group col-sm-12 col-md-4 col-xl-3">
-                <div class="row">
-                    <div class="col-md-12">
-                        @Html.LabelFor(model => model.Mobile3, "Mobile 3", htmlAttributes: new { @class = "control-label label" })
-                    </div>
-                </div>
+        <div class="form-group col-sm-12 col-md-4 col-xl-3">
+            <div class="row">
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.Mobile3, new { @class = "form-control box" })
+                    @Html.LabelFor(model => model.Mobile3, "Mobile 3", htmlAttributes: new { @class = "control-label label" })
                 </div>
             </div>
+            <div class="col-md-12">
+                @Html.TextBoxFor(model => model.Mobile3, new { @class = "form-control box" })
+            </div>
+        </div>*@
 
             <div class="form-group  col-sm-12 col-md-4 col-xl-3">
                 <div class="row">
@@ -366,7 +581,7 @@
                     </div>
                 </div>
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.Comments, new { @class = "form-control box", @style = "width: 800px; height: 200px;padding-top: 0;" })
+                    @Html.TextAreaFor(model => model.Comments, new { @class = "form-control box", @style = "width: 800px; height: 200px;" })
                 </div>
             </div>
 
@@ -377,7 +592,7 @@
                     </div>
                 </div>
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.ChangeStatus, new { @class = "form-control box", @style = "width: 800px; height: 200px; padding-top: 0;" })
+                    @Html.TextAreaFor(model => model.ChangeStatus, new { @class = "form-control box", @style = "width: 800px; height: 200px; padding-top: 0;" })
                 </div>
             </div>
 
@@ -388,7 +603,35 @@
             </div>
 
         </div>
-    }
+        }
+    </div>
+    <div style=" margin: 100px 0px 0px 50px;">
+        <div class="card" style="border: none;">
+            <div class="content">
+                <svg fill="currentColor"
+                     viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 9V5H4V9H20ZM20 11H4V19H20V11ZM3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM5 12H8V17H5V12ZM5 6H7V8H5V6ZM9 6H11V8H9V6Z"></path>
+                </svg>
+                <p class="para">
+                    <b>Mobile Numbers</b>
+                    @Model.Mobile1 <!-- Assuming Model.Mobile1 contains the value -->
+                    @Model.Mobile2 <!-- Assuming Model.Mobile2 contains the value -->
+                    @Model.Mobile3 <!-- Assuming Model.Mobile3 contains the value -->
+                    @Model.Mobile4 <!-- Assuming Model.Mobile4 contains the value -->
+                    <br /> <br />
+                    <b>Email Ids </b> 
+                    @Model.Email_1 <!-- Assuming Model.Email_1 contains the value -->
+                    @Model.Email_2 <!-- Assuming Model.Email_2 contains the value -->
+                    @Model.Email_3 <!-- Assuming Model.Email_3 contains the value -->
+                </p>
+            </div>
+        </div>
+
+
+    </div>
+    
+
 </div>
 
 
