@@ -27,7 +27,7 @@
             color: #857F7F;
             font-family: 'Poppins', sans-serif;
             font-weight: 600;
-            font-size: 15px;
+            font-size: 19px;
             white-space: nowrap !important;
             width: 100px;
             white-space: nowrap;
@@ -74,103 +74,7 @@
             flex-direction: row;
         }
 
-        .card {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 250px;
-            border-radius: 24px;
-            line-height: 1.2;
-            transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
-        }
 
-        .content {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            height: max-content;
-            gap: 24px;
-            padding: 36px;
-            border-radius: 22px;
-            color: #ffffff;
-            overflow: hidden;
-            background: #082948;
-            transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-            .content::before {
-                position: absolute;
-                content: "";
-                top: -4%;
-                left: 50%;
-                width: 90%;
-                height: 90%;
-                transform: translate(-50%);
-                background: #0d467c;
-                z-index: -1;
-                transform-origin: bottom;
-                border-radius: inherit;
-                transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
-            }
-
-            .content::after {
-                position: absolute;
-                content: "";
-                top: -8%;
-                left: 50%;
-                width: 80%;
-                height: 80%;
-                transform: translate(-50%);
-                background: #e7ecff;
-                z-index: -2;
-                transform-origin: bottom;
-                border-radius: inherit;
-                transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
-            }
-
-            .content svg {
-                width: 48px;
-                height: 48px;
-            }
-
-            .content .para {
-                z-index: 1;
-                opacity: 1;
-                font-size: 18px;
-                transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
-            }
-
-            .content .link {
-                z-index: 1;
-                color: #fea000;
-                text-decoration: none;
-                font-family: inherit;
-                font-size: 16px;
-                transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
-            }
-
-                .content .link:hover {
-                    text-decoration: underline;
-                }
-
-        .card:hover {
-            transform: translate(0px, -16px);
-        }
-
-            .card:hover .content::before {
-                rotate: -8deg;
-                top: 0;
-                width: 100%;
-                height: 100%;
-            }
-
-            .card:hover .content::after {
-                rotate: 8deg;
-                top: 0;
-                width: 100%;
-                height: 100%;
-            }
 
         .container.body-content {
             margin: 10px;
@@ -186,16 +90,16 @@
             width: 100%;
         }
 
-        table tr td {
-            font-family: 'Jaldi', sans-serif;
-            font-size: 16px;
-            border: 1px solid black;
-            border-radius: 8px;
-        }
+            table tr td {
+                font-family: 'Jaldi', sans-serif;
+                font-size: 16px;
+                border: 1px solid black;
+                border-radius: 8px;
+            }
 
-        table tr th {
-            border-radius: 8px;
-        }
+            table tr th {
+                border-radius: 8px;
+            }
 
         td, th {
             padding: 8px;
@@ -237,82 +141,85 @@
 
     <script>
         $(document).ready(function () {
-
-
             // Function to update the Change Status textarea
-            function updateChangeStatus() {
-                var username = $("#username").val();
-
-                var changeStatusText = $("#ChangeStatus").val(); // Get the current text in the Change Status textarea
+            function updateChangeStatus(changedElement) {
+                var changeStatusText = ""; // Initialize changeStatusText
 
                 // If the textarea is empty, set its value to the result of User.Identity.GetUserName() as the initial value
-                if (changeStatusText.trim() === "") {
-                    changeStatusText = "User => " + username + "\n";
+                if ($("#ChangeStatus").val().trim() === "") {
+                    changeStatusText =  $("#username").val() + " | ";
+                } else {
+                    changeStatusText = $("#ChangeStatus").val();
                 }
 
-                // Loop through each textbox and append its name and changed value to the changeStatusText if it has changed
-                $("input[type='text']").each(function () {
-                    var textBoxName = $(this).attr("name");
-                    var textBoxValue = $(this).val();
-                    // Check if the value has changed since the last update
-                    if ($(this).data("previous-value") !== textBoxValue) {
-                        changeStatusText += textBoxName + " => " + textBoxValue + "\n";
-                        // Update the previous value data attribute to the current value
-                        $(this).data("previous-value", textBoxValue);
-                    }
-                });
-
-                // Loop through each dropdown and append its name and selected option to the changeStatusText if it has changed
-                $("select").each(function () {
-                    var dropDownName = $(this).attr("name");
-                    var dropDownValue = $(this).find("option:selected").text();
-                    // Check if the value has changed since the last update
-                    if ($(this).data("previous-value") !== dropDownValue) {
-                        changeStatusText += dropDownName + " => " + dropDownValue + "\n";
-                        // Update the previous value data attribute to the current value
-                        $(this).data("previous-value", dropDownValue);
-                    }
-                });
-
-                // Get the comments textarea value
-                var commentsValue = $("#Comments").val();
-                // Check if the comments value has changed since the last update
-                if ($("#Comments").data("previous-value") !== commentsValue) {
-                    changeStatusText += "Comments => " + commentsValue + "\n"; // Make sure to add a newline character after each change
-                    // Update the previous value data attribute to the current value
-                    $("#Comments").data("previous-value", commentsValue);
+                // Update the changeStatusText based on the type of the changedElement
+                if (changedElement.is("input[type='text']")) {
+                    var textBoxName = changedElement.attr("name");
+                    var textBoxValue = changedElement.val();
+                    changeStatusText += textBoxName + " : " + textBoxValue + " | ";
+                } else if (changedElement.is("select")) {
+                    var dropDownName = changedElement.attr("name");
+                    var dropDownValue = changedElement.find("option:selected").text();
+                    changeStatusText += dropDownName + " : " + dropDownValue + " | ";
+                } else if (changedElement.is("#Comments")) {
+                    var commentsValue = changedElement.val();
+                    changeStatusText += "Comments : " + commentsValue + " | ";
                 }
 
                 // Update the Change Status textarea with the generated text
                 $("#ChangeStatus").val(changeStatusText);
             }
 
-            // Call the updateChangeStatus function when a textbox loses focus
-            $("input[type='text']").on("focusout", function () {
-                updateChangeStatus();
-            });
-
-            // Call the updateChangeStatus function when a dropdown loses focus
-            $("select").on("change", function () {
-                updateChangeStatus();
-            });
-
-            // Call the updateChangeStatus function when the comments textarea loses focus
-            $("#Comments").on("focusout", function () {
-                updateChangeStatus();
+            // Call the updateChangeStatus function when a textbox, dropdown, or comments textarea loses focus
+            $("input[type='text'], select, #Comments").on("change", function () {
+                updateChangeStatus($(this));
             });
 
             // Call the updateChangeStatus function on page load to initialize the Change Status textarea
-            updateChangeStatus();
+            updateChangeStatus($("#ChangeStatus"));
 
             // Set the initial value of the Change Status textarea to empty
             $("#ChangeStatus").val("");
         });
 
 
+
     </script>
 
 
+    <script type="text/javascript">
+
+      $(document).ready(function ()
+      {
+
+       searchCases2();
+
+
+      })
+
+
+      function searchCases2() {
+          console.log("Button clicked");
+          var query = $("#AccountNo").val();
+          var url = '@Url.Action("_History", "Home")';
+          url = url.replace("_query_", query);
+          console.log(url);
+         /* alert(query)*/
+          $.ajax({
+              url: url,
+              data: { query: query },
+              type: "Post",
+              success: function (result) {
+
+                  $("#History").html(result);
+              },
+              error: function (e) {
+                  alert("Error fetching search results");
+              }
+          });
+      }
+
+    </script>
 
 
 
@@ -333,7 +240,7 @@
 
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.Agent, new { Value = User.Identity.GetUserName() })
-            @Html.HiddenFor(model => model.AccountNo)
+            @*@Html.HiddenFor(model => model.AccountNo)*@
 
             <br />
 
@@ -447,6 +354,36 @@
                 </div>
             </div>
 
+            <div style=" padding: 20px 10px;">
+                @{
+                    var bouncedRecords = ViewBag.Bounce as List<BouncedRecord>;
+                }
+                <div>Bounced Details</div>
+                <table>
+                    <tr>
+                        <td class="tableHead">Reason Code</td>
+                        <td class="tableHead">Text</td>
+                        <td class="tableHead">Date Bounced</td>
+                        <td class="tableHead">Cheque Number</td>
+                        <td class="tableHead">Cheque Date</td>
+                        <td class="tableHead">Total Amount</td>
+                    </tr>
+
+                    @foreach (var item in bouncedRecords)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.ReasonCode, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.Text, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.DateBounced, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.ChequeNumber, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.ChequeDate, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.TotalAmount, new { @class = "tablecont" })</td>
+
+                        </tr>
+                    }
+                </table>
+            </div>
+
             <div class="form-group  col-sm-12 col-md-4 col-xl-3">
                 <div class="row">
                     <div class="col-md-12">
@@ -496,6 +433,7 @@
                 <div class="col-md-10">
                     @Html.DropDownListFor(model => model.SubDisposition, new List<SelectListItem>
                     {
+                        new SelectListItem { Text = " ", Value = " " , Selected = true},
                         new SelectListItem { Text = "NA", Value = "NA" },
                         new SelectListItem { Text = "English", Value = "English" },
                         new SelectListItem { Text = "Arabic", Value = "Arabic" },
@@ -519,94 +457,154 @@
             </div>
 
 
+                 @Html.Label("History", htmlAttributes: new { @class = "control-label label" })
+                <div id="History">
 
+                </div>
 
-            <div class="form-group  col-sm-12 col-md-4 col-xl-12">
-                <div class="row">
+                <div class="form-group  col-sm-12 col-md-4 col-xl-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.LabelFor(model => model.Comments, "Comments", htmlAttributes: new { @class = "control-label label" })
+                        </div>
+                    </div>
                     <div class="col-md-12">
-                        @Html.LabelFor(model => model.Comments, "Comments", htmlAttributes: new { @class = "control-label label" })
+                        <div>
+                            @Html.TextArea("CommentsBox", new { @class = "form-control box", @style = "width: 400px; height: 100px; padding: 0px !important;" })
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    @Html.TextAreaFor(model => model.Comments, new { @class = "form-control box", @style = "width: 100%; height: 100px;" })
-                </div>
-            </div>
 
-            <div class="form-group  col-sm-12 col-md-4 col-xl-12">
-                <div class="row">
+                <div class="form-group  col-sm-12 col-md-4 col-xl-12" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.LabelFor(model => model.ChangeStatus, "Change Status", htmlAttributes: new { @class = "control-label label" })
+                        </div>
+                    </div>
                     <div class="col-md-12">
-                        @Html.LabelFor(model => model.ChangeStatus, "Change Status", htmlAttributes: new { @class = "control-label label" })
+                        @Html.TextAreaFor(model => model.ChangeStatus, new { @class = "form-control box", @style = "width: 100%; height: 100px; padding-top: 0;" })
                     </div>
                 </div>
-                <div class="col-md-12">
-                    @Html.TextAreaFor(model => model.ChangeStatus, new { @class = "form-control box", @style = "width: 100%; height: 100px; padding-top: 0;" })
+                <div class="form-group col-sm-12 col-md-4" style="margin: 50px 0px;">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Submit" class="btn SubBtn" style="width:150px; height: 50px" />
+                    </div>
                 </div>
+
             </div>
-            <div style=" padding: 20px 10px;">
-                @{
-                    var bouncedRecords = ViewBag.Bounce as List<BouncedRecord>;
-                }
-                <div>Bounced Details</div>
-                <table>
-                    <tr>
-                        <td class="tableHead">Reason Code</td>
-                        <td class="tableHead">Text</td>
-                        <td class="tableHead">Date Bounced</td>
-                        <td class="tableHead">Cheque Number</td>
-                        <td class="tableHead">Cheque Date</td>
-                        <td class="tableHead">Total Amount</td>
-                    </tr>
-
-                    @foreach (var item in bouncedRecords)
-                    {
-                        <tr>
-                            <td>@Html.DisplayFor(modelItem => item.ReasonCode, new { @class = "tablecont" })</td>
-                            <td>@Html.DisplayFor(modelItem => item.Text, new { @class = "tablecont" })</td>
-                            <td>@Html.DisplayFor(modelItem => item.DateBounced, new { @class = "tablecont" })</td>
-                            <td>@Html.DisplayFor(modelItem => item.ChequeNumber, new { @class = "tablecont" })</td>
-                            <td>@Html.DisplayFor(modelItem => item.ChequeDate, new { @class = "tablecont" })</td>
-                            <td>@Html.DisplayFor(modelItem => item.TotalAmount, new { @class = "tablecont" })</td>
-
-                        </tr>
-                    }
-                </table>
-            </div>
-
-
-
-            <div class="form-group col-sm-12 col-md-4" style="margin: 50px 0px;">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Submit" class="btn SubBtn" style="width:150px; height: 50px" />
-                </div>
-            </div>
-
-        </div>
         }
     </div>
     <div style=" margin: 100px 0px 0px 50px;">
-        <div class="card" style="border: none;">
-            <div class="content">
-                <svg fill="currentColor"
-                     viewBox="0 0 24 24"
-                     xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 9V5H4V9H20ZM20 11H4V19H20V11ZM3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM5 12H8V17H5V12ZM5 6H7V8H5V6ZM9 6H11V8H9V6Z"></path>
-                </svg>
+
+        <div class="card">
+            <div class="card-details">
+                <p class="text-title">Contact Info</p>
                 <p class="para">
                     <b>Mobile Numbers</b>
-                    @Model.Mobile1 <!-- Assuming Model.Mobile1 contains the value -->
-                    @Model.Mobile2 <!-- Assuming Model.Mobile2 contains the value -->
-                    @Model.Mobile3 <!-- Assuming Model.Mobile3 contains the value -->
-                    @Model.Mobile4 <!-- Assuming Model.Mobile4 contains the value -->
-                    <br /> <br />
-                    <b>Email Ids </b>
-                    @Model.Email_1 <!-- Assuming Model.Email_1 contains the value -->
-                    @Model.Email_2 <!-- Assuming Model.Email_2 contains the value -->
-                    @Model.Email_3 <!-- Assuming Model.Email_3 contains the value -->
+                    <br />
+                    @foreach (var mobileNumber in new[] { Model.Mobile1, Model.Mobile2, Model.Mobile3, Model.Mobile4 })
+                    {
+                        if (!string.IsNullOrEmpty(mobileNumber))
+                        {
+                            <span class="editable-field" data-model-property="Mobile1">
+                                <span class="value">@mobileNumber</span>
+                                <img src="~/Content/Images/edit1.png" style="width: 12px; height: 12px; cursor: pointer;" class="edit-icon" />
+                                <img src="~/Content/Images/copy.png" style="width: 12px; height: 12px; cursor: pointer;" class="copy-icon" data-value="@mobileNumber" />
+                            </span>
+                            <br />
+                        }
+                    }
+
+                    <br />
+                    <b>Email Ids</b>
+                    <br />
+                    @foreach (var email in new[] { Model.Email_1, Model.Email_2, Model.Email_3 })
+                    {
+                        if (!string.IsNullOrEmpty(email))
+                        {
+                            <span class="editable-field" data-model-property="Email_1">
+                                <span class="value">@email</span>
+                                <img src="~/Content/Images/edit1.png" style="width: 12px; height: 15px; cursor: pointer;" class="edit-icon" />
+                                <img src="~/Content/Images/copy.png" style="width: 12px; height: 12px; cursor: pointer;" class="copy-icon" data-value="@email" />
+                            </span>
+                            <br />
+                        }
+                    }
                 </p>
             </div>
         </div>
 
 
+
+        <script>
+            $(document).ready(function () {
+            $('.edit-icon').click(function () {
+                var editableField = $(this).closest('.editable-field');
+                var value = editableField.find('.value');
+                var modelProperty = editableField.data('model-property'); // Get the model property dynamically
+                value.replaceWith('<input type="text" value="' + value.text() + '" class="editable-input" style="width:150px;">');
+                editableField.find('.editable-input').focus().data('model-property', modelProperty); // Set the model property for the input
+            });
+
+            $(document).on('blur', '.editable-input', function () {
+                var editableField = $(this).closest('.editable-field');
+                var input = $(this);
+                var newValue = input.val();
+                var modelProperty = input.data('model-property'); // Get the model property dynamically
+                input.replaceWith('<span class="value">' + newValue + '</span>');
+                // Here, you can send the updated value to the server using AJAX or handle it as needed
+            });
+
+            $(document).on('keydown', '.editable-input', function (e) {
+                $(document).off('blur', '.editable-input');
+
+                if (e.key === 'Enter' || e.keyCode === 13) {
+                    var editableField = $(this).closest('.editable-field');
+                    var input = $(this);
+                    var newValue = input.val();
+                    var modelProperty = input.data('model-property'); // Get the model property dynamically
+                    var recordId = $('input[name="Id"]').val(); // Get the value of the hidden input field
+
+                    input.replaceWith('<span class="value">' + newValue + '</span>');
+
+                    // Send the updated value, model property, and record ID to the EditInfo action method of the Home controller
+                    var dataToSend = {
+                        value: newValue,
+                        modelProperty: modelProperty,
+                        id: recordId // Include the record ID in the data
+                    };
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("EditInfo", "Home")',
+                        data: dataToSend,
+                        success: function (response) {
+                            // Handle the successful response from the server, if needed
+                            console.log(response);
+                        },
+                        error: function (xhr, status, error) {
+                            // Handle the error response from the server, if needed
+                            console.error(error);
+                        }
+                    });
+                }
+
+                $(document).on('blur', '.editable-input', function () {
+                    var editableField = $(this).closest('.editable-field');
+                    var input = $(this);
+                    var newValue = input.val();
+                    input.replaceWith('<span class="value">' + newValue + '</span>');
+                    // Here, you can send the updated value to the server using AJAX or handle it as needed
+                });
+            });
+
+            $('.copy-icon').click(function () {
+                var value = $(this).data('value');
+                navigator.clipboard.writeText(value);
+            });
+});
+
+        </script>
     </div>
 
 
@@ -616,3 +614,52 @@
 
 
 
+<style>
+    .card {
+        width: 250px;
+        height: 350px;
+        border-radius: 20px;
+        background: #f5f5f5;
+        position: relative;
+        border: 2px solid #c3c6ce;
+        transition: 0.5s ease-out;
+        overflow: visible;
+        font-family: 'Jaldi', sans-serif;
+        line-height: 1.2;
+    }
+
+    .card-details {
+        color: black;
+        height: 100%;
+        gap: .5em;
+        display: grid;
+        place-content: center;
+        padding: 10px;
+    }
+
+    .card-button {
+        /*transform: translate(-50%, 125%);*/
+        width: 60%;
+        border-radius: 1rem;
+        border: none;
+        background-color: #008bf8;
+        color: #fff;
+        font-size: 1rem;
+        padding: .5rem 1rem;
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        opacity: 0;
+        transition: 0.3s ease-out;
+    }
+
+    .text-body {
+        color: rgb(134, 134, 134);
+    }
+
+    /*Text*/
+    .text-title {
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+</style>

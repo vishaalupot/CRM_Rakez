@@ -81,8 +81,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AccountNo" Type="varchar(max)" />
           <Property Name="CustomerName" Type="varchar(max)" />
-          <Property Name="Date" Type="date" />
-          <Property Name="Time" Type="time" Precision="7" />
+          <Property Name="Datetime" Type="datetime" Nullable="false" />
           <Property Name="Dispo" Type="varchar(max)" />
           <Property Name="SubDispo" Type="varchar(max)" />
           <Property Name="Comments" Type="varchar(max)" />
@@ -322,8 +321,8 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
           </AssociationSet>
           <EntitySet Name="RecordDatas" EntityType="RakezCRM.RecordData" />
-          <EntitySet Name="EventTables" EntityType="RakezCRM.EventTable" />
           <EntitySet Name="BouncedRecords" EntityType="RakezCRM.BouncedRecord" />
+          <EntitySet Name="EventTables" EntityType="RakezCRM.EventTable" />
         </EntityContainer>
         <EntityType Name="RecordData">
           <Key>
@@ -364,25 +363,6 @@
           <Property Name="BOthers" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Segments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="EventTable">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AccountNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="CustomerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Date" Type="DateTime" Precision="0" />
-          <Property Name="Time" Type="Time" Precision="7" />
-          <Property Name="Dispo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="SubDispo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="ChangeStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="CallbackTime" Type="DateTime" Precision="3" />
-          <Property Name="Record_Id" Type="Int32" />
-          <Property Name="Agent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-          <Property Name="Segments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="BouncedRecord">
           <Key>
             <PropertyRef Name="Id" />
@@ -395,6 +375,24 @@
           <Property Name="DateBounced" Type="DateTime" Precision="0" />
           <Property Name="ChequeDate" Type="DateTime" Precision="0" />
           <Property Name="TotalAmount" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="EventTable">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AccountNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Datetime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Dispo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SubDispo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ChangeStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CallbackTime" Type="DateTime" Precision="3" />
+          <Property Name="Record_Id" Type="Int32" />
+          <Property Name="Agent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="Segments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -500,6 +498,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="BouncedRecords">
+            <EntityTypeMapping TypeName="RakezCRM.BouncedRecord">
+              <MappingFragment StoreEntitySet="BouncedRecord">
+                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
+                <ScalarProperty Name="ChequeDate" ColumnName="ChequeDate" />
+                <ScalarProperty Name="DateBounced" ColumnName="DateBounced" />
+                <ScalarProperty Name="Text" ColumnName="Text" />
+                <ScalarProperty Name="ReasonCode" ColumnName="ReasonCode" />
+                <ScalarProperty Name="ChequeNumber" ColumnName="ChequeNumber" />
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="EventTables">
             <EntityTypeMapping TypeName="RakezCRM.EventTable">
               <MappingFragment StoreEntitySet="EventTable">
@@ -512,23 +524,8 @@
                 <ScalarProperty Name="Comments" ColumnName="Comments" />
                 <ScalarProperty Name="SubDispo" ColumnName="SubDispo" />
                 <ScalarProperty Name="Dispo" ColumnName="Dispo" />
-                <ScalarProperty Name="Time" ColumnName="Time" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Datetime" ColumnName="Datetime" />
                 <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
-                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="BouncedRecords">
-            <EntityTypeMapping TypeName="RakezCRM.BouncedRecord">
-              <MappingFragment StoreEntitySet="BouncedRecord">
-                <ScalarProperty Name="TotalAmount" ColumnName="TotalAmount" />
-                <ScalarProperty Name="ChequeDate" ColumnName="ChequeDate" />
-                <ScalarProperty Name="DateBounced" ColumnName="DateBounced" />
-                <ScalarProperty Name="Text" ColumnName="Text" />
-                <ScalarProperty Name="ReasonCode" ColumnName="ReasonCode" />
-                <ScalarProperty Name="ChequeNumber" ColumnName="ChequeNumber" />
                 <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

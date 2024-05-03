@@ -17,8 +17,7 @@ namespace CRM_Raviz.Models
         public int Id { get; set; }
         public string AccountNo { get; set; }
         public string CustomerName { get; set; }
-        public Nullable<System.DateTime> Date { get; set; }
-        public Nullable<System.TimeSpan> Time { get; set; }
+        public System.DateTime Datetime { get; set; }
         public string Dispo { get; set; }
         public string SubDispo { get; set; }
         public string Comments { get; set; }

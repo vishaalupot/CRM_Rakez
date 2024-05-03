@@ -269,6 +269,7 @@
     <Content Include="Content\Images\arrow.png" />
     <Content Include="Content\Images\calendar-check.png" />
     <Content Include="Content\Images\call-back.png" />
+    <Content Include="Content\Images\copy.png" />
     <Content Include="Content\Images\derbylogo.png" />
     <Content Include="Content\Images\derbylogo1.png" />
     <Content Include="Content\Images\edit1.png" />

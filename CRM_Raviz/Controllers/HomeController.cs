@@ -12,6 +12,7 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity;
+using System.Data.Entity.Infrastructure;
 
 namespace CRM_Raviz.Controllers
 {
@@ -182,61 +183,207 @@ namespace CRM_Raviz.Controllers
             RecordData recordData = db.RecordDatas.Find(int.Parse(form["Id"].ToString()));
 
             EventTable eventTable = db.EventTables.Find(int.Parse(form["Id"].ToString()));
+            string val = form["Disposition"].ToString();
 
-            if (true)
+            if (val != "CALLBACK" && val != "CALLBACK LANGUAGE")
             {
-                eventTable = new EventTable();
-                //eventTable.Date = DateTime.Now;
-                //eventTable.Time = DateTime.Now.TimeOfDay;
+                recordData.SubDisposition = " ";
+                recordData.CallbackTime = new DateTime(2000, 1, 1);
+                eventTable.SubDispo = " ";
+                eventTable.CallbackTime = new DateTime(2000, 1, 1);
+
+
+            }
+            else if (val == "CALLBACK LANGUAGE")
+            {
+                recordData.SubDisposition = form["SubDisposition"].ToString();
+                recordData.CallbackTime = DateTime.Now;
+                eventTable.SubDispo = form["SubDisposition"].ToString();
+                eventTable.CallbackTime = DateTime.Now;
+
+            }
+            else if (val == "CALLBACK")
+            {
+                recordData.SubDisposition = " ";
+                recordData.CallbackTime = DateTime.Now;
+                eventTable.SubDispo = " ";
+                eventTable.CallbackTime = DateTime.Now;
+
+            }
+
+
+
+            //string History = @User.Identity.GetUserName() + new string(' ', 25)
+            //     + DateTime.Now + new string(' ', 25)
+            //     + form["Disposition"].ToString() + " "
+            //     + form["SubDisposition"].ToString() +" "
+            //     + form["CallbackTime"].ToString() 
+            //     +" || Remarks: "+ commentsValue;
+
+            // string Heading = "Username" + new string(' ', 25) + "Date" + new string(' ', 50) + "Disposition";
+
+
+
+           
+                eventTable.Datetime = DateTime.Now;
                 eventTable.CustomerName = form["CustomerName"].ToString();
                 eventTable.Agent = form["Agent"].ToString();
                 eventTable.AccountNo = form["AccountNo"].ToString();
                 eventTable.Dispo = form["Disposition"].ToString();
-                eventTable.SubDispo = form["SubDisposition"].ToString();
-                eventTable.Comments = form["Comments"].ToString();
-                eventTable.ChangeStatus = form["ChangeStatus"].ToString();
-                eventTable.ModifiedDate = DateTime.Now;
+                eventTable.Comments = form["CommentsBox"].ToString();
+                //if (!string.IsNullOrEmpty(form["CallbackTime"]))
+                //{
+                //    eventTable.CallbackTime = DateTime.Parse(form["CallbackTime"]);
+                //}
+                //else
+                //{
+                //    eventTable.CallbackTime = new DateTime(2000, 1, 1); // Example default value
+                //}
+                //eventTable.ChangeStatus = form["ChangeStatus"].ToString();
+                //eventTable.ModifiedDate = DateTime.Now;
                 eventTable.Segments = recordData.Segments;
-                if (!string.IsNullOrEmpty(form["CallbackTime"]))
-                {
-                    eventTable.CallbackTime = DateTime.Parse(form["CallbackTime"]);
-                }
-                else
-                {
-                    // Assign a specific default value if CallbackTime is null or empty
-                    eventTable.CallbackTime = new DateTime(2000, 1, 1); // Example default value
-                }
                 eventTable.Record_Id = int.Parse(form["Id"].ToString());
 
                 db.EventTables.Add(eventTable);
-            }
 
 
-            recordData.Disposition = form["Disposition"].ToString();
-            recordData.SubDisposition = form["SubDisposition"].ToString();
-            recordData.Comments = form["Comments"].ToString();
-            recordData.ChangeStatus = form["ChangeStatus"].ToString();
-            recordData.ModifiedDate = DateTime.Now;
-            if (!string.IsNullOrEmpty(form["CallbackTime"]))
-            {
-                eventTable.CallbackTime = DateTime.Parse(form["CallbackTime"]);
-            }
-            else
-            {
+                recordData.Disposition = form["Disposition"].ToString();
+                recordData.Comments = form["CommentsBox"].ToString();
+                recordData.ChangeStatus = form["ChangeStatus"].ToString();
+                recordData.ModifiedDate = DateTime.Now;
+                if (!string.IsNullOrEmpty(form["CallbackTime"]))
+                {
+                recordData.CallbackTime = DateTime.Parse(form["CallbackTime"]);
+                }
+                else
+                {
                 // Assign a specific default value if CallbackTime is null or empty
-                eventTable.CallbackTime = new DateTime(2000, 1, 1); // Example default value
-            }
+                recordData.CallbackTime = new DateTime(2000, 1, 1); // Example default value
+                }
 
-            db.Entry(recordData).State = System.Data.Entity.EntityState.Modified;
+                db.Entry(recordData).State = System.Data.Entity.EntityState.Modified;
 
 
 
 
             db.SaveChanges();
-            return RedirectToAction("EditAllocation");
+            return RedirectToAction("RealEditAllocation");
         }
 
 
+        //public ActionResult EditInfo()
+        //{
+        //    CPVDBEntities db = new CPVDBEntities();
+        //    var results1 = db.RecordDatas.ToList();
+        //    results1 = db.RecordDatas
+        //           .Where(item => item.Agent == @User.Identity.GetUserName())
+        //           .ToList();
+        //    return PartialView(results1);
+        //}
+
+        //[HttpPost]
+        //public ActionResult EditInfo(string value, string modelProperty)
+        //{
+        //    // Get the model instance from the repository or service
+        //    CPVDBEntities db = new CPVDBEntities();
+        //    RecordData recordData = new RecordData();
+
+        //    // Update the corresponding property of the model
+        //    switch (modelProperty)
+        //    {
+        //        case "Mobile1":
+        //            recordData.Mobile1 = value;
+        //            break;
+        //        case "Mobile2":
+        //            recordData.Mobile2 = value;
+        //            break;
+        //         case "Mobile3":
+        //            recordData.Mobile3 = value;
+        //            break;
+        //        case "Mobile4":
+        //            recordData.Mobile4 = value;
+        //            break;
+        //        case "Email_1":
+        //            recordData.Email_1 = value;
+        //            break;
+        //        case "Email_2":
+        //            recordData.Email_2 = value;
+        //            break;
+        //        case "Email_3":
+        //            recordData.Email_3 = value;
+        //            break;
+                
+        //        default:
+        //            break;
+        //    }
+
+
+        //    db.Entry(recordData).State = System.Data.Entity.EntityState.Modified;
+        //    db.SaveChanges();
+        //    // Return a success response or perform any other necessary actions
+        //    return Json(new { success = true });
+        //}
+
+
+
+        [HttpPost]
+        public ActionResult EditInfo(string value, string modelProperty, int id)
+        {
+            using (var db = new CPVDBEntities())
+            {
+                var recordData = db.RecordDatas.Find(id); // Load the record from the database
+
+                if (recordData == null)
+                {
+                    return HttpNotFound(); // Handle case where record doesn't exist
+                }
+
+                // Update the corresponding property of the model
+                switch (modelProperty)
+                {
+                    case "Mobile1":
+                        recordData.Mobile1 = value;
+                        break;
+                    case "Mobile2":
+                        recordData.Mobile2 = value;
+                        break;
+                    case "Mobile3":
+                        recordData.Mobile3 = value;
+                        break;
+                    case "Mobile4":
+                        recordData.Mobile4 = value;
+                        break;
+                    case "Email_1":
+                        recordData.Email_1 = value;
+                        break;
+                    case "Email_2":
+                        recordData.Email_2 = value;
+                        break;
+                    case "Email_3":
+                        recordData.Email_3 = value;
+                        break;
+
+                    default:
+                        break;
+                }
+
+                try
+                {
+                    db.Entry(recordData).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+                    return Json(new { success = true });
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    // Handle concurrency conflict
+                    foreach (var entry in ex.Entries)
+                    {
+                        entry.Reload(); // Reload the entity from the database
+                    }
+                    return Json(new { success = false, message = "Concurrency conflict occurred. Please try again." });
+                }
+            }
+        }
 
         public ActionResult _Records()
         {
@@ -510,7 +657,7 @@ namespace CRM_Raviz.Controllers
             }
             else if (specificDate.HasValue)
             {
-                caseTables = db.EventTables.Where(et => et.Date == specificDate.Value.Date && et.SubDispo == callbackLanguage).ToList();
+                caseTables = db.EventTables.Where(et => et.Datetime == specificDate.Value.Date && et.SubDispo == callbackLanguage).ToList();
             }
             else
             {

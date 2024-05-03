@@ -28,10 +28,8 @@
     {
         <table>
             <tr>
-                <td class="tableHead">Account no</td>
-                <td class="tableHead">Customer Name</td>
+                <td class="tableHead">Agent</td>
                 <td class="tableHead">Date</td>
-                <td class="tableHead">Time</td>
                 <td class="tableHead">Disposition</td>
                 <td class="tableHead">Subdisposition</td>
                 <td class="tableHead">Callback</td>
@@ -43,14 +41,34 @@
             {
 
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.AccountNo, new { @class = "tablecont" })</td>
+                    @*<td>@Html.DisplayFor(modelItem => item.AccountNo, new { @class = "tablecont" })</td>
                     <td>@Html.DisplayFor(modelItem => item.CustomerName, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.Date, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.Time, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.Datetime, new { @class = "tablecont" })</td>
                     <td>@Html.DisplayFor(modelItem => item.Dispo, new { @class = "tablecont" })</td>
                     <td>@Html.DisplayFor(modelItem => item.SubDispo, new { @class = "tablecont" })</td>
                     <td>@Html.DisplayFor(modelItem => item.CallbackTime, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.Comments, new { @class = "tablecont" })</td>*@
+
+                    <td>@Html.DisplayFor(modelItem => item.Agent, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.Datetime, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.Dispo, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.SubDispo, new { @class = "tablecont" })</td>
+                    <td>
+                        @{
+                            DateTime defaultDateTime = new DateTime(2000, 1, 1, 0, 0, 0);
+                            if (item.CallbackTime == defaultDateTime)
+                            {
+                                @:-
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => item.CallbackTime, new { @class = "tablecont" })
+                            }
+                        }
+                    </td>
                     <td>@Html.DisplayFor(modelItem => item.Comments, new { @class = "tablecont" })</td>
+
+
                 </tr>
             }
 

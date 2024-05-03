@@ -30,7 +30,7 @@ namespace CRM_Raviz.Models
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<RecordData> RecordDatas { get; set; }
-        public virtual DbSet<EventTable> EventTables { get; set; }
         public virtual DbSet<BouncedRecord> BouncedRecords { get; set; }
+        public virtual DbSet<EventTable> EventTables { get; set; }
     }
 }
