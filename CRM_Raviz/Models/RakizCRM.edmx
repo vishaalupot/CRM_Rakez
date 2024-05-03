@@ -91,6 +91,7 @@
           <Property Name="Agent" Type="varchar(max)" />
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="Segments" Type="varchar(max)" />
+          <Property Name="DialedNumber" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="RecordData">
           <Key>
@@ -130,6 +131,7 @@
           <Property Name="TechnicalReason" Type="varchar(max)" />
           <Property Name="BOthers" Type="varchar(max)" />
           <Property Name="Segments" Type="varchar(max)" />
+          <Property Name="DialedNumber" Type="varchar(max)" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
           <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
@@ -362,6 +364,7 @@
           <Property Name="TechnicalReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="BOthers" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Segments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DialedNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="BouncedRecord">
           <Key>
@@ -393,6 +396,7 @@
           <Property Name="Agent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="Segments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DialedNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -461,6 +465,7 @@
           <EntitySetMapping Name="RecordDatas">
             <EntityTypeMapping TypeName="RakezCRM.RecordData">
               <MappingFragment StoreEntitySet="RecordData">
+                <ScalarProperty Name="DialedNumber" ColumnName="DialedNumber" />
                 <ScalarProperty Name="Segments" ColumnName="Segments" />
                 <ScalarProperty Name="BOthers" ColumnName="BOthers" />
                 <ScalarProperty Name="TechnicalReason" ColumnName="TechnicalReason" />
@@ -515,6 +520,7 @@
           <EntitySetMapping Name="EventTables">
             <EntityTypeMapping TypeName="RakezCRM.EventTable">
               <MappingFragment StoreEntitySet="EventTable">
+                <ScalarProperty Name="DialedNumber" ColumnName="DialedNumber" />
                 <ScalarProperty Name="Segments" ColumnName="Segments" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="Agent" ColumnName="Agent" />

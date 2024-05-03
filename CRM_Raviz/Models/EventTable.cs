@@ -27,5 +27,6 @@ namespace CRM_Raviz.Models
         public string Agent { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public string Segments { get; set; }
+        public string DialedNumber { get; set; }
     }
 }

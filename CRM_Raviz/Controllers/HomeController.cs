@@ -172,6 +172,29 @@ namespace CRM_Raviz.Controllers
             List<BouncedRecord> bouncedRecords = db.BouncedRecords.Where(record => record.AccountNo == AccountNo).ToList();
             ViewBag.Bounce = bouncedRecords;
 
+            // Assuming mobileData is a single record
+            var mobileData = db.RecordDatas.Find(id);
+
+            if (mobileData != null)
+            {
+                var mobileOptions = new List<SelectListItem>();
+
+                // Add dropdowns for each mobile number
+                for (int i = 1; i <= 4; i++)
+                {
+                    var mobileNumber = mobileData.GetType().GetProperty($"Mobile{i}").GetValue(mobileData);
+                    mobileOptions.Add(new SelectListItem
+                    {
+                        Text = mobileNumber.ToString(),
+                        Value = mobileNumber.ToString()
+                    });
+                }
+
+                // Pass the list of SelectListItem to the view
+                ViewBag.MobileOptions = mobileOptions;
+            }
+
+
             return View(recordData);
         }
 
@@ -182,7 +205,9 @@ namespace CRM_Raviz.Controllers
 
             RecordData recordData = db.RecordDatas.Find(int.Parse(form["Id"].ToString()));
 
-            EventTable eventTable = db.EventTables.Find(int.Parse(form["Id"].ToString()));
+            EventTable eventTable = new EventTable();
+                
+                //db.EventTables.Find(int.Parse(form["Id"].ToString()));
             string val = form["Disposition"].ToString();
 
             if (val != "CALLBACK" && val != "CALLBACK LANGUAGE")
@@ -231,6 +256,7 @@ namespace CRM_Raviz.Controllers
                 eventTable.AccountNo = form["AccountNo"].ToString();
                 eventTable.Dispo = form["Disposition"].ToString();
                 eventTable.Comments = form["CommentsBox"].ToString();
+                eventTable.DialedNumber = form["DialedNumber"].ToString();
                 //if (!string.IsNullOrEmpty(form["CallbackTime"]))
                 //{
                 //    eventTable.CallbackTime = DateTime.Parse(form["CallbackTime"]);
@@ -250,6 +276,7 @@ namespace CRM_Raviz.Controllers
                 recordData.Disposition = form["Disposition"].ToString();
                 recordData.Comments = form["CommentsBox"].ToString();
                 recordData.ChangeStatus = form["ChangeStatus"].ToString();
+                recordData.DialedNumber = form["DialedNumber"].ToString();
                 recordData.ModifiedDate = DateTime.Now;
                 if (!string.IsNullOrEmpty(form["CallbackTime"]))
                 {

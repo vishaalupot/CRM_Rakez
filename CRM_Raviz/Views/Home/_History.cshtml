@@ -30,6 +30,7 @@
             <tr>
                 <td class="tableHead">Agent</td>
                 <td class="tableHead">Date</td>
+                <td class="tableHead">Dialed Number</td>
                 <td class="tableHead">Disposition</td>
                 <td class="tableHead">Subdisposition</td>
                 <td class="tableHead">Callback</td>
@@ -42,15 +43,17 @@
 
                 <tr>
                     @*<td>@Html.DisplayFor(modelItem => item.AccountNo, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.CustomerName, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.Datetime, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.Dispo, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.SubDispo, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.CallbackTime, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.Comments, new { @class = "tablecont" })</td>*@
+        <td>@Html.DisplayFor(modelItem => item.CustomerName, new { @class = "tablecont" })</td>
+        <td>@Html.DisplayFor(modelItem => item.Datetime, new { @class = "tablecont" })</td>
+        <td>@Html.DisplayFor(modelItem => item.Dispo, new { @class = "tablecont" })</td>
+        <td>@Html.DisplayFor(modelItem => item.SubDispo, new { @class = "tablecont" })</td>
+        <td>@Html.DisplayFor(modelItem => item.CallbackTime, new { @class = "tablecont" })</td>
+        <td>@Html.DisplayFor(modelItem => item.Comments, new { @class = "tablecont" })</td>*@
 
                     <td>@Html.DisplayFor(modelItem => item.Agent, new { @class = "tablecont" })</td>
                     <td>@Html.DisplayFor(modelItem => item.Datetime, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.DialedNumber, new { @class = "tablecont" })</td>
+
                     <td>@Html.DisplayFor(modelItem => item.Dispo, new { @class = "tablecont" })</td>
                     <td>@Html.DisplayFor(modelItem => item.SubDispo, new { @class = "tablecont" })</td>
                     <td>

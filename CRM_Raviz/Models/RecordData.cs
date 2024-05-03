@@ -48,5 +48,6 @@ namespace CRM_Raviz.Models
         public string TechnicalReason { get; set; }
         public string BOthers { get; set; }
         public string Segments { get; set; }
+        public string DialedNumber { get; set; }
     }
 }
