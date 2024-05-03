@@ -402,7 +402,6 @@
                         new SelectListItem { Text = "CALLBACK", Value = "CALLBACK" },
                         new SelectListItem { Text = "CALLBACK LANGUAGE", Value = "CALLBACK LANGUAGE" },
                         new SelectListItem { Text = "THIRD PARTY CALLBACK", Value = "THIRD PARTY CALLBACK" },
-                        new SelectListItem { Text = "SWICHTED OFF", Value = "SWICHTED OFF" },
                         new SelectListItem { Text = "DO NOT CALL", Value = "DO NOT CALL" },
                         new SelectListItem { Text = "FOLLOW UP", Value = "FOLLOW UP" },
                         new SelectListItem { Text = "CUSTOMER HUNG UP", Value = "CUSTOMER HUNG UP" },
@@ -418,7 +417,8 @@
                         new SelectListItem { Text = "REFUSE TO PAY", Value = "REFUSE TO PAY" },
                         new SelectListItem { Text = "STATEMENT OF ACCOUNT REQUEST", Value = "STATEMENT OF ACCOUNT REQUEST" },
                         new SelectListItem { Text = "SWITCH OFF", Value = "SWITCH OFF" },
-                        new SelectListItem { Text = "PAYMENT MISSING", Value = "PAYMENT MISSING" }
+                        new SelectListItem { Text = "PAYMENT MISSING", Value = "PAYMENT MISSING" },
+                        new SelectListItem { Text = "PAYMENT LINK SENT", Value = "PAYMENT LINK SENT" }
                     }, new { @class = "form-control box dropdown-styled" })
                     @Html.ValidationMessageFor(model => model.Disposition, "", new { @class = "text-danger" })
                 </div>
@@ -455,43 +455,43 @@
                     @Html.ValidationMessageFor(model => model.CallbackTime, "", new { @class = "text-danger" })
                 </div>
             </div>
-
-
-                 @Html.Label("History", htmlAttributes: new { @class = "control-label label" })
-                <div id="History">
-
-                </div>
-
-                <div class="form-group  col-sm-12 col-md-4 col-xl-12">
-                    <div class="row">
-                        <div class="col-md-12">
-                            @Html.LabelFor(model => model.Comments, "Comments", htmlAttributes: new { @class = "control-label label" })
-                        </div>
-                    </div>
+            <div class="form-group  col-sm-12 col-md-4 col-xl-12">
+                <div class="row">
                     <div class="col-md-12">
-                        <div>
-                            @Html.TextArea("CommentsBox", new { @class = "form-control box", @style = "width: 400px; height: 100px; padding: 0px !important;" })
-                        </div>
+                        @Html.LabelFor(model => model.Comments, "Comments", htmlAttributes: new { @class = "control-label label" })
                     </div>
                 </div>
+                <div class="col-md-12">
+                    <div>
+                        @Html.TextArea("CommentsBox", new { @class = "form-control box", @style = "width: 400px; height: 100px; padding: 0px !important;" })
+                    </div>
+                </div>
+            </div>
 
-                <div class="form-group  col-sm-12 col-md-4 col-xl-12" style="display: none;">
-                    <div class="row">
-                        <div class="col-md-12">
-                            @Html.LabelFor(model => model.ChangeStatus, "Change Status", htmlAttributes: new { @class = "control-label label" })
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        @Html.TextAreaFor(model => model.ChangeStatus, new { @class = "form-control box", @style = "width: 100%; height: 100px; padding-top: 0;" })
-                    </div>
-                </div>
-                <div class="form-group col-sm-12 col-md-4" style="margin: 50px 0px;">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Submit" class="btn SubBtn" style="width:150px; height: 50px" />
-                    </div>
-                </div>
+            @Html.Label("History", htmlAttributes: new { @class = "control-label label" })
+            <div id="History">
 
             </div>
+
+
+
+            <div class="form-group  col-sm-12 col-md-4 col-xl-12" style="display: none;">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.ChangeStatus, "Change Status", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    @Html.TextAreaFor(model => model.ChangeStatus, new { @class = "form-control box", @style = "width: 100%; height: 100px; padding-top: 0;" })
+                </div>
+            </div>
+            <div class="form-group col-sm-12 col-md-4" style="margin: 50px 0px;">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Submit" class="btn SubBtn" style="width:150px; height: 50px" />
+                </div>
+            </div>
+
+        </div>
         }
     </div>
     <div style=" margin: 100px 0px 0px 50px;">
@@ -502,7 +502,7 @@
                 <p class="para">
                     <b>Mobile Numbers</b>
                     <br />
-                    @foreach (var mobileNumber in new[] { Model.Mobile1, Model.Mobile2, Model.Mobile3, Model.Mobile4 })
+                    @foreach (var mobileNumber in new[] { Model?.Mobile1, Model?.Mobile2, Model?.Mobile3, Model?.Mobile4 })
                     {
                         if (!string.IsNullOrEmpty(mobileNumber))
                         {
@@ -518,7 +518,7 @@
                     <br />
                     <b>Email Ids</b>
                     <br />
-                    @foreach (var email in new[] { Model.Email_1, Model.Email_2, Model.Email_3 })
+                    @foreach (var email in new[] { Model?.Email_1, Model?.Email_2, Model?.Email_3 })
                     {
                         if (!string.IsNullOrEmpty(email))
                         {
@@ -537,72 +537,59 @@
 
 
         <script>
-            $(document).ready(function () {
-            $('.edit-icon').click(function () {
-                var editableField = $(this).closest('.editable-field');
-                var value = editableField.find('.value');
-                var modelProperty = editableField.data('model-property'); // Get the model property dynamically
-                value.replaceWith('<input type="text" value="' + value.text() + '" class="editable-input" style="width:150px;">');
-                editableField.find('.editable-input').focus().data('model-property', modelProperty); // Set the model property for the input
-            });
+           $(document).ready(function () {
+    $('.edit-icon').click(function () {
+        var editableField = $(this).closest('.editable-field');
+        var value = editableField.find('.value');
+        var modelProperty = editableField.data('model-property');
+        value.replaceWith('<input type="text" value="' + value.text() + '" class="editable-input" style="width:150px;">');
+        editableField.find('.editable-input').focus().data('model-property', modelProperty);
+    });
 
-            $(document).on('blur', '.editable-input', function () {
-                var editableField = $(this).closest('.editable-field');
-                var input = $(this);
-                var newValue = input.val();
-                var modelProperty = input.data('model-property'); // Get the model property dynamically
-                input.replaceWith('<span class="value">' + newValue + '</span>');
-                // Here, you can send the updated value to the server using AJAX or handle it as needed
-            });
+    $(document).on('blur', '.editable-input', function () {
+        var editableField = $(this).closest('.editable-field');
+        var input = $(this);
+        var newValue = input.val();
+        input.replaceWith('<span class="value">' + newValue + '</span>');
+        // Here, you can send the updated value to the server using AJAX or handle it as needed
+    });
 
-            $(document).on('keydown', '.editable-input', function (e) {
-                $(document).off('blur', '.editable-input');
+    $(document).on('keydown', '.editable-input', function (e) {
+        if (e.key === 'Enter' || e.keyCode === 13) {
+            var editableField = $(this).closest('.editable-field');
+            var input = $(this);
+            var newValue = input.val();
+            var modelProperty = input.data('model-property');
+            var recordId = $('input[name="Id"]').val();
 
-                if (e.key === 'Enter' || e.keyCode === 13) {
-                    var editableField = $(this).closest('.editable-field');
-                    var input = $(this);
-                    var newValue = input.val();
-                    var modelProperty = input.data('model-property'); // Get the model property dynamically
-                    var recordId = $('input[name="Id"]').val(); // Get the value of the hidden input field
+            input.replaceWith('<span class="value">' + newValue + '</span>');
 
-                    input.replaceWith('<span class="value">' + newValue + '</span>');
+            var dataToSend = {
+                value: newValue,
+                modelProperty: modelProperty,
+                id: recordId
+            };
 
-                    // Send the updated value, model property, and record ID to the EditInfo action method of the Home controller
-                    var dataToSend = {
-                        value: newValue,
-                        modelProperty: modelProperty,
-                        id: recordId // Include the record ID in the data
-                    };
-
-                    $.ajax({
-                        type: 'POST',
-                        url: '@Url.Action("EditInfo", "Home")',
-                        data: dataToSend,
-                        success: function (response) {
-                            // Handle the successful response from the server, if needed
-                            console.log(response);
-                        },
-                        error: function (xhr, status, error) {
-                            // Handle the error response from the server, if needed
-                            console.error(error);
-                        }
-                    });
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("EditInfo", "Home")',
+                data: dataToSend,
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
                 }
-
-                $(document).on('blur', '.editable-input', function () {
-                    var editableField = $(this).closest('.editable-field');
-                    var input = $(this);
-                    var newValue = input.val();
-                    input.replaceWith('<span class="value">' + newValue + '</span>');
-                    // Here, you can send the updated value to the server using AJAX or handle it as needed
-                });
             });
+        }
+    });
 
-            $('.copy-icon').click(function () {
-                var value = $(this).data('value');
-                navigator.clipboard.writeText(value);
-            });
+    $('.copy-icon').click(function () {
+        var value = $(this).data('value');
+        navigator.clipboard.writeText(value);
+    });
 });
+
 
         </script>
     </div>
