@@ -49,5 +49,16 @@ namespace CRM_Raviz.Models
         public string BOthers { get; set; }
         public string Segments { get; set; }
         public string DialedNumber { get; set; }
+        public string TenacyFacilityType { get; set; }
+        public string ExpectedRenewalFee { get; set; }
+        public string SRNumber { get; set; }
+        public string DeRegFee { get; set; }
+        public string EmployeeVisaQuota { get; set; }
+        public string EmployeeVisaUtilized { get; set; }
+        public string ProjectBundleName { get; set; }
+        public string LicenseType { get; set; }
+        public string FacilityType { get; set; }
+        public string NoYears { get; set; }
+        public string DerbyBatch { get; set; }
     }
 }

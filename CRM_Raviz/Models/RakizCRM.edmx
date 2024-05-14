@@ -74,6 +74,16 @@
           <Property Name="ChequeDate" Type="date" />
           <Property Name="TotalAmount" Type="varchar(max)" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="customers">
+          <Property Name="customer_code" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="ageing" Type="int" />
+          <Property Name="segment" Type="varchar" MaxLength="50" />
+          <Property Name="agency_name" Type="varchar" MaxLength="50" />
+          <Property Name="PMT_DT" Type="date" />
+          <Property Name="PMT_amt" Type="int" />
+        </EntityType>-->
         <EntityType Name="EventTable">
           <Key>
             <PropertyRef Name="Id" />
@@ -132,6 +142,28 @@
           <Property Name="BOthers" Type="varchar(max)" />
           <Property Name="Segments" Type="varchar(max)" />
           <Property Name="DialedNumber" Type="varchar(max)" />
+          <Property Name="TenacyFacilityType" Type="varchar(max)" />
+          <Property Name="ExpectedRenewalFee" Type="varchar(max)" />
+          <Property Name="SRNumber" Type="varchar(max)" />
+          <Property Name="DeRegFee" Type="varchar(max)" />
+          <Property Name="EmployeeVisaQuota" Type="varchar(max)" />
+          <Property Name="EmployeeVisaUtilized" Type="varchar(max)" />
+          <Property Name="ProjectBundleName" Type="varchar(max)" />
+          <Property Name="LicenseType" Type="varchar(max)" />
+          <Property Name="FacilityType" Type="varchar(max)" />
+          <Property Name="NoYears" Type="varchar(max)" />
+          <Property Name="DerbyBatch" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="Test_4">
+          <Key>
+            <PropertyRef Name="CUSTOMER_CODE" />
+          </Key>
+          <Property Name="CUSTOMER_CODE" Type="int" Nullable="false" />
+          <Property Name="ageing" Type="varchar" MaxLength="100" />
+          <Property Name="Segment" Type="varchar" MaxLength="100" />
+          <Property Name="Agency_name" Type="varchar" MaxLength="100" />
+          <Property Name="PMT_DT" Type="date" />
+          <Property Name="pmt_amt" Type="float" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
           <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
@@ -198,6 +230,7 @@
           <EntitySet Name="BouncedRecord" EntityType="Self.BouncedRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EventTable" EntityType="Self.EventTable" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RecordData" EntityType="Self.RecordData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Test_4" EntityType="Self.Test_4" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
@@ -325,6 +358,7 @@
           <EntitySet Name="RecordDatas" EntityType="RakezCRM.RecordData" />
           <EntitySet Name="BouncedRecords" EntityType="RakezCRM.BouncedRecord" />
           <EntitySet Name="EventTables" EntityType="RakezCRM.EventTable" />
+          <EntitySet Name="Test_4" EntityType="RakezCRM.Test_4" />
         </EntityContainer>
         <EntityType Name="RecordData">
           <Key>
@@ -365,6 +399,17 @@
           <Property Name="BOthers" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Segments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="DialedNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="TenacyFacilityType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ExpectedRenewalFee" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SRNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DeRegFee" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EmployeeVisaQuota" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EmployeeVisaUtilized" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ProjectBundleName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="LicenseType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="FacilityType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="NoYears" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DerbyBatch" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="BouncedRecord">
           <Key>
@@ -397,6 +442,17 @@
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="Segments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="DialedNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Test_4">
+          <Key>
+            <PropertyRef Name="CUSTOMER_CODE" />
+          </Key>
+          <Property Name="CUSTOMER_CODE" Type="Int32" Nullable="false" />
+          <Property Name="ageing" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Segment" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Agency_name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PMT_DT" Type="DateTime" Precision="0" />
+          <Property Name="pmt_amt" Type="Double" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -465,6 +521,17 @@
           <EntitySetMapping Name="RecordDatas">
             <EntityTypeMapping TypeName="RakezCRM.RecordData">
               <MappingFragment StoreEntitySet="RecordData">
+                <ScalarProperty Name="DerbyBatch" ColumnName="DerbyBatch" />
+                <ScalarProperty Name="NoYears" ColumnName="NoYears" />
+                <ScalarProperty Name="FacilityType" ColumnName="FacilityType" />
+                <ScalarProperty Name="LicenseType" ColumnName="LicenseType" />
+                <ScalarProperty Name="ProjectBundleName" ColumnName="ProjectBundleName" />
+                <ScalarProperty Name="EmployeeVisaUtilized" ColumnName="EmployeeVisaUtilized" />
+                <ScalarProperty Name="EmployeeVisaQuota" ColumnName="EmployeeVisaQuota" />
+                <ScalarProperty Name="DeRegFee" ColumnName="DeRegFee" />
+                <ScalarProperty Name="SRNumber" ColumnName="SRNumber" />
+                <ScalarProperty Name="ExpectedRenewalFee" ColumnName="ExpectedRenewalFee" />
+                <ScalarProperty Name="TenacyFacilityType" ColumnName="TenacyFacilityType" />
                 <ScalarProperty Name="DialedNumber" ColumnName="DialedNumber" />
                 <ScalarProperty Name="Segments" ColumnName="Segments" />
                 <ScalarProperty Name="BOthers" ColumnName="BOthers" />
@@ -534,6 +601,18 @@
                 <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
                 <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Test_4">
+            <EntityTypeMapping TypeName="RakezCRM.Test_4">
+              <MappingFragment StoreEntitySet="Test_4">
+                <ScalarProperty Name="pmt_amt" ColumnName="pmt_amt" />
+                <ScalarProperty Name="PMT_DT" ColumnName="PMT_DT" />
+                <ScalarProperty Name="Agency_name" ColumnName="Agency_name" />
+                <ScalarProperty Name="Segment" ColumnName="Segment" />
+                <ScalarProperty Name="ageing" ColumnName="ageing" />
+                <ScalarProperty Name="CUSTOMER_CODE" ColumnName="CUSTOMER_CODE" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -183,11 +183,15 @@ namespace CRM_Raviz.Controllers
                 for (int i = 1; i <= 4; i++)
                 {
                     var mobileNumber = mobileData.GetType().GetProperty($"Mobile{i}").GetValue(mobileData);
-                    mobileOptions.Add(new SelectListItem
+                    if (mobileNumber != null)
                     {
-                        Text = mobileNumber.ToString(),
-                        Value = mobileNumber.ToString()
-                    });
+                        mobileOptions.Add(new SelectListItem
+                        {
+                            Text = mobileNumber.ToString(),
+                            Value = mobileNumber.ToString()
+                        });
+                    }
+
                 }
 
                 // Pass the list of SelectListItem to the view
@@ -462,7 +466,8 @@ namespace CRM_Raviz.Controllers
         {
 
             CPVDBEntities db = new CPVDBEntities();
-            List<EventTable> cases = db.EventTables.ToList();
+            List<EventTable> cases = db.EventTables.OrderByDescending(item => item.Id) // Assuming EventDate is the property representing the time of the events
+                 .ToList();
             return PartialView(cases);
         }
 
@@ -473,15 +478,17 @@ namespace CRM_Raviz.Controllers
             CPVDBEntities db = new CPVDBEntities();
             EventTable eventTable = new EventTable();
 
-            var results2 = db.EventTables.ToList();
+            var results2 = db.EventTables.OrderByDescending(item => item.Id) // Assuming EventDate is the property representing the time of the events
+                 .ToList();
 
             if (query != "")
             {
 
-                results2 = db.EventTables
-                .Where(item => item.CustomerName == query ||
-                               item.AccountNo == query)
-                .ToList();
+                var results = db.EventTables
+                 .Where(item => item.CustomerName == query || item.AccountNo == query)
+                 .OrderByDescending(item => item.Id) // Assuming EventDate is the property representing the time of the events
+                 .ToList();
+
 
             }
             else
@@ -576,32 +583,56 @@ namespace CRM_Raviz.Controllers
                             {
                                 AccountNo = worksheet1.Cells[row, 1].Value?.ToString(),
                                 CustomerName = worksheet1.Cells[row, 2].Value?.ToString(),
-                                BCheque = worksheet1.Cells[row, 3].Value?.ToString(),
-                                BCheque_P = worksheet1.Cells[row, 4].Value?.ToString(),
-                                IPTelephone_Billing = worksheet1.Cells[row, 5].Value?.ToString(),
-                                Utility_Billing = worksheet1.Cells[row, 6].Value?.ToString(),
-                                Others = worksheet1.Cells[row, 7].Value?.ToString(),
-                                OS_Billing = worksheet1.Cells[row, 8].Value?.ToString(),
-                                License_expiry = worksheet1.Cells[row, 9].Value?.ToString(),
-                                Contact_Person = worksheet1.Cells[row, 10].Value?.ToString(),
-                                Nationality = worksheet1.Cells[row, 11].Value?.ToString(),
-                                Mobile1 = worksheet1.Cells[row, 12].Value?.ToString(),
-                                Mobile2 = worksheet1.Cells[row, 13].Value?.ToString(),
-                                Mobile3 = worksheet1.Cells[row, 14].Value?.ToString(),
-                                Mobile4 = worksheet1.Cells[row, 15].Value?.ToString(),
-                                Email_1 = worksheet1.Cells[row, 16].Value?.ToString(),
-                                Email_2 = worksheet1.Cells[row, 17].Value?.ToString(),
-                                Email_3 = worksheet1.Cells[row, 18].Value?.ToString(),
-                                CloseAccount = worksheet1.Cells[row, 19].Value?.ToString(),
-                                DormantAccount = worksheet1.Cells[row, 20].Value?.ToString(),
-                                InsufficientFunds = worksheet1.Cells[row, 21].Value?.ToString(),
-                                OtherReason= worksheet1.Cells[row, 22].Value?.ToString(),
-                                SignatureIrregular = worksheet1.Cells[row, 23].Value?.ToString(),
-                                TechnicalReason = worksheet1.Cells[row, 24].Value?.ToString(),
-                                BOthers = worksheet1.Cells[row, 25].Value?.ToString(),
-                                Agent = worksheet1.Cells[row, 26].Value?.ToString(),
-                                Segments = dropdown
+                                Contact_Person = worksheet1.Cells[row, 3].Value?.ToString(),
+                                Nationality = worksheet1.Cells[row, 4].Value?.ToString(),
+                                Mobile1 = worksheet1.Cells[row, 5].Value?.ToString(),
+                                Mobile2 = worksheet1.Cells[row, 6].Value?.ToString(),
+                                Mobile3 = worksheet1.Cells[row, 7].Value?.ToString(),
+                                Mobile4 = worksheet1.Cells[row, 8].Value?.ToString(),
+                                Email_1 = worksheet1.Cells[row, 9].Value?.ToString(),
+                                Email_2 = worksheet1.Cells[row, 10].Value?.ToString(),
+                                Email_3 = worksheet1.Cells[row, 11].Value?.ToString(),
+                                TenacyFacilityType = worksheet1.Cells[row, 12].Value?.ToString(),
+                                License_expiry = worksheet1.Cells[row, 13].Value?.ToString(),
+                                ExpectedRenewalFee = worksheet1.Cells[row, 14].Value?.ToString(),
+                                SRNumber = worksheet1.Cells[row, 15].Value?.ToString(),
+                                DeRegFee = worksheet1.Cells[row, 16].Value?.ToString(),
+                                BCheque = worksheet1.Cells[row, 17].Value?.ToString(),
+                                IPTelephone_Billing= worksheet1.Cells[row, 18].Value?.ToString(),
+                                Utility_Billing = worksheet1.Cells[row, 19].Value?.ToString(),
+                                Others = worksheet1.Cells[row, 20].Value?.ToString(),
+                                OS_Billing = worksheet1.Cells[row, 21].Value?.ToString(),
+                                CloseAccount = worksheet1.Cells[row, 22].Value?.ToString(),
+                                DormantAccount = worksheet1.Cells[row, 22].Value?.ToString(),
+                                InsufficientFunds = worksheet1.Cells[row, 23].Value?.ToString(),
+                                OtherReason = worksheet1.Cells[row, 24].Value?.ToString(),
+                                SignatureIrregular = worksheet1.Cells[row, 25].Value?.ToString(),
+                                TechnicalReason = worksheet1.Cells[row, 26].Value?.ToString(),
+                                BOthers = worksheet1.Cells[row, 27].Value?.ToString(),
+                                EmployeeVisaQuota = worksheet1.Cells[row, 28].Value?.ToString(),
+                                EmployeeVisaUtilized = worksheet1.Cells[row, 29].Value?.ToString(),
+                                LicenseType = worksheet1.Cells[row, 30].Value?.ToString(),
+                                FacilityType = worksheet1.Cells[row, 31].Value?.ToString(),
+                                NoYears = worksheet1.Cells[row, 32].Value?.ToString(),
+                                DerbyBatch = worksheet1.Cells[row, 33].Value?.ToString(),
+                                Agent = worksheet1.Cells[row, 34].Value?.ToString(),
+
+
+                                
                             };
+
+                            if ((caseEntity1.OS_Billing != null || caseEntity1.OS_Billing != "-") && (caseEntity1.ExpectedRenewalFee != null || caseEntity1.ExpectedRenewalFee != "-"))
+                            {
+                                caseEntity1.Segments = "Bounced Cheque and Renewal";
+                            }
+                            else if(caseEntity1.OS_Billing != null || caseEntity1.OS_Billing != "-")
+                            {
+                                caseEntity1.Segments = "Renewal";
+                            }
+                            else if(caseEntity1.ExpectedRenewalFee != null || caseEntity1.ExpectedRenewalFee != "-")
+                            {
+                                caseEntity1.Segments = "Bounced Cheque";
+                            }
 
                             dbSheet1.RecordDatas.Add(caseEntity1);
                         }

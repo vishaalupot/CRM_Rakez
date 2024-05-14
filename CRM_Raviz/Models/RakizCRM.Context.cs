@@ -32,5 +32,6 @@ namespace CRM_Raviz.Models
         public virtual DbSet<RecordData> RecordDatas { get; set; }
         public virtual DbSet<BouncedRecord> BouncedRecords { get; set; }
         public virtual DbSet<EventTable> EventTables { get; set; }
+        public virtual DbSet<Test_4> Test_4 { get; set; }
     }
 }
