@@ -24,7 +24,7 @@
         }
 
         .segment-text {
-            color: #082948;
+            color: darkred;
             font-size: 30px;
             font-family: 'Jaldi', sans-serif;
             text-align: left;
@@ -118,10 +118,32 @@
             font-weight: 600;
             border-radius: 8px;
         }
+
+        @@keyframes blink {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+.blink {
+    animation: blink 1s infinite;
+}
     </style>
 
     <script>
+
+        
+
         $(document).ready(function () {
+
+            $('#firstDropdown').hide();
+            $('#Dropdown').hide();
             // Function to show or hide the second dropdown based on the selection of the first dropdown
             $('#Disposition').change(function () {
                 var selectedValue = $(this).val();
@@ -131,7 +153,21 @@
                     $('#secondDropdown').hide(); // Hide the second dropdown
                 }
             });
+            // Function to show or hide the second dropdown based on the selection of the first dropdown
+            $('#CallType').change(function () {
+                var selectedValue = $(this).val();
+                if (selectedValue === 'OUTBOUND' || selectedValue === 'INBOUND' ) { // Replace 'YOUR_TRIGGER_OPTION' with the value that should trigger showing the second dropdown
+                    $('#firstDropdown').show(); // Show the second dropdown
+                    $('#Dropdown').hide(); // Show the second dropdown
+
+                } else if (selectedValue === 'EMAIL UPDATE'){
+                    $('#firstDropdown').hide(); // Hide the second dropdown
+                    $('#Dropdown').show(); // Hide the second dropdown
+                }
+            });
         });
+
+
     </script>
 
     <script>
@@ -250,12 +286,12 @@
                 <div class="heading">
                     Update Record -
                 </div>
-                <div class="segment-text">
+                <div class="segment-text @(Model.Segments == "Bounced Cheque and Renewal" ? "blink" : "")">
                     @Html.DisplayFor(model => model.Segments)
                 </div>
             </div>
-           
-            
+
+
             <input type="hidden" id="username" value="@User.Identity.GetUserName()" />
 
             @Html.HiddenFor(model => model.Id)
@@ -355,7 +391,7 @@
             <div class="form-group  col-sm-12 col-md-4 col-xl-3">
                 <div class="row">
                     <div class="col-md-12">
-                        @Html.LabelFor(model => model.OS_Billing, "O/S Balance", htmlAttributes: new { @class = "control-label label", @style="color:red !important;" })
+                        @Html.LabelFor(model => model.OS_Billing, "O/S Balance", htmlAttributes: new { @class = "control-label label", @style = "color:darkred !important;" })
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -385,10 +421,10 @@
                 </div>
             </div>
 
-             <div class="form-group col-sm-12 col-md-4 col-xl-3">
+            <div class="form-group col-sm-12 col-md-4 col-xl-3">
                 <div class="row">
                     <div class="col-md-12">
-                        @Html.LabelFor(model => model.ExpectedRenewalFee, "Renewal Fee", htmlAttributes: new { @class = "control-label label", @style="color:red !important;" })
+                        @Html.LabelFor(model => model.ExpectedRenewalFee, "Renewal Fee", htmlAttributes: new { @class = "control-label label", @style = "color:darkred !important;" })
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -396,7 +432,7 @@
                 </div>
             </div>
 
-             <div class="form-group col-sm-12 col-md-4 col-xl-3">
+            <div class="form-group col-sm-12 col-md-4 col-xl-3">
                 <div class="row">
                     <div class="col-md-12">
                         @Html.LabelFor(model => model.SRNumber, "Last SR Number", htmlAttributes: new { @class = "control-label label" })
@@ -477,7 +513,7 @@
                 </div>
             </div>
 
-             <div class="form-group col-sm-12 col-md-4 col-xl-3">
+            <div class="form-group col-sm-12 col-md-4 col-xl-3">
                 <div class="row">
                     <div class="col-md-12">
                         @Html.LabelFor(model => model.Nationality, "Nationality", htmlAttributes: new { @class = "control-label label" })
@@ -521,13 +557,32 @@
             <div class="form-group  col-sm-12 col-md-4 col-xl-3">
                 <div class="row">
                     <div class="col-md-12">
+                        @Html.LabelFor(model => model.CallType, "Call Type", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.CallType, new List<SelectListItem>
+                    {
+                        new SelectListItem { Text = "NA", Value = "NA" },
+                        new SelectListItem { Text = "OUTBOUND", Value = "OUTBOUND" },
+                        new SelectListItem { Text = "INBOUND", Value = "INBOUND" },
+                        new SelectListItem { Text = "EMAIL UPDATE", Value = "EMAIL UPDATE" }
+                    }, new { @class = "form-control box dropdown-styled" })
+                    @Html.ValidationMessageFor(model => model.CallType, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3"  id="firstDropdown">
+                <div class="row">
+                    <div class="col-md-12">
                         @Html.LabelFor(model => model.Disposition, "Disposition", htmlAttributes: new { @class = "control-label label" })
                     </div>
                 </div>
                 <div class="col-md-10">
                     @Html.DropDownListFor(model => model.Disposition, new List<SelectListItem>
                     {
-                        new SelectListItem { Text = "NA", Value = "NA" },
+                        new SelectListItem { Value = null },
                         new SelectListItem { Text = "THIRD PARTY CONTACT", Value = "THIRD PARTY CONTACT" },
                         new SelectListItem { Text = "BILL DISPUTE REFUSE TO PAY", Value = "BILL DISPUTE REFUSE TO PAY" },
                         new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
@@ -553,6 +608,26 @@
                         new SelectListItem { Text = "SWITCH OFF", Value = "SWITCH OFF" },
                         new SelectListItem { Text = "PAYMENT MISSING", Value = "PAYMENT MISSING" },
                         new SelectListItem { Text = "PAYMENT LINK SENT", Value = "PAYMENT LINK SENT" }
+                    }, new { @class = "form-control box dropdown-styled" })
+                    @Html.ValidationMessageFor(model => model.Disposition, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+             <div class="form-group  col-sm-12 col-md-4 col-xl-3"  id="Dropdown">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.DispositionSecond, "Disposition", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.DispositionSecond, new List<SelectListItem>
+                    {
+                        new SelectListItem { Value = null },
+                        new SelectListItem { Text = "BOUNCE CHEQUE NOTICE SENT", Value = "BOUNCE CHEQUE NOTICE SENT" },
+                        new SelectListItem { Text = "EMAIL REPLY FROM CUSTOMER", Value = "EMAIL REPLY FROM CUSTOMER" },
+                        new SelectListItem { Text = "RENEWAL REMINDER SENT", Value = "RENEWAL REMINDER SENT" },
+                        new SelectListItem { Text = "GENERAL INQUIRY ", Value = "GENERAL INQUIRY " },
+                        new SelectListItem { Text = "CUSTOMER'S EMAIL REPLIED", Value = "CUSTOMER'S EMAIL REPLIED" },
                     }, new { @class = "form-control box dropdown-styled" })
                     @Html.ValidationMessageFor(model => model.Disposition, "", new { @class = "text-danger" })
                 </div>
@@ -608,9 +683,9 @@
             </div>
 
             <div>
-                        @Html.LabelFor(model => model.Comments, "Comments", htmlAttributes: new { @class = "control-label label" })
+                @Html.LabelFor(model => model.Comments, "Comments", htmlAttributes: new { @class = "control-label label" })
 
-                        @Html.TextArea("CommentsBox", new { @class = "form-control box", @style = "     max-width: 1200px;width: 100%; height: 150px; padding: 0px !important;" })
+                @Html.TextArea("CommentsBox", new { @class = "form-control box", @style = "     max-width: 1200px;width: 100%; height: 150px; padding: 0px !important;" })
             </div>
 
             <div class="form-group col-sm-12 col-md-4" style="margin: 50px 0px;">
@@ -620,9 +695,12 @@
             </div>
 
             @Html.Label("History", htmlAttributes: new { @class = "control-label label" })
-            <div id="History">
+            <div style="overflow-x:auto; height: 400px; width: 100%;">
+                <div id="History">
 
+                </div>
             </div>
+           
 
 
 

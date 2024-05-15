@@ -34,6 +34,7 @@ namespace CRM_Raviz.Models
         public string Email_2 { get; set; }
         public string Email_3 { get; set; }
         public string Disposition { get; set; }
+        public string DispositionSecond { get; set; }
         public string SubDisposition { get; set; }
         public string Comments { get; set; }
         public string ChangeStatus { get; set; }
@@ -60,5 +61,6 @@ namespace CRM_Raviz.Models
         public string FacilityType { get; set; }
         public string NoYears { get; set; }
         public string DerbyBatch { get; set; }
+        public string CallType { get; set; }
     }
 }

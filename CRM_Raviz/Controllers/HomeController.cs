@@ -241,43 +241,34 @@ namespace CRM_Raviz.Controllers
             }
 
 
-
-            //string History = @User.Identity.GetUserName() + new string(' ', 25)
-            //     + DateTime.Now + new string(' ', 25)
-            //     + form["Disposition"].ToString() + " "
-            //     + form["SubDisposition"].ToString() +" "
-            //     + form["CallbackTime"].ToString() 
-            //     +" || Remarks: "+ commentsValue;
-
-            // string Heading = "Username" + new string(' ', 25) + "Date" + new string(' ', 50) + "Disposition";
-
-
-
            
                 eventTable.Datetime = DateTime.Now;
                 eventTable.CustomerName = form["CustomerName"].ToString();
                 eventTable.Agent = form["Agent"].ToString();
                 eventTable.AccountNo = form["AccountNo"].ToString();
-                eventTable.Dispo = form["Disposition"].ToString();
+                
                 eventTable.Comments = form["CommentsBox"].ToString();
                 eventTable.DialedNumber = form["DialedNumber"].ToString();
-                //if (!string.IsNullOrEmpty(form["CallbackTime"]))
-                //{
-                //    eventTable.CallbackTime = DateTime.Parse(form["CallbackTime"]);
-                //}
-                //else
-                //{
-                //    eventTable.CallbackTime = new DateTime(2000, 1, 1); // Example default value
-                //}
-                //eventTable.ChangeStatus = form["ChangeStatus"].ToString();
-                //eventTable.ModifiedDate = DateTime.Now;
+                eventTable.CallType = form["CallType"].ToString();
                 eventTable.Segments = recordData.Segments;
                 eventTable.Record_Id = int.Parse(form["Id"].ToString());
 
                 db.EventTables.Add(eventTable);
 
 
-                recordData.Disposition = form["Disposition"].ToString();
+                recordData.CallType = form["CallType"].ToString();
+
+                if (form["CallType"].ToString() == "OUTBOUND" || form["CallType"].ToString() == "INBOUND")
+                {
+                    eventTable.Dispo = form["Disposition"].ToString();
+                    recordData.Disposition = form["Disposition"].ToString();
+                }
+                else if (form["CallType"].ToString() == "EMAIL UPDATE")
+                {
+                    eventTable.Dispo = form["DispositionSecond"].ToString();
+                    recordData.Disposition = form["DispositionSecond"].ToString();
+                }
+                
                 recordData.Comments = form["CommentsBox"].ToString();
                 recordData.ChangeStatus = form["ChangeStatus"].ToString();
                 recordData.DialedNumber = form["DialedNumber"].ToString();

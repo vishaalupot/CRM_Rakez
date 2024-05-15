@@ -28,5 +28,6 @@ namespace CRM_Raviz.Models
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public string Segments { get; set; }
         public string DialedNumber { get; set; }
+        public string CallType { get; set; }
     }
 }

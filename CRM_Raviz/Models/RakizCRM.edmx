@@ -102,6 +102,7 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="Segments" Type="varchar(max)" />
           <Property Name="DialedNumber" Type="varchar(max)" />
+          <Property Name="CallType" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="RecordData">
           <Key>
@@ -138,7 +139,6 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <Property Name="InsufficientFunds" Type="varchar(max)" />
           <Property Name="OtherReason" Type="varchar(max)" />
           <Property Name="SignatureIrregular" Type="varchar(max)" />
-          <Property Name="TechnicalReason" Type="varchar(max)" />
           <Property Name="BOthers" Type="varchar(max)" />
           <Property Name="Segments" Type="varchar(max)" />
           <Property Name="DialedNumber" Type="varchar(max)" />
@@ -146,6 +146,7 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <Property Name="ExpectedRenewalFee" Type="varchar(max)" />
           <Property Name="SRNumber" Type="varchar(max)" />
           <Property Name="DeRegFee" Type="varchar(max)" />
+          <Property Name="TechnicalReason" Type="varchar(max)" />
           <Property Name="EmployeeVisaQuota" Type="varchar(max)" />
           <Property Name="EmployeeVisaUtilized" Type="varchar(max)" />
           <Property Name="ProjectBundleName" Type="varchar(max)" />
@@ -153,6 +154,7 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <Property Name="FacilityType" Type="varchar(max)" />
           <Property Name="NoYears" Type="varchar(max)" />
           <Property Name="DerbyBatch" Type="varchar(max)" />
+          <Property Name="CallType" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="Test_4">
           <Key>
@@ -410,6 +412,7 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <Property Name="FacilityType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="NoYears" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="DerbyBatch" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CallType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="BouncedRecord">
           <Key>
@@ -442,6 +445,7 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="Segments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="DialedNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CallType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Test_4">
           <Key>
@@ -521,6 +525,7 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <EntitySetMapping Name="RecordDatas">
             <EntityTypeMapping TypeName="RakezCRM.RecordData">
               <MappingFragment StoreEntitySet="RecordData">
+                <ScalarProperty Name="CallType" ColumnName="CallType" />
                 <ScalarProperty Name="DerbyBatch" ColumnName="DerbyBatch" />
                 <ScalarProperty Name="NoYears" ColumnName="NoYears" />
                 <ScalarProperty Name="FacilityType" ColumnName="FacilityType" />
@@ -587,6 +592,7 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <EntitySetMapping Name="EventTables">
             <EntityTypeMapping TypeName="RakezCRM.EventTable">
               <MappingFragment StoreEntitySet="EventTable">
+                <ScalarProperty Name="CallType" ColumnName="CallType" />
                 <ScalarProperty Name="DialedNumber" ColumnName="DialedNumber" />
                 <ScalarProperty Name="Segments" ColumnName="Segments" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
