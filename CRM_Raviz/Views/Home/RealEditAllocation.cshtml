@@ -120,25 +120,49 @@
         }
 
         @@keyframes blink {
-        0% {
-            opacity: 1;
-        }
-        50% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
+            0% {
+                opacity: 1;
+            }
 
-.blink {
-    animation: blink 1s infinite;
-}
+            50% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <script>
 
-        
+        function validateSelections() {
+            var disposition = $('#Disposition').val();
+            var callType = $('#CallType').val();
+
+            //alert($('#SubDisposition').val());
+            alert($('#CallBackDateTime').val());
+
+            // Check if both dropdowns are required to be selected
+            if ((disposition == 'CALLBACK' && $('#CallBackDateTime').val() == '01/01/2000 12:00 AM') ||
+                (disposition == 'CALLBACK LANGUAGE' && $('#SubDisposition').val() == '-') ||
+                ((callType == 'OUTBOUND' || callType == 'INBOUND') && $('#Disposition').val() == '-') ||
+                (callType == 'EMAIL UPDATE' && $('#Dropdown').val() == '-') ) {
+                // If one or both dropdowns are not selected, show SweetAlert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Please make sure to select all required options before submitting!',
+                });
+                return false; // Prevent form submission
+            }
+            return true; // Proceed with form submission
+        }
 
         $(document).ready(function () {
 
@@ -156,11 +180,11 @@
             // Function to show or hide the second dropdown based on the selection of the first dropdown
             $('#CallType').change(function () {
                 var selectedValue = $(this).val();
-                if (selectedValue === 'OUTBOUND' || selectedValue === 'INBOUND' ) { // Replace 'YOUR_TRIGGER_OPTION' with the value that should trigger showing the second dropdown
+                if (selectedValue === 'OUTBOUND' || selectedValue === 'INBOUND') { // Replace 'YOUR_TRIGGER_OPTION' with the value that should trigger showing the second dropdown
                     $('#firstDropdown').show(); // Show the second dropdown
                     $('#Dropdown').hide(); // Show the second dropdown
 
-                } else if (selectedValue === 'EMAIL UPDATE'){
+                } else if (selectedValue === 'EMAIL UPDATE') {
                     $('#firstDropdown').hide(); // Hide the second dropdown
                     $('#Dropdown').show(); // Hide the second dropdown
                 }
@@ -181,7 +205,17 @@
                     $('#callbackDateTime').hide(); // Hide the second dropdown
                 }
             });
+
+
+            $('#Form').submit(function (event) {
+                // Validate dropdown selections before submitting
+                if (!validateSelections()) {
+                    event.preventDefault(); // Prevent form submission if validation fails
+                }
+            });
         });
+
+
     </script>
 
 
@@ -194,7 +228,7 @@
 
                 // If the textarea is empty, set its value to the result of User.Identity.GetUserName() as the initial value
                 if ($("#ChangeStatus").val().trim() === "") {
-                    changeStatusText =  $("#username").val() + " | ";
+                    changeStatusText = $("#username").val() + " | ";
                 } else {
                     changeStatusText = $("#ChangeStatus").val();
                 }
@@ -563,7 +597,7 @@
                 <div class="col-md-10">
                     @Html.DropDownListFor(model => model.CallType, new List<SelectListItem>
                     {
-                        new SelectListItem { Text = "NA", Value = "NA" },
+                        new SelectListItem { Text = "-", Value = "-" },
                         new SelectListItem { Text = "OUTBOUND", Value = "OUTBOUND" },
                         new SelectListItem { Text = "INBOUND", Value = "INBOUND" },
                         new SelectListItem { Text = "EMAIL UPDATE", Value = "EMAIL UPDATE" }
@@ -582,7 +616,7 @@
                 <div class="col-md-10">
                     @Html.DropDownListFor(model => model.Disposition, new List<SelectListItem>
                     {
-                        new SelectListItem { Value = null },
+                        new SelectListItem { Text = "-", Value = "-" },
                         new SelectListItem { Text = "THIRD PARTY CONTACT", Value = "THIRD PARTY CONTACT" },
                         new SelectListItem { Text = "BILL DISPUTE REFUSE TO PAY", Value = "BILL DISPUTE REFUSE TO PAY" },
                         new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
@@ -622,7 +656,7 @@
                 <div class="col-md-10">
                     @Html.DropDownListFor(model => model.DispositionSecond, new List<SelectListItem>
                     {
-                        new SelectListItem { Value = null },
+                        new SelectListItem {  Text = "-", Value = "-"  },
                         new SelectListItem { Text = "BOUNCE CHEQUE NOTICE SENT", Value = "BOUNCE CHEQUE NOTICE SENT" },
                         new SelectListItem { Text = "EMAIL REPLY FROM CUSTOMER", Value = "EMAIL REPLY FROM CUSTOMER" },
                         new SelectListItem { Text = "RENEWAL REMINDER SENT", Value = "RENEWAL REMINDER SENT" },
@@ -657,8 +691,7 @@
                 <div class="col-md-10">
                     @Html.DropDownListFor(model => model.SubDisposition, new List<SelectListItem>
                     {
-                        new SelectListItem { Text = " ", Value = " " , Selected = true},
-                        new SelectListItem { Text = "NA", Value = "NA" },
+                        new SelectListItem {  Text = "-", Value = "-"  },
                         new SelectListItem { Text = "English", Value = "English" },
                         new SelectListItem { Text = "Arabic", Value = "Arabic" },
                         new SelectListItem { Text = "Hindi", Value = "Hindi" },
