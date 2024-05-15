@@ -612,15 +612,15 @@ namespace CRM_Raviz.Controllers
                                 
                             };
 
-                            if ((caseEntity1.OS_Billing != null || caseEntity1.OS_Billing != "-") && (caseEntity1.ExpectedRenewalFee != null || caseEntity1.ExpectedRenewalFee != "-"))
+                            if ((caseEntity1.OS_Billing != null || caseEntity1.OS_Billing != "-" || caseEntity1.OS_Billing != "0") && (caseEntity1.ExpectedRenewalFee != null || caseEntity1.ExpectedRenewalFee != "-" || caseEntity1.ExpectedRenewalFee != "0"))
                             {
                                 caseEntity1.Segments = "Bounced Cheque and Renewal";
                             }
-                            else if(caseEntity1.OS_Billing != null || caseEntity1.OS_Billing != "-")
+                            else if(caseEntity1.OS_Billing != null || caseEntity1.OS_Billing != "-" || caseEntity1.OS_Billing != "0")
                             {
                                 caseEntity1.Segments = "Renewal";
                             }
-                            else if(caseEntity1.ExpectedRenewalFee != null || caseEntity1.ExpectedRenewalFee != "-")
+                            else if(caseEntity1.ExpectedRenewalFee != null || caseEntity1.ExpectedRenewalFee != "-" || caseEntity1.ExpectedRenewalFee != "0")
                             {
                                 caseEntity1.Segments = "Bounced Cheque";
                             }
