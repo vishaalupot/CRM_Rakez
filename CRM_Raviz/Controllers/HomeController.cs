@@ -475,7 +475,7 @@ namespace CRM_Raviz.Controllers
             if (query != "")
             {
 
-                var results = db.EventTables
+                 results2 = db.EventTables
                  .Where(item => item.CustomerName == query || item.AccountNo == query)
                  .OrderByDescending(item => item.Id) // Assuming EventDate is the property representing the time of the events
                  .ToList();
@@ -484,7 +484,9 @@ namespace CRM_Raviz.Controllers
             }
             else
             {
-                results2 = db.EventTables.ToList();
+                results2 = db.EventTables
+                    .Where(item => item.AccountNo == query)
+                    .ToList();
             }
 
             return PartialView("_History", results2);
@@ -594,19 +596,20 @@ namespace CRM_Raviz.Controllers
                                 Others = worksheet1.Cells[row, 20].Value?.ToString(),
                                 OS_Billing = worksheet1.Cells[row, 21].Value?.ToString(),
                                 CloseAccount = worksheet1.Cells[row, 22].Value?.ToString(),
-                                DormantAccount = worksheet1.Cells[row, 22].Value?.ToString(),
-                                InsufficientFunds = worksheet1.Cells[row, 23].Value?.ToString(),
-                                OtherReason = worksheet1.Cells[row, 24].Value?.ToString(),
-                                SignatureIrregular = worksheet1.Cells[row, 25].Value?.ToString(),
-                                TechnicalReason = worksheet1.Cells[row, 26].Value?.ToString(),
-                                BOthers = worksheet1.Cells[row, 27].Value?.ToString(),
-                                EmployeeVisaQuota = worksheet1.Cells[row, 28].Value?.ToString(),
-                                EmployeeVisaUtilized = worksheet1.Cells[row, 29].Value?.ToString(),
-                                LicenseType = worksheet1.Cells[row, 30].Value?.ToString(),
-                                FacilityType = worksheet1.Cells[row, 31].Value?.ToString(),
-                                NoYears = worksheet1.Cells[row, 32].Value?.ToString(),
-                                DerbyBatch = worksheet1.Cells[row, 33].Value?.ToString(),
-                                Agent = worksheet1.Cells[row, 34].Value?.ToString(),
+                                DormantAccount = worksheet1.Cells[row, 23].Value?.ToString(),
+                                InsufficientFunds = worksheet1.Cells[row, 24].Value?.ToString(),
+                                OtherReason = worksheet1.Cells[row, 25].Value?.ToString(),
+                                SignatureIrregular = worksheet1.Cells[row, 26].Value?.ToString(),
+                                TechnicalReason = worksheet1.Cells[row, 27].Value?.ToString(),
+                                BOthers = worksheet1.Cells[row, 28].Value?.ToString(),
+                                EmployeeVisaQuota = worksheet1.Cells[row, 29].Value?.ToString(),
+                                EmployeeVisaUtilized = worksheet1.Cells[row, 30].Value?.ToString(),
+                                ProjectBundleName = worksheet1.Cells[row, 31].Value?.ToString(),
+                                LicenseType = worksheet1.Cells[row, 32].Value?.ToString(),
+                                FacilityType = worksheet1.Cells[row, 33].Value?.ToString(),
+                                NoYears = worksheet1.Cells[row, 34].Value?.ToString(),
+                                DerbyBatch = worksheet1.Cells[row, 35].Value?.ToString(),
+                                Agent = worksheet1.Cells[row, 36].Value?.ToString(),
 
 
                                 
