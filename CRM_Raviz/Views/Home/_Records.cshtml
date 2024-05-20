@@ -1,74 +1,54 @@
 ﻿@model IEnumerable<CRM_Raviz.Models.RecordData>
 @using CRM_Raviz.Models
-<script src="/Scripts/jquery-3.4.1.min.js"></script>
+
+
+@{
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 <script type="text/javascript">
+
     $(document).ready(function () {
 
+        $(".changeAgentButton").click(function () {
+            var recordId = $(this).data("record-id");
 
+            var dropdownValue = $("#dropdown").val();
 
-         $(".submitBtn").click(function () {
-    // Use SweetAlert to confirm before sending data
-    Swal.fire({
-        title: 'Confirmation',
-        text: 'Do you want to send data to PDA?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // User clicked "Yes," proceed with the AJAX request
-            let data = $(this).data("id");
-            let url = '@Url.Action("searchCases", "Home", new { id = "_id_" })';
-            url = url.replace("_id_", data);
+            //alert(dropdownValue == "");
+
+            if (dropdownValue == "") {
+
+                // Show SweetAlert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Agents is null !'
+                });
+                return false; // Exit function
+            }
+
 
             $.ajax({
-                url: url,
-                type: "Post",
-                success: function (result) {
-                    location.reload();
-                    /* alert("Success");*/
+                url: '@Url.Action("changedAgent", "Home")',
+                type: "POST",
+                data: {
+                    id: recordId,
+                    Agent: $("#dropdown").val()
                 },
-                error: function (error) {
-                    /*alert("error")*/
+                success: function (response) {
                     location.reload();
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
                 }
             });
-        }
-    });
-});
+        });
 
-             $(".deleteBtn").click(function () {
-                let data = $(this).data("id");
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: 'You won\'t be able to revert this!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        let url = '@Url.Action("duDeleteCase","Du")';
-                        let ajaxdata = { id: data };
-                        $.ajax({
-                            url: url,
-                            data: ajaxdata,
-                            type: "Post",
-                            success: function (result) {
-                                location.reload();
-                            },
-                            error: function (error) {
-                                location.reload();
-                            }
-                        });
-                    }
-    });
-});
     });
 </script>
 <script>
@@ -86,7 +66,74 @@
             transform: scale(1.2);
         }
 
+    .drops {
+        white-space: nowrap;
+    }
 
+    .drop {
+        text-decoration: none;
+        border: none;
+        background-color: #ffffff00;
+        transition-duration: 0.3s;
+        font-size: 14px;
+    }
+
+
+
+    .tableHead {
+        white-space: nowrap;
+        font-size: 18px;
+    }
+
+
+
+
+    .paste-button {
+        position: relative;
+        display: block;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .button {
+        background-color: white;
+        color: #212121;
+        padding: 5px 2.5px;
+        font-size: 15px;
+        font-weight: bold;
+        border: 2px solid transparent;
+        border-radius: 15px;
+        cursor: pointer;
+    }
+
+    .dropdown-content {
+        width: max-content;
+        display: none;
+        font-size: 13px;
+        position: absolute;
+        z-index: 1;
+        border: 1px solid black;
+        border-radius: 6px;
+    }
+
+        .dropdown-content a {
+            width: 100%;
+            display: block;
+            transition: 0.1s;
+        }
+
+            .dropdown-content a:hover {
+                background-color: #000000;
+                color: white;
+            }
+
+            .dropdown-content a:focus {
+                background-color: #727171;
+                color: #000000;
+            }
+
+    .paste-button:hover .dropdown-content {
+        display: block;
+    }
 </style>
 
 <div>
@@ -94,105 +141,95 @@
     {
         <table style="display: flex; justify-content: center;">
             <tr>
-                <td class="tableHead">No.</td>
                 <td class="tableHead">Account no</td>
                 <td class="tableHead">Customer Name</td>
-                @*<td class="tableHead">Bounced Cheque</td>
-        <td class="tableHead">B.Cheque Penalties</td>
-        <td class="tableHead">IP Telephone Billing</td>
-        <td class="tableHead">Utility Billing</td>
-        <td class="tableHead">Others</td>*@
                 <td class="tableHead">O/S Balance</td>
-                <td class="tableHead">License expiry</td>
-                @*<td class="tableHead">Nationality</td>
-        <td class="tableHead">Email</td>
-        <td class="tableHead">Mobile</td>*@
+                <td class="tableHead">Renewal Fee</td>
+                <td class="tableHead">
+
+                    <div class="paste-button">
+                        Last Event
+                        <button class="button drop" disabled>▼</button>
+                        <div class="dropdown-content">
+                            <h6 style="text-align: center;">Filter</h6>
+                            <a id="top" href="#">Recent events</a>
+                            <a id="middle" href="#">Old events</a>
+                        </div>
+                    </div>
+
+
+
+
+                </td>
+                <td class="tableHead">Batch</td>
+                <td class="tableHead">Segment</td>
                 <td class="tableHead">Actions</td>
+                <td class="tableHead">Users</td>
+                <td class="tableHead">Transfer</td>
+                <td class="tableHead">Save</td>
             </tr>
 
-            @{ 
+            @{
                 int counter = 1;
                 foreach (var item in Model)
                 {
-                <tr>
-                    <td>@counter</td>
-                    <td>@Html.DisplayFor(modelItem => item.AccountNo, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.CustomerName, new { @class = "tablecont" })</td>
-                    @*<td>@Html.DisplayFor(modelItem => item.BCheque, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.BCheque_P, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.IPTelephone_Billing, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.Utility_Billing, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.Others, new { @class = "tablecont" })</td>*@
-                    <td>@Html.DisplayFor(modelItem => item.OS_Billing, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.License_expiry, new { @class = "tablecont" })</td>
-                    @*<td>@Html.DisplayFor(modelItem => item.Nationality, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.Email_1, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Email_2, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Email_3, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.Mobile1, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Mobile2, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Mobile3, new { @class = "tablecont" })<br />@Html.DisplayFor(modelItem => item.Mobile4, new { @class = "tablecont" })</td>*@
-                    <td>
-                        @Html.HiddenFor(modelItem => item.Id)
-                        <a href='@Url.Action("RealEditAllocation", "Home", new { id = item.Id, AccountNo = item.AccountNo })'>
-                            <img src="~/Content/Images/edit1.png" style="width: 20px; height: 20px; cursor: pointer;" data-id='@item.Id' class="submitBtn icons" />
-                        </a>
-                    </td>
-                </tr>
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.AccountNo, new { @class = "tablecont" })</td>
+                        <td>@Html.DisplayFor(modelItem => item.CustomerName, new { @class = "tablecont" })</td>
+                        <td>@Html.DisplayFor(modelItem => item.OS_Billing, new { @class = "tablecont" })</td>
+                        <td>@Html.DisplayFor(modelItem => item.ExpectedRenewalFee, new { @class = "tablecont" })</td>
+                        <td>@Html.DisplayFor(modelItem => item.ModifiedDate, new { @class = "tablecont" })</td>
+                        <td>@Html.DisplayFor(modelItem => item.DerbyBatch, new { @class = "tablecont" })</td>
+                        <td>@Html.DisplayFor(modelItem => item.Segments, new { @class = "tablecont" })</td>
+                        @*<td>@Html.DisplayFor(modelItem => item.License_expiry.Split(' ')[0], new { @class = "tablecont" })</td>*@
+                        <td>
+                            @Html.HiddenFor(modelItem => item.Id)
+                            <a href='@Url.Action("RealEditAllocation", "Home", new { id = item.Id, AccountNo = item.AccountNo })'>
+                                <img src="~/Content/Images/edit1.png" style="width: 20px; height: 20px; cursor: pointer;" data-id='@item.Id' class="submitBtn icons" />
+                            </a>
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.Agent, new { @class = "tablecont" })</td>
+                        <td>
+                            @Html.DropDownList("FEList",
+                              new SelectList(CRM_Raviz.Controllers.HomeController.GetAllUsers()), " ", new { @class = "box", id = "dropdown" })
+                        </td>
+                        <td>
+                            <input type="button" style="width: 100%;" class="changeAgentButton" data-record-id="@item.Id" />
+                        </td>
+
+                    </tr>
                     counter++;
                 }
-                }
-        </table>
-
-
-        @*<table>
-            <tr>
-                <td class="tableHead">Account no</td>
-                <td class="tableHead">Customer Name</td>
-                <td class="tableHead">Bounced Cheque</td>
-                <td class="tableHead">B.Cheque Penalties</td>
-                <td class="tableHead">IP Telephone Billing</td>
-                <td class="tableHead">Utility Billing</td>
-                <td class="tableHead">Others</td>
-                <td class="tableHead">O/S Balance</td>
-                <td class="tableHead">License expiry</td>
-                <td class="tableHead">Nationality</td>
-                <td class="tableHead">Email</td>
-                <td class="tableHead">Mobile</td>
-                <td class="tableHead">Actions</td>
-            </tr>
-            @{
-
-                List<EventTable> events = (List<EventTable>)ViewBag.Results2;
-                if (events != null)
-                {
-                    foreach (var item in events)
-                    {
-                        <tr>
-                            <td>@Html.DisplayFor(modelItem => item.AccountNo, new { @class = "tablecont" })</td>
-                            <td>@Html.DisplayFor(modelItem => item.CustomerName, new { @class = "tablecont" })</td>
-                            <td>@Html.DisplayFor(modelItem => item.Date, new { @class = "tablecont" })</td>
-                            <td>@Html.DisplayFor(modelItem => item.Time, new { @class = "tablecont" })</td>
-                            <td>@Html.DisplayFor(modelItem => item.Dispo, new { @class = "tablecont" })</td>
-                            <td>@Html.DisplayFor(modelItem => item.SubDispo, new { @class = "tablecont" })</td>
-                            <td>@Html.DisplayFor(modelItem => item.CallbackTime, new { @class = "tablecont" })</td>
-                            <td>@Html.DisplayFor(modelItem => item.Comments, new { @class = "tablecont" })</td>
-                            <td>
-                                @Html.HiddenFor(modelItem => item.Id)
-                                <a href='@Url.Action("RealEditAllocation", "Home", new { id = item.Id })'>
-                                    <img src="~/Content/Images/edit1.png" style="width: 20px; height: 20px; cursor: pointer;" data-id='@item.Id' class="submitBtn icons" />
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                }
-
-
             }
-
-
-        </table>*@
+        </table>
     }
 </div>
 
 
 
+<div class="pagination">
+    @if (currentPage > 1)
+    {
+        <a href="javascript:void(0);" onclick="loadRecords(@(currentPage - 1))">Previous</a>
+    }
 
+    Page @(currentPage) of @(totalPages)
+
+    @if (currentPage < totalPages)
+    {
+        <a href="javascript:void(0);" onclick="loadRecords(@(currentPage + 1))">Next</a>
+    }
+</div>
+
+<script>
+    function loadRecords(page) {
+        $.post('@Url.Action("_Records", "Home")', { query: '@Request.Form["query"]', page: page }, function (data) {
+            $('#VerifyList').html(data);
+        });
+    }
+
+
+    
+</script>
 
 

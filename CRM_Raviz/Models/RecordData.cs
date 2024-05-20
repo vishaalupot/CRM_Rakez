@@ -34,12 +34,15 @@ namespace CRM_Raviz.Models
         public string Email_2 { get; set; }
         public string Email_3 { get; set; }
         public string Disposition { get; set; }
+        
+        public string EmailUsed { get; set; }
         public string DispositionSecond { get; set; }
         public string SubDisposition { get; set; }
         public string Comments { get; set; }
         public string ChangeStatus { get; set; }
         public Nullable<System.DateTime> CallbackTime { get; set; }
         public string Agent { get; set; }
+        public string AgentsName { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public string CloseAccount { get; set; }
         public string DormantAccount { get; set; }

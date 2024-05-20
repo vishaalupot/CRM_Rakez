@@ -136,6 +136,11 @@
         .blink {
             animation: blink 1s infinite;
         }
+
+
+        input, select, textarea {
+            max-width: 1000px !important;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
@@ -145,14 +150,11 @@
             var disposition = $('#Disposition').val();
             var callType = $('#CallType').val();
 
-            //alert($('#SubDisposition').val());
-            alert($('#CallBackDateTime').val());
-
             // Check if both dropdowns are required to be selected
             if ((disposition == 'CALLBACK' && $('#CallBackDateTime').val() == '01/01/2000 12:00 AM') ||
                 (disposition == 'CALLBACK LANGUAGE' && $('#SubDisposition').val() == '-') ||
                 ((callType == 'OUTBOUND' || callType == 'INBOUND') && $('#Disposition').val() == '-') ||
-                (callType == 'EMAIL UPDATE' && $('#Dropdown').val() == '-') ) {
+                (callType == 'EMAIL UPDATE' && $('#Dropdown').val() == '-')) {
                 // If one or both dropdowns are not selected, show SweetAlert
                 Swal.fire({
                     icon: 'error',
@@ -183,10 +185,15 @@
                 if (selectedValue === 'OUTBOUND' || selectedValue === 'INBOUND') { // Replace 'YOUR_TRIGGER_OPTION' with the value that should trigger showing the second dropdown
                     $('#firstDropdown').show(); // Show the second dropdown
                     $('#Dropdown').hide(); // Show the second dropdown
+                    $('#Dialed').show();
+                    $('#Email').hide();
 
                 } else if (selectedValue === 'EMAIL UPDATE') {
                     $('#firstDropdown').hide(); // Hide the second dropdown
                     $('#Dropdown').show(); // Hide the second dropdown
+                    $('#Dialed').hide();
+                    $('#Email').show();
+
                 }
             });
         });
@@ -303,6 +310,19 @@
     </script>
 
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropdown = document.getElementById('CallType');
+            var dropdown2 = document.getElementById('Disposition');
+            var dropdown = document.getElementById('CallType');
+            if (dropdown) {
+                dropdown.selectedIndex = 0;
+            }
+            if (dropdown2) {
+                dropdown2.selectedIndex = 0;
+            }
+        });
+    </script>
 
 
 
@@ -329,12 +349,23 @@
             <input type="hidden" id="username" value="@User.Identity.GetUserName()" />
 
             @Html.HiddenFor(model => model.Id)
-            @Html.HiddenFor(model => model.Agent, new { Value = User.Identity.GetUserName() })
+            @Html.HiddenFor(model => model.AgentsName, new { Value = User.Identity.GetUserName() })
             @*@Html.HiddenFor(model => model.AccountNo)*@
 
             <br />
 
-            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+            <div class="form-group  col-sm-12 col-md-3 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.Agent, "Agent", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    @Html.TextBoxFor(model => model.Agent, new { @class = "form-control box", @readonly = true })
+                </div>
+            </div>
+
+            <div class="form-group  col-sm-12 col-md-3 col-xl-3">
                 <div class="row">
                     <div class="col-md-12">
                         @Html.LabelFor(model => model.AccountNo, "Account Number", htmlAttributes: new { @class = "control-label label" })
@@ -345,16 +376,18 @@
                 </div>
             </div>
 
-            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
+            <div class="form-group  col-sm-12 col-md-3 col-xl-4">
                 <div class="row">
                     <div class="col-md-12">
                         @Html.LabelFor(model => model.CustomerName, "Customer Name", htmlAttributes: new { @class = "control-label label" })
                     </div>
                 </div>
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.CustomerName, new { @class = "form-control box", @readonly = true })
+                    @Html.TextBoxFor(model => model.CustomerName, new { @class = "form-control box", @readonly = true, @style = "width: 400px;" })
                 </div>
             </div>
+
+
 
             <div class="form-group  col-sm-12 col-md-4 col-xl-3">
                 <div class="row">
@@ -433,16 +466,6 @@
                 </div>
             </div>
 
-            <div class="form-group  col-sm-12 col-md-4 col-xl-3">
-                <div class="row">
-                    <div class="col-md-12">
-                        @Html.LabelFor(model => model.License_expiry, "License Expiry", htmlAttributes: new { @class = "control-label label" })
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.License_expiry, new { @class = "form-control box", @readonly = true })
-                </div>
-            </div>
 
             <div class="form-group col-sm-12 col-md-4 col-xl-3">
                 <div class="row">
@@ -451,7 +474,16 @@
                     </div>
                 </div>
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.License_expiry, new { @class = "form-control box", @readonly = true })
+                    @{
+                        // Extract the date part from the License_expiry string
+                        string datePart = string.Empty;
+                        if (!string.IsNullOrEmpty(Model.License_expiry) && Model.License_expiry.Length >= 10)
+                        {
+                            datePart = Model.License_expiry.Substring(0, 10);
+                        }
+                    }
+
+                    @Html.TextBox("License_expiry", datePart, new { @class = "form-control box", @readonly = true })
                 </div>
             </div>
 
@@ -578,7 +610,7 @@
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.ReasonCode, new { @class = "tablecont" })</td>
                             <td>@Html.DisplayFor(modelItem => item.Text, new { @class = "tablecont" })</td>
-                            <td>@Html.DisplayFor(modelItem => item.DateBounced, new { @class = "tablecont" })</td>
+                            <td>@(item.DateBounced.HasValue ? item.DateBounced.Value.ToShortDateString() : "")</td>
                             <td>@Html.DisplayFor(modelItem => item.ChequeNumber, new { @class = "tablecont" })</td>
                             <td>@Html.DisplayFor(modelItem => item.ChequeDate, new { @class = "tablecont" })</td>
                             <td>@Html.DisplayFor(modelItem => item.TotalAmount, new { @class = "tablecont" })</td>
@@ -607,7 +639,7 @@
             </div>
 
 
-            <div class="form-group  col-sm-12 col-md-4 col-xl-3"  id="firstDropdown">
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3" id="firstDropdown">
                 <div class="row">
                     <div class="col-md-12">
                         @Html.LabelFor(model => model.Disposition, "Disposition", htmlAttributes: new { @class = "control-label label" })
@@ -616,38 +648,45 @@
                 <div class="col-md-10">
                     @Html.DropDownListFor(model => model.Disposition, new List<SelectListItem>
                     {
-                        new SelectListItem { Text = "-", Value = "-" },
-                        new SelectListItem { Text = "THIRD PARTY CONTACT", Value = "THIRD PARTY CONTACT" },
-                        new SelectListItem { Text = "BILL DISPUTE REFUSE TO PAY", Value = "BILL DISPUTE REFUSE TO PAY" },
-                        new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
-                        new SelectListItem { Text = "BILL REQUEST", Value = "BILL REQUEST" },
-                        new SelectListItem { Text = "LINE BUSY", Value = "LINE BUSY" },
-                        new SelectListItem { Text = "CALLBACK", Value = "CALLBACK" },
-                        new SelectListItem { Text = "CALLBACK LANGUAGE", Value = "CALLBACK LANGUAGE" },
-                        new SelectListItem { Text = "THIRD PARTY CALLBACK", Value = "THIRD PARTY CALLBACK" },
-                        new SelectListItem { Text = "DO NOT CALL", Value = "DO NOT CALL" },
-                        new SelectListItem { Text = "FOLLOW UP", Value = "FOLLOW UP" },
-                        new SelectListItem { Text = "CUSTOMER HUNG UP", Value = "CUSTOMER HUNG UP" },
-                        new SelectListItem { Text = "INVALID NUMBER", Value = "INVALID NUMBER" },
-                        new SelectListItem { Text = "CUSTOMER OUT OF COUNTRY", Value = "CUSTOMER OUT OF COUNTRY" },
-                        new SelectListItem { Text = "PAYMENT MADE", Value = "PAYMENT MADE" },
-                        new SelectListItem { Text = "PAYMENT FOLLOWUP", Value = "PAYMENT FOLLOWUP" },
-                        new SelectListItem { Text = "PAYMENT INSTALLMENT REQUEST", Value = "PAYMENT INSTALLMENT REQUEST" },
-                        new SelectListItem { Text = "PAYMENT PLAN APPROVED", Value = "PAYMENT PLAN APPROVED" },
-                        new SelectListItem { Text = "PAYMENT REMINDER", Value = "PAYMENT REMINDER" },
-                        new SelectListItem { Text = "PROMISE TO PAY", Value = "PROMISE TO PAY" },
-                        new SelectListItem { Text = "RINGING", Value = "RINGING" },
-                        new SelectListItem { Text = "REFUSE TO PAY", Value = "REFUSE TO PAY" },
-                        new SelectListItem { Text = "STATEMENT OF ACCOUNT REQUEST", Value = "STATEMENT OF ACCOUNT REQUEST" },
-                        new SelectListItem { Text = "SWITCH OFF", Value = "SWITCH OFF" },
-                        new SelectListItem { Text = "PAYMENT MISSING", Value = "PAYMENT MISSING" },
-                        new SelectListItem { Text = "PAYMENT LINK SENT", Value = "PAYMENT LINK SENT" }
+                      new SelectListItem { Text = "-", Value = "-" },
+                      new SelectListItem { Text = "ACCOUNT EXCLUDED", Value = "ACCOUNT EXCLUDED" },
+                      new SelectListItem { Text = "CALLBACK LANGUAGE", Value = "CALLBACK LANGUAGE" },
+                      new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
+                      new SelectListItem { Text = "CALLBACK", Value = "CALLBACK" },
+                      new SelectListItem { Text = "BILL DISPUTE REFUSE TO PAY", Value = "BILL DISPUTE REFUSE TO PAY" },
+                      new SelectListItem { Text = "CUSTOMER DECEASED", Value = "CUSTOMER DECEASED" },
+                      new SelectListItem { Text = "CUSTOMER HUNG UP", Value = "CUSTOMER HUNG UP" },
+                      new SelectListItem { Text = "CUSTOMER OUT OF COUNTRY", Value = "CUSTOMER OUT OF COUNTRY" },
+                      new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
+                      new SelectListItem { Text = "DE-REGISTRATION", Value = "DE-REGISTRATION" },
+                      new SelectListItem { Text = "DE-REGISTRATION DONE", Value = "DE-REGISTRATION DONE" },
+                      new SelectListItem { Text = "DO NOT CALL", Value = "DO NOT CALL" },
+                      new SelectListItem { Text = "FOLLOW UP", Value = "FOLLOW UP" },
+                      new SelectListItem { Text = "INVALID NUMBER", Value = "INVALID NUMBER" },
+                      new SelectListItem { Text = "LINE BUSY", Value = "LINE BUSY" },
+                      new SelectListItem { Text = "PAYMENT INSTALLMENT APPROVED", Value = "PAYMENT INSTALLMENT APPROVED" },
+                      new SelectListItem { Text = "PAYMENT INSTALLMENT REQUEST", Value = "PAYMENT INSTALLMENT REQUEST" },
+                      new SelectListItem { Text = "PAYMENT MADE", Value = "PAYMENT MADE" },
+                      new SelectListItem { Text = "PAYMENT MISSING", Value = "PAYMENT MISSING" },
+                      new SelectListItem { Text = "PAYMENT REMINDER", Value = "PAYMENT REMINDER" },
+                      new SelectListItem { Text = "PROMISE TO PAY", Value = "PROMISE TO PAY" },
+                      new SelectListItem { Text = "RECALLED", Value = "RECALLED" },
+                      new SelectListItem { Text = "REFUSE TO DE-REGISTER", Value = "REFUSE TO DE-REGISTER" },
+                      new SelectListItem { Text = "REFUSE TO RENEW", Value = "REFUSE TO RENEW" },
+                      new SelectListItem { Text = "RENEWAL DONE", Value = "RENEWAL DONE" },
+                      new SelectListItem { Text = "RENEWAL INQUIRY", Value = "RENEWAL INQUIRY" },
+                      new SelectListItem { Text = "RINGING", Value = "RINGING" },
+                      new SelectListItem { Text = "STATEMENT OF ACCOUNT REQUEST", Value = "STATEMENT OF ACCOUNT REQUEST" },
+                      new SelectListItem { Text = "SWITCH OFF", Value = "SWITCH OFF" },
+                      new SelectListItem { Text = "THIRD PARTY CALLBACK", Value = "THIRD PARTY CALLBACK" },
+                      new SelectListItem { Text = "THIRD PARTY CONTACT", Value = "THIRD PARTY CONTACT" },
+                      new SelectListItem { Text = "THIRD PARTY CTC INFO UPDATE", Value = "THIRD PARTY CTC INFO UPDATE" }
                     }, new { @class = "form-control box dropdown-styled" })
                     @Html.ValidationMessageFor(model => model.Disposition, "", new { @class = "text-danger" })
                 </div>
             </div>
 
-             <div class="form-group  col-sm-12 col-md-4 col-xl-3"  id="Dropdown">
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3" id="Dropdown">
                 <div class="row">
                     <div class="col-md-12">
                         @Html.LabelFor(model => model.DispositionSecond, "Disposition", htmlAttributes: new { @class = "control-label label" })
@@ -668,7 +707,19 @@
             </div>
 
 
-            <div class="form-group col-sm-12 col-md-4 col-xl-3">
+            <div class="form-group col-sm-12 col-md-4 col-xl-3" id="Email" style="display:none;">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.Label("Email Used", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    @Html.DropDownList("EmailUsed", (IEnumerable<SelectListItem>)ViewBag.EmailUsed, new { @class = "form-control box dropdown-styled", @style="width:100%; height: 100%;"})
+                    @Html.ValidationMessageFor(model => model.EmailUsed, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group col-sm-12 col-md-4 col-xl-3" id="Dialed" style="display:none;">
                 <div class="row">
                     <div class="col-md-12">
                         @Html.Label("Dialed Number", htmlAttributes: new { @class = "control-label label" })
@@ -676,10 +727,9 @@
                 </div>
                 <div class="col-md-10">
                     @Html.DropDownList("DialedNumber", (IEnumerable<SelectListItem>)ViewBag.MobileOptions, new { @class = "form-control box dropdown-styled" })
-                    @Html.ValidationMessageFor(model => model.Disposition, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.DialedNumber, "", new { @class = "text-danger" })
                 </div>
             </div>
-
 
 
             <div class="form-group col-sm-12 col-md-4 col-xl-3" id="secondDropdown" style="display:none;">
@@ -733,7 +783,7 @@
 
                 </div>
             </div>
-           
+
 
 
 

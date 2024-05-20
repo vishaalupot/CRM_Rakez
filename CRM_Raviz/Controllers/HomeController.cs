@@ -160,7 +160,24 @@ namespace CRM_Raviz.Controllers
             return View();
         }
 
-       
+        [HttpPost]
+        public ActionResult changedAgent(int id, string Agent)
+        {
+            CPVDBEntities db = new CPVDBEntities();
+            var record = db.RecordDatas.FirstOrDefault(item => item.Id == id);
+            if (record != null)
+            {
+                record.Agent = Agent;
+            }
+
+            db.Entry(record).State = System.Data.Entity.EntityState.Modified;
+            db.SaveChanges();
+
+            // Return any response if needed
+            return Json(new { success = true }); // For example, returning a JSON response
+        }
+
+
 
 
 
@@ -174,6 +191,7 @@ namespace CRM_Raviz.Controllers
 
             // Assuming mobileData is a single record
             var mobileData = db.RecordDatas.Find(id);
+            var EmailId = db.RecordDatas.Find(id);
 
             if (mobileData != null)
             {
@@ -196,6 +214,29 @@ namespace CRM_Raviz.Controllers
 
                 // Pass the list of SelectListItem to the view
                 ViewBag.MobileOptions = mobileOptions;
+            }
+
+            if (EmailId != null)
+            {
+                var EmailOptions = new List<SelectListItem>();
+
+                // Add dropdowns for each mobile number
+                for (int i = 1; i <= 3; i++)
+                {
+                    var Email = EmailId.GetType().GetProperty($"Email_{i}").GetValue(EmailId);
+                    if (Email != null)
+                    {
+                        EmailOptions.Add(new SelectListItem
+                        {
+                            Text = Email.ToString(),
+                            Value = Email.ToString()
+                        });
+                    }
+
+                }
+
+                // Pass the list of SelectListItem to the view
+                ViewBag.EmailUsed = EmailOptions;
             }
 
 
@@ -244,11 +285,12 @@ namespace CRM_Raviz.Controllers
            
                 eventTable.Datetime = DateTime.Now;
                 eventTable.CustomerName = form["CustomerName"].ToString();
-                eventTable.Agent = form["Agent"].ToString();
+                eventTable.Agent = form["AgentsName"].ToString();
                 eventTable.AccountNo = form["AccountNo"].ToString();
                 
                 eventTable.Comments = form["CommentsBox"].ToString();
                 eventTable.DialedNumber = form["DialedNumber"].ToString();
+                eventTable.EmailUsed = form["EmailUsed"].ToString();
                 eventTable.CallType = form["CallType"].ToString();
                 eventTable.Segments = recordData.Segments;
                 eventTable.Record_Id = int.Parse(form["Id"].ToString());
@@ -409,6 +451,7 @@ namespace CRM_Raviz.Controllers
 
         public ActionResult _Records()
         {
+            
             CPVDBEntities db = new CPVDBEntities();
             var results1 = db.RecordDatas.ToList();
             if (User.IsInRole("Agent"))
@@ -421,37 +464,77 @@ namespace CRM_Raviz.Controllers
         }
 
         [HttpPost]
-        public ActionResult _Records(string query)
+        public ActionResult _Records(string query, int page = 1, int pageSize = 100)
         {
             CPVDBEntities db = new CPVDBEntities();
-            RecordData recordData = new RecordData();
-            var results1 = db.RecordDatas.ToList();
             var userName = User.Identity.GetUserName();
 
-            if (query == "")
+            IQueryable<RecordData> records = db.RecordDatas;
+
+            if (string.IsNullOrEmpty(query))
             {
                 if (User.IsInRole("Agent"))
                 {
-                    results1 = db.RecordDatas
-                       .Where(item => item.Agent == userName)
-                       .ToList();
+                    records = records.Where(item => item.Agent == userName);
                 }
-
             }
-            else if (query != "")
+            else
             {
-                    results1 = db.RecordDatas
-                    .Where(item => item.CustomerName == query ||
-                                   item.AccountNo == query)
-                    .ToList();
-
+                records = records.Where(item => item.CustomerName == query || item.AccountNo == query);
             }
-                else
-                {
-                    results1 = db.RecordDatas.ToList();
-                }
-            return PartialView("_Records", results1);
+
+            int totalRecords = records.Count();
+            var results = records
+                .OrderBy(item => item.Id) // Ensure stable ordering
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+            return PartialView("_Records", results);
         }
+
+
+
+        //[HttpPost]
+        //public ActionResult _Records(string query)
+        //{
+
+        //    CPVDBEntities db = new CPVDBEntities();
+        //    RecordData recordData = new RecordData();
+        //    EventTable eventTable = new EventTable();
+        //    var DateTime = db.EventTables.ToList();
+        //    var results1 = db.RecordDatas.Take(200).ToList();
+        //    var userName = User.Identity.GetUserName();
+
+        //    if (query == "")
+        //    {
+        //        if (User.IsInRole("Agent"))
+        //        {
+        //            results1 = db.RecordDatas
+        //               .Where(item => item.Agent == userName)
+        //               .ToList();
+        //        }
+
+        //    }
+        //    else if (query != "")
+        //    {
+        //            results1 = db.RecordDatas
+        //            .Where(item => item.CustomerName == query ||
+        //                           item.AccountNo == query)
+        //            .ToList();
+
+        //    }
+        //        else
+        //        {
+        //            results1 = db.RecordDatas.ToList();
+        //        }
+
+
+        //    return PartialView("_Records", results1);
+        //}
 
         public ActionResult _History()
         {
@@ -591,41 +674,46 @@ namespace CRM_Raviz.Controllers
                                 SRNumber = worksheet1.Cells[row, 15].Value?.ToString(),
                                 DeRegFee = worksheet1.Cells[row, 16].Value?.ToString(),
                                 BCheque = worksheet1.Cells[row, 17].Value?.ToString(),
-                                IPTelephone_Billing= worksheet1.Cells[row, 18].Value?.ToString(),
-                                Utility_Billing = worksheet1.Cells[row, 19].Value?.ToString(),
-                                Others = worksheet1.Cells[row, 20].Value?.ToString(),
-                                OS_Billing = worksheet1.Cells[row, 21].Value?.ToString(),
-                                CloseAccount = worksheet1.Cells[row, 22].Value?.ToString(),
-                                DormantAccount = worksheet1.Cells[row, 23].Value?.ToString(),
-                                InsufficientFunds = worksheet1.Cells[row, 24].Value?.ToString(),
-                                OtherReason = worksheet1.Cells[row, 25].Value?.ToString(),
-                                SignatureIrregular = worksheet1.Cells[row, 26].Value?.ToString(),
-                                TechnicalReason = worksheet1.Cells[row, 27].Value?.ToString(),
-                                BOthers = worksheet1.Cells[row, 28].Value?.ToString(),
-                                EmployeeVisaQuota = worksheet1.Cells[row, 29].Value?.ToString(),
-                                EmployeeVisaUtilized = worksheet1.Cells[row, 30].Value?.ToString(),
-                                ProjectBundleName = worksheet1.Cells[row, 31].Value?.ToString(),
-                                LicenseType = worksheet1.Cells[row, 32].Value?.ToString(),
-                                FacilityType = worksheet1.Cells[row, 33].Value?.ToString(),
-                                NoYears = worksheet1.Cells[row, 34].Value?.ToString(),
-                                DerbyBatch = worksheet1.Cells[row, 35].Value?.ToString(),
-                                Agent = worksheet1.Cells[row, 36].Value?.ToString(),
+                                BCheque_P = worksheet1.Cells[row, 18].Value?.ToString(),
+                                IPTelephone_Billing= worksheet1.Cells[row, 19].Value?.ToString(),
+                                Utility_Billing = worksheet1.Cells[row, 20].Value?.ToString(),
+                                Others = worksheet1.Cells[row, 21].Value?.ToString(),
+                                OS_Billing = worksheet1.Cells[row, 22].Value?.ToString(),
+                                CloseAccount = worksheet1.Cells[row, 23].Value?.ToString(),
+                                DormantAccount = worksheet1.Cells[row, 24].Value?.ToString(),
+                                InsufficientFunds = worksheet1.Cells[row, 25].Value?.ToString(),
+                                OtherReason = worksheet1.Cells[row, 26].Value?.ToString(),
+                                SignatureIrregular = worksheet1.Cells[row, 27].Value?.ToString(),
+                                TechnicalReason = worksheet1.Cells[row, 28].Value?.ToString(),
+                                BOthers = worksheet1.Cells[row, 29].Value?.ToString(),
+                                EmployeeVisaQuota = worksheet1.Cells[row, 30].Value?.ToString(),
+                                EmployeeVisaUtilized = worksheet1.Cells[row, 31].Value?.ToString(),
+                                ProjectBundleName = worksheet1.Cells[row, 32].Value?.ToString(),
+                                LicenseType = worksheet1.Cells[row, 33].Value?.ToString(),
+                                FacilityType = worksheet1.Cells[row, 34].Value?.ToString(),
+                                NoYears = worksheet1.Cells[row, 35].Value?.ToString(),
+                                DerbyBatch = worksheet1.Cells[row, 36].Value?.ToString(),
+                                Agent = worksheet1.Cells[row, 37].Value?.ToString(),
 
 
                                 
                             };
 
-                            if ((caseEntity1.OS_Billing != null || caseEntity1.OS_Billing != "-" || caseEntity1.OS_Billing != "0") && (caseEntity1.ExpectedRenewalFee != null || caseEntity1.ExpectedRenewalFee != "-" || caseEntity1.ExpectedRenewalFee != "0"))
+                            if (!(caseEntity1.OS_Billing == null || caseEntity1.OS_Billing == "-" || caseEntity1.OS_Billing.Trim() == "0") && !(caseEntity1.ExpectedRenewalFee == null || caseEntity1.ExpectedRenewalFee == "-" || caseEntity1.ExpectedRenewalFee.Trim() == "0"))
                             {
                                 caseEntity1.Segments = "Bounced Cheque and Renewal";
                             }
-                            else if(caseEntity1.OS_Billing != null || caseEntity1.OS_Billing != "-" || caseEntity1.OS_Billing != "0")
+                            else if(!(caseEntity1.OS_Billing == null || caseEntity1.OS_Billing == "-" || caseEntity1.OS_Billing.Trim() == "0"))
+                            {
+                                caseEntity1.Segments = "Bounced Cheque";
+                            }
+                            else if(!(caseEntity1.ExpectedRenewalFee == null || caseEntity1.ExpectedRenewalFee == "-" || caseEntity1.ExpectedRenewalFee.Trim() == "0"))
                             {
                                 caseEntity1.Segments = "Renewal";
                             }
-                            else if(caseEntity1.ExpectedRenewalFee != null || caseEntity1.ExpectedRenewalFee != "-" || caseEntity1.ExpectedRenewalFee != "0")
+                            else
                             {
-                                caseEntity1.Segments = "Bounced Cheque";
+                                caseEntity1.Segments = " ";
                             }
 
                             dbSheet1.RecordDatas.Add(caseEntity1);
@@ -672,6 +760,80 @@ namespace CRM_Raviz.Controllers
 
             return View();
         }
+
+        //public ActionResult AgentsDropdown()
+        //{
+        //    var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+        //    var agents = userManager.GetUsersInRole("Agent").ToList();
+
+        //    // Assuming your ApplicationUser class has a property like UserName to display in the dropdown
+        //    var agentNames = agents.Select(u => new SelectListItem { Value = u.Id, Text = u.UserName }).ToList();
+
+        //    ViewBag.Agents = agentNames;
+
+        //    return View();
+        //}
+
+
+        //public List<string> AgentsDropdown()
+        //{
+        //    CPVDBEntities db = new CPVDBEntities();
+        //    var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+        //    // Create a role manager
+        //    var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>());
+
+        //    var roles = roleManager.Roles.ToList();
+
+        //    var manageRole = roleManager.Roles.Select(s => new ManageRoles
+        //    {
+        //        ID = s.Id,
+        //        Name = s.Name,
+        //    }).ToList();
+
+        //    List<string> filteredUsernames = new List<string>();
+
+        //    return filteredUsernames;
+        //}
+
+        //public async Task<ActionResult> AgentsDropdown()
+        //{
+
+
+        //    ApplicationUserManager userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+        //    // Get all users from the database
+        //    var allUsers = userManager.Users.ToList();
+
+        //    // Find users with the "FE" role
+        //    var usersWithFERole = allUsers.Where(user => userManager.IsInRole(user.Id, "Agent")).ToList();
+
+        //    // Create a list to store the usernames of users with the "FE" role
+        //    var usernamesWithFERole = new List<string>();
+
+        //    // Iterate through each user and get their username
+        //    foreach (var user in usersWithFERole)
+        //    {
+        //        // Add the username to the list
+        //        usernamesWithFERole.Add(user.UserName);
+        //    }
+
+        //    return View(usernamesWithFERole);
+        //}
+
+        public static List<string> GetAllUsers()
+        {
+            using (CPVDBEntities db = new CPVDBEntities())
+            {
+                List<string> users = db.AspNetUsers
+                 .Where(w => w.UserRole == "Agent")
+                 .Select(s => s.UserName)
+                 .ToList();
+
+                return users;
+            }
+        }
+
 
 
         public ActionResult UploadCases()

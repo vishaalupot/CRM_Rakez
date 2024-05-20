@@ -103,6 +103,7 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <Property Name="Segments" Type="varchar(max)" />
           <Property Name="DialedNumber" Type="varchar(max)" />
           <Property Name="CallType" Type="varchar(max)" />
+          <Property Name="EmailUsed" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="RecordData">
           <Key>
@@ -446,6 +447,7 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <Property Name="Segments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="DialedNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="CallType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EmailUsed" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Test_4">
           <Key>
@@ -592,6 +594,7 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <EntitySetMapping Name="EventTables">
             <EntityTypeMapping TypeName="RakezCRM.EventTable">
               <MappingFragment StoreEntitySet="EventTable">
+                <ScalarProperty Name="EmailUsed" ColumnName="EmailUsed" />
                 <ScalarProperty Name="CallType" ColumnName="CallType" />
                 <ScalarProperty Name="DialedNumber" ColumnName="DialedNumber" />
                 <ScalarProperty Name="Segments" ColumnName="Segments" />

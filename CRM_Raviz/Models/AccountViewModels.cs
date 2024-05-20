@@ -3,6 +3,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CRM_Raviz.Models
 {
+
+    public class ManageRoles
+    {
+        [Key]
+        [Required]
+        public string ID { get; set; }
+        [Required]
+        [Display(Name = "Role Name")]
+        public string Name { get; set; }
+    }
     public class ExternalLoginConfirmationViewModel
     {
         [Required]

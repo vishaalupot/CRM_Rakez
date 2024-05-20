@@ -29,5 +29,6 @@ namespace CRM_Raviz.Models
         public string Segments { get; set; }
         public string DialedNumber { get; set; }
         public string CallType { get; set; }
+        public string EmailUsed { get; set; }
     }
 }
