@@ -333,9 +333,12 @@
                             <a href="@Url.Action("MasterReport", "Home")">Master Data</a>
                         </div>
                     </li>
-                    <li><button class="btn" onclick="redirectToUpload()">Upload Cases</button></li>
-                    <li><button class="btn" onclick="redirectToEdit()">Edit Allocation</button></li>
-                </ul>
+                    @if (!(User.IsInRole("Agent")))
+                    {
+                        <li><button class="btn" onclick="redirectToUpload()">Upload Cases</button></li>
+                    }
+                        <li><button class="btn" onclick="redirectToEdit()">Edit Allocation</button></li>
+                    </ul>
 
                 @*<div class="search" style="display: flex; justify-content: center;">
             <form class="form">

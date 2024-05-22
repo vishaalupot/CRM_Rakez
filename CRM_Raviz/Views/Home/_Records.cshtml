@@ -134,6 +134,16 @@
     .paste-button:hover .dropdown-content {
         display: block;
     }
+
+    .changeAgentButton{
+        width: 25px;
+        cursor: pointer;
+        transition-duration: 0.5s;
+    }
+
+    .changeAgentButton:hover{
+        transform: scale(1.1);
+    }
 </style>
 
 <div>
@@ -194,7 +204,10 @@
                               new SelectList(CRM_Raviz.Controllers.HomeController.GetAllUsers()), " ", new { @class = "box", id = "dropdown" })
                         </td>
                         <td>
-                            <input type="button" style="width: 100%;" class="changeAgentButton" data-record-id="@item.Id" />
+
+                            <img src="~/Content/Images/transfer.png" class="changeAgentButton" data-record-id="@item.Id" />
+
+                            @*<input type="button" style="width: 100%;" class="changeAgentButton" data-record-id="@item.Id" />*@
                         </td>
 
                     </tr>

@@ -16,6 +16,10 @@
         <EntityTypeShape EntityType="RakezCRM.BouncedRecord" Width="1.5" PointX="5.375" PointY="6.75" />
         <EntityTypeShape EntityType="RakezCRM.EventTable" Width="1.5" PointX="3.125" PointY="7.375" />
         <EntityTypeShape EntityType="RakezCRM.Test_4" Width="1.5" PointX="7.375" PointY="0.75" />
+        <EntityTypeShape EntityType="RakezCRM.EmailId" Width="1.5" PointX="3" PointY="15.375" />
+        <EntityTypeShape EntityType="RakezCRM.MobileNo" Width="1.5" PointX="3" PointY="12.75" />
+        <AssociationConnector Association="RakezCRM.FK__EmailIds__Record__412EB0B6" />
+        <AssociationConnector Association="RakezCRM.FK__MobileNos__Recor__3E52440B" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

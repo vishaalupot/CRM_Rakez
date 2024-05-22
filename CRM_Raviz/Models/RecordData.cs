@@ -14,6 +14,13 @@ namespace CRM_Raviz.Models
     
     public partial class RecordData
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public RecordData()
+        {
+            this.EmailIds = new HashSet<EmailId>();
+            this.MobileNos = new HashSet<MobileNo>();
+        }
+    
         public int Id { get; set; }
         public string AccountNo { get; set; }
         public string CustomerName { get; set; }
@@ -34,15 +41,11 @@ namespace CRM_Raviz.Models
         public string Email_2 { get; set; }
         public string Email_3 { get; set; }
         public string Disposition { get; set; }
-        
-        public string EmailUsed { get; set; }
-        public string DispositionSecond { get; set; }
         public string SubDisposition { get; set; }
         public string Comments { get; set; }
         public string ChangeStatus { get; set; }
         public Nullable<System.DateTime> CallbackTime { get; set; }
         public string Agent { get; set; }
-        public string AgentsName { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public string CloseAccount { get; set; }
         public string DormantAccount { get; set; }
@@ -53,6 +56,9 @@ namespace CRM_Raviz.Models
         public string BOthers { get; set; }
         public string Segments { get; set; }
         public string DialedNumber { get; set; }
+        public string EmailUsed { get; set; }
+        public string DispositionSecond { get; set; }
+        public string AgentsName { get; set; }
         public string TenacyFacilityType { get; set; }
         public string ExpectedRenewalFee { get; set; }
         public string SRNumber { get; set; }
@@ -65,5 +71,10 @@ namespace CRM_Raviz.Models
         public string NoYears { get; set; }
         public string DerbyBatch { get; set; }
         public string CallType { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EmailId> EmailIds { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MobileNo> MobileNos { get; set; }
     }
 }

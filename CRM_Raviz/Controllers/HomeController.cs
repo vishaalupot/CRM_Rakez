@@ -195,7 +195,15 @@ namespace CRM_Raviz.Controllers
 
             if (mobileData != null)
             {
-                var mobileOptions = new List<SelectListItem>();
+                var MobileOptions = new List<SelectListItem>
+                {
+                    new SelectListItem
+                    {
+                        Text = "-",
+                        Value = "-",
+                        Selected = true
+                    }
+                };
 
                 // Add dropdowns for each mobile number
                 for (int i = 1; i <= 4; i++)
@@ -203,7 +211,7 @@ namespace CRM_Raviz.Controllers
                     var mobileNumber = mobileData.GetType().GetProperty($"Mobile{i}").GetValue(mobileData);
                     if (mobileNumber != null)
                     {
-                        mobileOptions.Add(new SelectListItem
+                        MobileOptions.Add(new SelectListItem
                         {
                             Text = mobileNumber.ToString(),
                             Value = mobileNumber.ToString()
@@ -213,12 +221,20 @@ namespace CRM_Raviz.Controllers
                 }
 
                 // Pass the list of SelectListItem to the view
-                ViewBag.MobileOptions = mobileOptions;
+                ViewBag.DialedNumber = MobileOptions;
             }
 
             if (EmailId != null)
             {
-                var EmailOptions = new List<SelectListItem>();
+                var EmailOptions = new List<SelectListItem>
+                    {
+                    new SelectListItem
+                    {
+                        Text = "-",
+                        Value = "-",
+                        Selected = true
+                    }
+                };
 
                 // Add dropdowns for each mobile number
                 for (int i = 1; i <= 3; i++)
@@ -244,6 +260,7 @@ namespace CRM_Raviz.Controllers
         }
 
         [HttpPost]
+        [ValidateInput(false)]
         public ActionResult RealEditAllocation(FormCollection form)
         {
             CPVDBEntities db = new CPVDBEntities();
@@ -640,6 +657,7 @@ namespace CRM_Raviz.Controllers
         {
             CPVDBEntities dbSheet1 = new CPVDBEntities(); // Database context for the first sheet
             CPVDBEntities dbSheet2 = new CPVDBEntities(); // Database context for the second sheet
+            CPVDBEntities db = new CPVDBEntities(); // Database context for the second sheet
 
             if (file != null && file.ContentLength > 0)
             {
@@ -717,9 +735,25 @@ namespace CRM_Raviz.Controllers
                             }
 
                             dbSheet1.RecordDatas.Add(caseEntity1);
+                            dbSheet1.SaveChanges();
+
+                            int recordId = caseEntity1.Id; // Get the auto-generated Id after saving
+
+                            InsertMobileNo(dbSheet1, recordId, caseEntity1.Mobile1);
+                            InsertMobileNo(dbSheet1, recordId, caseEntity1.Mobile2);
+                            InsertMobileNo(dbSheet1, recordId, caseEntity1.Mobile3);
+                            InsertMobileNo(dbSheet1, recordId, caseEntity1.Mobile4);    
+
+
+
+                            // Insert mobile numbers into MobileNos table
+
+
+
                         }
 
-                        dbSheet1.SaveChanges();
+                       
+
 
                         // Process the second sheet
                         ExcelWorksheet worksheet2 = package.Workbook.Worksheets["BC Details"];
@@ -759,6 +793,23 @@ namespace CRM_Raviz.Controllers
             }
 
             return View();
+        }
+
+   
+
+        void InsertMobileNo(CPVDBEntities context, int recordId, string mobileNo)
+        {
+            if (!string.IsNullOrEmpty(mobileNo))
+            {
+                var mobileRecord = new MobileNo
+                {
+                    RecordId = recordId,
+                    Numbers = mobileNo
+                };
+
+                context.Set<MobileNo>().Add(mobileRecord);
+                context.SaveChanges();
+            }
         }
 
         //public ActionResult AgentsDropdown()
@@ -924,60 +975,186 @@ namespace CRM_Raviz.Controllers
             }
         }
 
-        public ActionResult DownloadRecordCases(string Disposition, DateTime? specificDate = null, DateTime? endDate = null)
+        public ActionResult DownloadRecordCases( DateTime? specificDate = null, DateTime? endDate = null)
         {
             CPVDBEntities db = new CPVDBEntities();
             HttpResponseBase Response = HttpContext.Response;
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             List<RecordData> recordDatas = new List<RecordData>(); // Initialize with an empty list
+            List<EventTable> eventTables = new List<EventTable>();
+            List<BouncedRecord> bouncedRecords = new List<BouncedRecord>();
+
+            bouncedRecords = db.BouncedRecords.ToList();    
+
+            var key = "";
+            eventTables =  db.EventTables
+                               .ToList();
+
             if (specificDate.HasValue && endDate.HasValue)
             {
-                recordDatas = db.RecordDatas
-                                .Where(et => et.CallbackTime >= specificDate.Value.Date && et.CallbackTime <= endDate.Value.Date && et.Disposition == Disposition)
+                eventTables = db.EventTables
+                                .Where(et => et.Datetime >= specificDate.Value && et.Datetime <= endDate.Value)
                                 .ToList();
             }
             else if (specificDate.HasValue)
             {
-                recordDatas = db.RecordDatas
-                                .Where(et => et.CallbackTime == specificDate.Value.Date && et.Disposition == Disposition)
+                eventTables = db.EventTables
+                                .Where(et => et.Datetime > specificDate.Value)
                                 .ToList();
-            }
-            else if(Disposition != null)
-            {
-                recordDatas = db.RecordDatas
-                                .Where(et => et.Disposition == Disposition)
-                                .ToList();
+
+
             }
 
-            var header = new List<string>() { "AccountNo", "CustomerName", "BCheque", "BCheque_P", "IPTelephone_Billing", "Utility_Billing", "Others", "OS_Billing", "License_expiry", "Contact_Person", "Nationality", "Mobile1", "Mobile2", "Mobile3", "Mobile4", "Email_1", "Email_2", "Email_3", "Disposition", "SubDisposition", "Comments", "ChangeStatus", "CallbackTime" };
+            var header = new List<string>() {  "AccountNo","Agent","CustomerName", "BCheque", "BCheque_P", "IPTelephone_Billing", 
+                "Utility_Billing", "Others", "OS_Billing", "License_expiry", "Contact_Person","ModifiedDate", "Nationality", "Mobile1",
+                "Mobile2", "Mobile3", "Mobile4", "Email_1", "Email_2", "Email_3", "ExpectedRenewalFee", 
+                 "SRNumber", "EmployeeVisaQuota", "EmployeeVisaUtilized", "ProjectBundleName",
+                "LicenseType", "FacilityType", "NoYears", "DerbyBatch", "CallType"};
+
+
+            var header1 = new List<string>()
+            {
+                "AccountNo","Agent", "DialedNumber", "EmailUsed", "Dispo", "SubDispo", "CallbackTime", "Comments", "Segments"
+            };
+
+             var header2 = new List<string>()
+            {
+                "Account No","Event Created by", "Dialed Number", "Email Used", "Disposition", "Sub Disposition", "CallbackTime", "Comments", "Segments"
+            };
+
+            var bouncedDetailHeaders = new List<string>()
+            {
+                 "AccountNo","ChequeNumber", "ReasonCode","Text","DateBounced", "ChequeDate","TotalAmount"
+            };
+
 
             using (var package = new ExcelPackage())
             {
                 int col = 1;
                 var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+                var combinedList = header2.Concat(header).ToList();
+                List<string> accountNoList = new List<string>();
 
-                foreach (var headerName in header)
+                foreach (var headerName in combinedList )
                 {
                     worksheet.Cells[1, col++].Value = headerName.ToString();
                 }
 
+                
+
                 int row = 2;
-                foreach (var itemcase in recordDatas)
+
+                foreach (var items in eventTables)
                 {
                     col = 1;
-                    foreach (var headName in header)
+                    foreach (var headName in header1)
                     {
-                        var property = typeof(RecordData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
-                        object value = property.GetValue(itemcase);
+                        var property = typeof(EventTable).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
+                        object value = property.GetValue(items);
 
-                        if (property.PropertyType == typeof(DateTime))
+                        if (property != null && property.Name == "AccountNo")
                         {
-                            worksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
+                            key = value.ToString();
+                            accountNoList.Add(value?.ToString());
+                        }
+
+                        if (value != null && value.ToString() == "1/1/2000 12:00:00 AM")
+                        {
+                           
+                            worksheet.Cells[row, col++].Value = "-";
                         }
                         else
                         {
                             worksheet.Cells[row, col++].Value = value != null ? value.ToString() : string.Empty;
+                        }
+                    }
+
+                    recordDatas = db.RecordDatas.Where(rd => rd.AccountNo == key).ToList();
+
+                    foreach (var itemcase in recordDatas)
+                    {
+                       
+                        foreach (var headName in header)
+                        {
+                            var property = typeof(RecordData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
+
+                            object value = property.GetValue(itemcase);
+
+                            if (property.PropertyType == typeof(DateTime))
+                            {
+                                worksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
+                            }
+                            else
+                            {
+                                worksheet.Cells[row, col++].Value = value != null ? value.ToString() : string.Empty;
+                            }
+                        }
+                       
+                    }
+
+                    row++;
+                }
+
+                foreach (var items in recordDatas)
+                {
+                    
+
+                    //recordDatas = db.RecordDatas.Where(rd => rd.AccountNo != key).ToList();
+
+                    recordDatas = db.RecordDatas
+                    .Where(rd => !accountNoList.Contains(rd.AccountNo))
+                    .ToList();
+
+                    foreach (var itemcase in recordDatas)
+                    {
+                        col = 10;
+                        foreach (var headName in header)
+                        {
+                            var property = typeof(RecordData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
+
+                            object value = property.GetValue(itemcase);
+
+                            if (property.PropertyType == typeof(DateTime))
+                            {
+                                worksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
+                            }
+                            else
+                            {
+                                worksheet.Cells[row, col++].Value = value != null ? value.ToString() : string.Empty;
+                            }
+                        }
+                        row++;
+                    }
+
+                   
+                }
+
+                var bouncedWorksheet = package.Workbook.Worksheets.Add("BouncedDetails");
+                col = 1;
+                foreach (var headerName in bouncedDetailHeaders)
+                {
+                    bouncedWorksheet.Cells[1, col++].Value = headerName.ToString();
+                }
+
+               
+                row = 2;
+
+                foreach (var bouncedDetail in bouncedRecords)
+                {
+                    col = 1;
+                    foreach (var headerName in bouncedDetailHeaders)
+                    {
+                        var property = typeof(BouncedRecord).GetProperty(headerName, BindingFlags.Public | BindingFlags.Instance);
+                        object value = property.GetValue(bouncedDetail);
+
+                        if (property.PropertyType == typeof(DateTime))
+                        {
+                            bouncedWorksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
+                        }
+                        else
+                        {
+                            bouncedWorksheet.Cells[row, col++].Value = value != null ? value.ToString() : string.Empty;
                         }
                     }
                     row++;
@@ -994,6 +1171,9 @@ namespace CRM_Raviz.Controllers
 
                 return File(Response.OutputStream, Response.ContentType);
             }
+        
+        
+            
         }
 
 

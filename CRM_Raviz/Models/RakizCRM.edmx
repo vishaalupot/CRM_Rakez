@@ -84,6 +84,14 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <Property Name="PMT_DT" Type="date" />
           <Property Name="PMT_amt" Type="int" />
         </EntityType>-->
+        <EntityType Name="EmailIds">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="RecordId" Type="int" Nullable="false" />
+          <Property Name="Emails" Type="varchar(max)" />
+        </EntityType>
         <EntityType Name="EventTable">
           <Key>
             <PropertyRef Name="Id" />
@@ -104,6 +112,14 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <Property Name="DialedNumber" Type="varchar(max)" />
           <Property Name="CallType" Type="varchar(max)" />
           <Property Name="EmailUsed" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="MobileNos">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RecordId" Type="int" Nullable="false" />
+          <Property Name="Numbers" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="RecordData">
           <Key>
@@ -168,6 +184,18 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <Property Name="PMT_DT" Type="date" />
           <Property Name="pmt_amt" Type="float" />
         </EntityType>
+        <Association Name="FK__MobileNos__Recor__3E52440B">
+          <End Role="RecordData" Type="Self.RecordData" Multiplicity="1" />
+          <End Role="MobileNos" Type="Self.MobileNos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RecordData">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MobileNos">
+              <PropertyRef Name="RecordId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
           <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -231,9 +259,15 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BouncedRecord" EntityType="Self.BouncedRecord" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmailIds" EntityType="Self.EmailIds" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EventTable" EntityType="Self.EventTable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MobileNos" EntityType="Self.MobileNos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RecordData" EntityType="Self.RecordData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Test_4" EntityType="Self.Test_4" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__MobileNos__Recor__3E52440B" Association="Self.FK__MobileNos__Recor__3E52440B">
+            <End Role="RecordData" EntitySet="RecordData" />
+            <End Role="MobileNos" EntitySet="MobileNos" />
+          </AssociationSet>
           <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
@@ -362,6 +396,16 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <EntitySet Name="BouncedRecords" EntityType="RakezCRM.BouncedRecord" />
           <EntitySet Name="EventTables" EntityType="RakezCRM.EventTable" />
           <EntitySet Name="Test_4" EntityType="RakezCRM.Test_4" />
+          <EntitySet Name="EmailIds" EntityType="RakezCRM.EmailId" />
+          <EntitySet Name="MobileNos" EntityType="RakezCRM.MobileNo" />
+          <AssociationSet Name="FK__EmailIds__Record__412EB0B6" Association="RakezCRM.FK__EmailIds__Record__412EB0B6">
+            <End Role="RecordData" EntitySet="RecordDatas" />
+            <End Role="EmailId" EntitySet="EmailIds" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MobileNos__Recor__3E52440B" Association="RakezCRM.FK__MobileNos__Recor__3E52440B">
+            <End Role="RecordData" EntitySet="RecordDatas" />
+            <End Role="MobileNo" EntitySet="MobileNos" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="RecordData">
           <Key>
@@ -414,6 +458,8 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <Property Name="NoYears" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="DerbyBatch" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="CallType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="EmailIds" Relationship="RakezCRM.FK__EmailIds__Record__412EB0B6" FromRole="RecordData" ToRole="EmailId" />
+          <NavigationProperty Name="MobileNos" Relationship="RakezCRM.FK__MobileNos__Recor__3E52440B" FromRole="RecordData" ToRole="MobileNo" />
         </EntityType>
         <EntityType Name="BouncedRecord">
           <Key>
@@ -460,6 +506,48 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
           <Property Name="PMT_DT" Type="DateTime" Precision="0" />
           <Property Name="pmt_amt" Type="Double" />
         </EntityType>
+        <EntityType Name="EmailId">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="RecordId" Type="Int32" Nullable="false" />
+          <Property Name="Emails" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="RecordData" Relationship="RakezCRM.FK__EmailIds__Record__412EB0B6" FromRole="EmailId" ToRole="RecordData" />
+        </EntityType>
+        <EntityType Name="MobileNo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="RecordId" Type="Int32" Nullable="false" />
+          <Property Name="Numbers" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="RecordData" Relationship="RakezCRM.FK__MobileNos__Recor__3E52440B" FromRole="MobileNo" ToRole="RecordData" />
+        </EntityType>
+        <Association Name="FK__EmailIds__Record__412EB0B6">
+          <End Type="RakezCRM.RecordData" Role="RecordData" Multiplicity="1" />
+          <End Type="RakezCRM.EmailId" Role="EmailId" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RecordData">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EmailId">
+              <PropertyRef Name="RecordId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MobileNos__Recor__3E52440B">
+          <End Type="RakezCRM.RecordData" Role="RecordData" Multiplicity="1" />
+          <End Type="RakezCRM.MobileNo" Role="MobileNo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RecordData">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MobileNo">
+              <PropertyRef Name="RecordId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -622,6 +710,24 @@ warning 6013: The table/view 'Rakez.dbo.customers' does not have a primary key d
                 <ScalarProperty Name="Segment" ColumnName="Segment" />
                 <ScalarProperty Name="ageing" ColumnName="ageing" />
                 <ScalarProperty Name="CUSTOMER_CODE" ColumnName="CUSTOMER_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmailIds">
+            <EntityTypeMapping TypeName="RakezCRM.EmailId">
+              <MappingFragment StoreEntitySet="EmailIds">
+                <ScalarProperty Name="Emails" ColumnName="Emails" />
+                <ScalarProperty Name="RecordId" ColumnName="RecordId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MobileNos">
+            <EntityTypeMapping TypeName="RakezCRM.MobileNo">
+              <MappingFragment StoreEntitySet="MobileNos">
+                <ScalarProperty Name="Numbers" ColumnName="Numbers" />
+                <ScalarProperty Name="RecordId" ColumnName="RecordId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

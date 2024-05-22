@@ -222,11 +222,17 @@
     <Compile Include="Models\BouncedRecord.cs">
       <DependentUpon>RakizCRM.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\EmailId.cs">
+      <DependentUpon>RakizCRM.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\EventTable.cs">
       <DependentUpon>RakizCRM.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\MobileNo.cs">
+      <DependentUpon>RakizCRM.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\RakizCRM.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -366,6 +372,7 @@
     <Content Include="Views\Home\MasterReport.cshtml" />
     <Content Include="Views\Home\UserMaster.cshtml" />
     <Content Include="Views\Home\UserView.cshtml" />
+    <Content Include="Views\Home\_MobileNo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

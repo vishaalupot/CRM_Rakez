@@ -32,10 +32,11 @@
 <div>
     @using (Html.BeginForm("RealEditAllocation", "Home", FormMethod.Post))
     {
-        <table>
+        <table style="overflow-x:auto; width: 90vw; z-index: 10; position:absolute;">
             <tr>
                 <td class="tableHead">Agent</td>
                 <td class="tableHead">Date</td>
+                <td class="tableHead">Time</td>
                 <td class="tableHead">Call Type</td>
                 <td class="tableHead">Dialed Number</td>
                 <td class="tableHead">Email Used</td>
@@ -59,7 +60,8 @@
         <td>@Html.DisplayFor(modelItem => item.Comments, new { @class = "tablecont" })</td>*@
 
                     <td>@Html.DisplayFor(modelItem => item.Agent, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.Datetime, new { @class = "tablecont" })</td>
+                    <td>@item.Datetime.Date.ToString("yyyy-MM-dd")</td>
+                    <td>@item.Datetime.TimeOfDay.ToString(@"hh\:mm")</td>
                     <td>@(item.CallType?.Substring(0, 1))</td>
                     <td>@Html.DisplayFor(modelItem => item.DialedNumber, new { @class = "tablecont" })</td>
                     <td>@Html.DisplayFor(modelItem => item.EmailUsed, new { @class = "tablecont" })</td>

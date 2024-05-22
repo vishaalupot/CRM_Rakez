@@ -65,39 +65,7 @@
         {
             <div style="display: flex; flex-wrap: wrap; flex: 1;">
 
-                <div style="margin-right: 10px;">
-                    <label for="SubDispo">Disposition</label>
-                    @Html.DropDownList("Disposition", new List<SelectListItem>
-                    {
-                         new SelectListItem { Text = "NA", Value = "NA" },
-                         new SelectListItem { Text = "THIRD PARTY CONTACT", Value = "THIRD PARTY CONTACT" },
-                         new SelectListItem { Text = "BILL DISPUTE REFUSE TO PAY", Value = "BILL DISPUTE REFUSE TO PAY" },
-                         new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
-                         new SelectListItem { Text = "BILL REQUEST", Value = "BILL REQUEST" },
-                         new SelectListItem { Text = "LINE BUSY", Value = "LINE BUSY" },
-                         new SelectListItem { Text = "CALLBACK", Value = "CALLBACK" },
-                         new SelectListItem { Text = "CALLBACK LANGUAGE", Value = "CALLBACK LANGUAGE" },
-                         new SelectListItem { Text = "THIRD PARTY CALLBACK", Value = "THIRD PARTY CALLBACK" },
-                         new SelectListItem { Text = "SWICHTED OFF", Value = "SWICHTED OFF" },
-                         new SelectListItem { Text = "DO NOT CALL", Value = "DO NOT CALL" },
-                         new SelectListItem { Text = "FOLLOW UP", Value = "FOLLOW UP" },
-                         new SelectListItem { Text = "CUSTOMER HUNG UP", Value = "CUSTOMER HUNG UP" },
-                         new SelectListItem { Text = "INVALID NUMBER", Value = "INVALID NUMBER" },
-                         new SelectListItem { Text = "CUSTOMER OUT OF COUNTRY", Value = "CUSTOMER OUT OF COUNTRY" },
-                         new SelectListItem { Text = "PAYMENT MADE", Value = "PAYMENT MADE" },
-                         new SelectListItem { Text = "PAYMENT FOLLOWUP", Value = "PAYMENT FOLLOWUP" },
-                         new SelectListItem { Text = "PAYMENT INSTALLMENT REQUEST", Value = "PAYMENT INSTALLMENT REQUEST" },
-                         new SelectListItem { Text = "PAYMENT PLAN APPROVED", Value = "PAYMENT PLAN APPROVED" },
-                         new SelectListItem { Text = "PAYMENT REMINDER", Value = "PAYMENT REMINDER" },
-                         new SelectListItem { Text = "PROMISE TO PAY", Value = "PROMISE TO PAY" },
-                         new SelectListItem { Text = "RINGING", Value = "RINGING" },
-                         new SelectListItem { Text = "REFUSE TO PAY", Value = "REFUSE TO PAY" },
-                         new SelectListItem { Text = "STATEMENT OF ACCOUNT REQUEST", Value = "STATEMENT OF ACCOUNT REQUEST" },
-                         new SelectListItem { Text = "SWITCH OFF", Value = "SWITCH OFF" },
-                         new SelectListItem { Text = "PAYMENT MISSING", Value = "PAYMENT MISSING" },
-                         new SelectListItem { Text = "PAYMENT LINK SENT", Value = "PAYMENT LINK SENT" }
-                    }, new { @class = "form-control box dropdown-styled", id = "Disposition", onchange = "showCallbackDateInput()" })
-                </div>
+                
 
                 <div id="callbackDateInput" style="display: none; margin-right: 10px;">
                     <label for="CallbackDate">Callback Date</label>

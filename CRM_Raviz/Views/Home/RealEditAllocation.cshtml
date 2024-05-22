@@ -726,7 +726,7 @@
                     </div>
                 </div>
                 <div class="col-md-10">
-                    @Html.DropDownList("DialedNumber", (IEnumerable<SelectListItem>)ViewBag.MobileOptions, new { @class = "form-control box dropdown-styled" })
+                    @Html.DropDownList("DialedNumber", (IEnumerable<SelectListItem>)ViewBag.DialedNumber, new { @class = "form-control box dropdown-styled" })
                     @Html.ValidationMessageFor(model => model.DialedNumber, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -778,8 +778,8 @@
             </div>
 
             @Html.Label("History", htmlAttributes: new { @class = "control-label label" })
-            <div style="overflow-x:auto; height: 400px; width: 100%;">
-                <div id="History">
+            <div >
+                <div id="History" >
 
                 </div>
             </div>
