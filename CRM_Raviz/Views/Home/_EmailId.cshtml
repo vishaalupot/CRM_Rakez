@@ -1,0 +1,109 @@
+﻿@model IEnumerable<CRM_Raviz.Models.EmailId>
+
+
+@if (Model != null && Model.Any())
+{
+    <div>
+        <br />
+        <b>Email Ids</b>
+
+        <img src="~/Content/Images/addNo.png" style="width: 16px; height: 16px; cursor: pointer; display: flex; justify-content: center; margin: 0px 2px;" class="addId" />
+
+    </div>
+
+
+    foreach (var emailId in Model)
+    {
+
+
+        <div>
+            <span class="email-id" data-value="@emailId.Id">@emailId.Emails</span>
+            <img src="~/Content/Images/edit1.png" style="width: 12px; height: 12px; cursor: pointer;" class="edit-icon" data-value="@emailId.Id" />
+            <img src="~/Content/Images/copy.png" style="width: 12px; height: 12px; cursor: pointer;" class="copy-icon" data-value="@emailId.Emails" />
+
+            <input type="text" data-value="@emailId.RecordId" style="display: none;" class="recordid" />
+        </div>
+
+    }
+
+}
+else
+{
+    <p>No Email Id found.</p>
+}
+
+<style>
+    .addId {
+        transition-duration: 0.5s;
+    }
+
+        .addId:hover {
+            transform: scale(1.2);
+        }
+</style>
+
+<script>
+    $(document).ready(function () {
+
+
+
+        $('.edit-icon').click(function () {
+            var $id = $(this).siblings('.email-id').data('value');
+            var $mobileNumber = $(this).siblings('.email-id');
+            var currentText = $mobileNumber.text();
+            $mobileNumber.empty().append('<input type="text" class="email-id-input" value="' + currentText + '" style="border:none;">' );
+
+            $('.email-id-input').keypress(function (event) {
+                if (event.which == 13) {
+                    var id = $id;
+                    var newValue = $(this).val();
+                    $.ajax({
+                        url: '@Url.Action("ChangeEmail", "Home")',
+                        type: 'POST',
+                        data: { id: id, newValue: newValue },
+                        success: function (response) {
+                            location.reload();
+                        },
+                        error: function (xhr, status, error) {
+                            // Handle error response
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.addId').click(function () {
+            // Create a textbox dynamically
+            var textbox = $(' <input type="text" class="email-ids-input" style="width: 100px;" />');
+            // Append the textbox to the container
+            $(this).parent().append(textbox);
+            // Focus on the newly created textbox
+            textbox.focus();
+        });
+
+        // Listen for 'Enter' key press event in the dynamically created textbox
+        $(document).on('keypress', '.email-ids-input', function (e) {
+            if (e.which == 13) { // Check if the pressed key is 'Enter'
+                var emailId = $(this).val(); // Get the entered mobile number
+                var id = $(".recordid").data('value'); // Assuming you have some ID associated with the container
+               
+                 $.ajax({
+                     url: '@Url.Action("AddEmail", "Home")',
+                     type: 'POST',
+                     data: { id: id, emailId: emailId },
+                     success: function (response) {
+                         location.reload();
+                     },
+                     error: function (xhr, status, error) {
+                         // Handle error response
+                     }
+                 });
+            }
+        });
+    });
+
+</script>

@@ -1,0 +1,154 @@
+﻿
+@using Microsoft.AspNet.Identity
+@using CRM_Raviz.Models
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Upload - Derby CPV - DDC1</title>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700|Roboto:300,400,500,700" />
+    <link href="https://fonts.googleapis.com/css?family=Philosopher" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+
+        @@import url('https://fonts.googleapis.com/css2?family=Jaldi&display=swap');
+        @@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+
+        .blue-half {
+            display: flex;
+            width: 350px;
+            height: 225px;
+            background-color: #082948;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .dp {
+            width: 100px;
+            height: 100px;
+            margin: 0px 0px 0px 0px;
+            border-radius: 50px;
+            box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+            cursor: pointer;
+            transition-duration: 0.5s;
+        }
+
+
+        .dp:hover{
+            transform: scale(1.1);
+        }
+         .dp1 {
+            width: 200px;
+            height: 200px;
+            margin: 0px 0px 10px 0px;
+            border-radius: 100px;
+            box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+            cursor: pointer;
+        }
+
+        .desc {
+            padding: 10px 0px;
+        }
+
+        .headname {
+            font-size: 2.5rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        .headrole {
+            color: #9D9D9D;
+            font-size: 14px;
+            font-family: 'Jaldi', sans-serif;
+            font-weight: 500;
+        }
+
+        .homebtn {
+            background-color: #D9D9D9;
+            border-radius: 8px;
+            width: 90px;
+            height: 32px;
+            color: black;
+            font-family: 'Jaldi', sans-serif;
+            font-size: 14px;
+            border: none;
+            font-weight: 600;
+        }
+
+            .homebtn:focus {
+                color: white;
+                background-color: #113545;
+                border: 1px solid white;
+            }
+
+        label {
+            margin: 0px !important;
+        }
+    </style>
+
+    <script>
+        function uploadImage(id2) {
+             let url = '@Url.Action("_ProfilePic", "Home")';
+            let formData2 = new FormData();
+            console.log($("#ImageFile")[0].files[0]);
+
+            formData2.append("file", $("#ImageFile")[0].files[0]);
+            formData2.append('snr', id2);
+
+            console.log(formData2.get('snr'));
+            console.log(formData2.get('file'));
+            $.ajax({
+                url: url,
+                data: formData2,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    location.reload();
+                    let res = data;
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                }
+            })
+        }
+
+
+    </script>
+
+</head>
+<body>
+    <div>
+        @using (Html.BeginForm("_ProfilePic", "Home", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="img">
+                @Html.TextBox("ImageFile", null, new { type = "file", @class = "form-control", accept = "image/*", capture = "camera", multiple = "multiple", style = "display: none;" })
+                <label for="ImageFile" class="image-label">
+                    <img src="@Url.Action("DisplayProfilePic", "Home", new { snr = @User.Identity.GetUserId() })" alt="Profile Picture" class="dp1" onerror="this.src='@Url.Content("~/Content/Images/placeholder.png")'" />
+                </label>
+            </div>
+            <div id="overlay-content">
+                <div class="blue-half">
+                    <div class="desc" style="display: flex;flex-direction: column; align-items:center;">
+                        <div class="headname">@User.Identity.GetUserName()</div>
+                        @{
+                            CPVDBEntities db = new CPVDBEntities();
+                            string userrole = db.AspNetUsers.Find(User.Identity.GetUserId()).UserRole;
+
+                        }
+                        <div class="headrole">@userrole</div>
+                    </div>
+                    <div class="desc" style="display: flex;      flex-direction: column; align-items:center;">
+                        <input type="button" class="homebtn" value="Save or Exit" id="close" onclick="uploadImage('@User.Identity.GetUserId()');" />
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</body>
+</html>
+
+
+

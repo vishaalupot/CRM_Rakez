@@ -2,137 +2,23 @@
     ViewBag.Title = "Home Page";
 }
 
+
+
+@model IEnumerable<CRM_Raviz.Models.AgentCasesViewModel>
+@{
+    var agentsWithCasesCount = ViewBag.AgentsWithCasesCount;
+    var agentCallBackCount = ViewBag.AgentCallBackCount as List<CRM_Raviz.Models.AgentCasesViewModel>;
+
+}
+
+@using Microsoft.AspNet.Identity
+
+
 <style>
-    body {
-        margin: 0px;
-        background-color: #FAFAFA;
-        display: flex;
-        flex-direction: column;
-    }
+    @@import url('https://fonts.googleapis.com/css2?family=Jaldi&display=swap');
+    @@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+    @@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
 
-    .search {
-        padding: 20px 0px;
-        display: flex;
-        justify-content: center;
-    }
-
-    /*.form {
-        --input-bg: #FFf;*/
-        /*  background of input */
-        /*--padding: 1.5em;
-        --rotate: 80deg;*/
-        /*  rotation degree of input*/
-        /*--gap: 2em;*/
-        /*  gap of items in input */
-        /*--icon-change-color: #15A986;*/
-        /*  when rotating changed icon color */
-        /*--height: 35px;*/
-        /*  height */
-        /*width: 500px;
-        padding-inline-end: 0em;*/
-        /*  change this for padding in the end of input */
-        /*background: var(--input-bg);
-        position: relative;
-        border-radius: 4px;
-    }
-
-        .form label {
-            border: 1px solid #818181;
-            display: flex;
-            align-items: center;
-            width: 100%;
-            height: var(--height);
-            border-radius: 8px;
-        }
-
-        .form input {
-            width: 100%;
-            padding-inline-start: calc(var(--padding) + var(--gap));
-            outline: none;
-            background: none;
-            border: 0;
-        }*/
-        /* style for both icons -- search,close */
-        /*.form svg {*/
-            /* display: block; */
-            /*color: #111;
-            transition: 0.3s cubic-bezier(.4,0,.2,1);
-            position: absolute;
-            height: 15px;
-        }*/
-    /* search icon */
-    /*.icon {
-        position: absolute;
-        left: var(--padding);
-        transition: 0.3s cubic-bezier(.4,0,.2,1);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }*/
-    /* arrow-icon*/
-    /*.swap-off {
-        transform: rotate(-80deg);
-        opacity: 0;
-        visibility: hidden;
-    }*/
-    /* close button */
-    /*.close-btn {*/
-        /* removing default bg of button */
-        /*background: none;
-        border: none;
-        right: calc(var(--padding) - var(--gap));
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #111;
-        padding: 0.1em;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        transition: 0.3s;
-        opacity: 0;
-        transform: scale(0);
-        visibility: hidden;
-    }
-
-    .form input:focus ~ .icon {
-        transform: rotate(var(--rotate)) scale(1.3);
-    }
-
-        .form input:focus ~ .icon .swap-off {
-            opacity: 1;
-            transform: rotate(-80deg);
-            visibility: visible;
-            color: var(--icon-change-color);
-        }
-
-        .form input:focus ~ .icon .swap-on {
-            opacity: 0;
-            visibility: visible;
-        }
-
-    .form input:valid ~ .icon {
-        transform: scale(1.3) rotate(var(--rotate))
-    }
-
-        .form input:valid ~ .icon .swap-off {
-            opacity: 1;
-            visibility: visible;
-            color: var(--icon-change-color);
-        }
-
-        .form input:valid ~ .icon .swap-on {
-            opacity: 0;
-            visibility: visible;
-        }
-
-    .form input:valid ~ .close-btn {
-        opacity: 1;
-        visibility: visible;
-        transform: scale(1);
-        transition: 0s;
-    }*/
 
     .allStats {
         border: 1px solid #818181;
@@ -151,8 +37,23 @@
     }
 
     .stats-img {
-        height: 60px;
-        margin: 20px;
+        height: 35px;
+        margin: 12px;
+        width: 35px;
+         background-image: url(@Url.Content("~/Content/Images/call-back1.png"));
+        background-size: cover;
+        background-position: center;
+        transition: background-image 0.3s ease;
+    }
+
+    .stats-img2 {
+        height: 35px;
+        margin: 12px;
+        width: 35px;
+         background-image: url(@Url.Content("~/Content/Images/event1.png"));
+        background-size: cover;
+        background-position: center;
+        transition: background-image 0.3s ease;
     }
 
     .stats-text {
@@ -164,72 +65,1577 @@
         font-size: 17px;
         font-weight: 600;
         white-space: nowrap;
+        font-family: 'Jaldi', sans-serif;
+        text-align: left;
+        color: gray;
     }
 
     .stat-text2 {
-        font-size: 25px;
-        font-weight: 600;
+        font-size: 27px;
+        font-weight: 800;
+        font-family: 'Jaldi', sans-serif;
+        text-align: left;
+    }
+
+    .stats-logo {
+        border-radius: 50%;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #082948;
+        transition-duration: 0.3s;
+    }
+
+        .stats-logo:hover {
+            background-color: white;
+            cursor: pointer;
+        }
+
+            .stats-logo:hover .stats-img {
+                background-image: url(@Url.Content("~/Content/Images/call-back2.png"));
+                animation: flip 0.5s linear 1;
+            }
+
+    @@keyframes flip {
+        from {
+            transform: rotateY(0deg);
+        }
+
+        to {
+            transform: rotateY(360deg);
+        }
+    }
+
+    .stats-logo2 {
+        border-radius: 50%;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #082948;
+        transition-duration: 0.3s;
+    }
+
+        .stats-logo2:hover {
+            background-color: white;
+            cursor: pointer;
+        }
+
+            .stats-logo2:hover .stats-img2 {
+                background-image: url(@Url.Content("~/Content/Images/event2.png"));
+                animation: flip 0.5s linear 1;
+            }
+
+    @@keyframes flip {
+        from {
+            transform: rotateY(0deg);
+        }
+
+        to {
+            transform: rotateY(360deg);
+        }
+    }
+
+    .popup1 {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .popup1-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        position: relative;
+        animation: fadeIn 0.3s ease forwards;
+        opacity: 0;
+    }
+
+    .popup2 {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .popup2-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        position: relative;
+        animation: fadeIn 0.3s ease forwards;
+        opacity: 0;
+        width: max-content;
+        height: 400px;
+        overflow: scroll;
+    }
+
+  /*  #AgentcasesView {
+        width: 400px;
+        height: 400px;
+        overflow: hidden;
+    }*/
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 1.5em;
+        cursor: pointer;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
     }
 </style>
-<div class="body">
-    @*<div class="search">
-        <form class="form">
-            <label for="search">
-                <input required="" autocomplete="off" placeholder="Search..." id="search" type="text">
-                <div class="icon">
-                    <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="swap-on">
-                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round"></path>
-                    </svg>
-                    <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="swap-off">
-                        <path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linejoin="round" stroke-linecap="round"></path>
-                    </svg>
+<style>
+
+    .footer-style {
+        background-color: white; /* Light grey background */
+        color: #343a40; /* Dark text color */
+        font-weight: bold;
+    }
+
+        .footer-style td {
+            border-top: 2px solid #dee2e6; /* Top border */
+            padding: 10px; /* Padding */
+        }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        background-color: #f5f5f5;
+    }
+
+    .container {
+        width: 100vw;
+        padding: 0px;
+        display: flex;
+    }
+
+    .sidebar {
+        width: 20%;
+        margin: 20px 0px;
+        padding: 20px;
+        background-color: #fff;
+        height: 90vh;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+        border-radius: 8px;
+        background-color: #082948;
+    }
+
+    .stat-box {
+        background-color: white;
+        margin-bottom: 20px;
+        padding: 15px;
+        text-align: center;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .main-content {
+        width: 80%;
+        padding: 20px;
+        height: 70vh;
+    }
+
+    .charts-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .chart {
+        width: 48%;
+        background-color: #fff;
+        padding: 7px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        height: 100%;
+    }
+
+        .chart#traffic-sources, .chart#top-campaigns-conversion-1, .chart#top-campaigns-conversion-2, .chart#top-pages-conversion {
+            width: 32%;
+        }
+
+        .chart#traffic-sources {
+            flex-grow: 1;
+        }
+
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+/*        border-radius: 4px;
+*/        overflow: hidden;
+        background-color: white;
+        /*        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    */
+    }
+
+    thead {
+        background-color: #f2f2f2;
+    }
+
+    th, td {
+        padding: 12px 15px;
+        text-align: left;
+    }
+
+    th {
+        width: 170px;
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tbody tr:hover {
+        background-color: #ddd;
+    }
+
+    table tr td.rowclick {
+        transition-duration: 0.15s;
+        cursor: pointer;
+    }
+
+        table tr td.rowclick:hover {
+            transform: scale(1.1);
+            color: green;
+        }
+</style>
+<style>
+    .chart-container {
+        height: 430px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        overflow: hidden;
+/*        background: linear-gradient(to right,#082948 15%, #00806e 95%);
+*/        background: linear-gradient(to right,#082948 15%, #035c5e 95%);
+    }
+
+    .chart-container2 {
+        width: 500px;
+        height: 430px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background: linear-gradient(to right,#035c5e 5%, #00806e 95%);
+    }
+
+    .chart-container3 {
+        width: 70vw;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        overflow: hidden;
+        background: linear-gradient(to right,#082948 25%, #035c5e 95%);
+    }
+
+    #myChart {
+        width: fit-content !important;
+        height: fit-content !important;
+    }
+
+    #myChar2t {
+        width: 100% !important;
+        height: 400px !important;
+    }
+
+    h3 {
+
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 40px;
+        text-align: center;
+        color: white;
+        padding: 10px;
+    }
+
+    h4 {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 40px;
+        text-align: center;
+        color: white;
+        padding: 10px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .logo {
+        background-image: url( @Url.Content("~/Content/Images/renewal.png") );
+        background-size: cover;
+        background-position: center;
+        transition: background-image 0.3s ease;
+        height: 35px;
+        width: 35px;
+        display: inline-block; /* Align the logo within the td */
+    }
+    .logo2 {
+        background-image: url( @Url.Content("~/Content/Images/bounced.png") );
+        background-size: cover;
+        background-position: center;
+        transition: background-image 0.3s ease;
+        height: 35px;
+        width: 35px;
+        display: inline-block; /* Align the logo within the td */
+    }
+    .logo3 {
+        background-image: url( @Url.Content("~/Content/Images/both.png") );
+        background-size: cover;
+        background-position: center;
+        transition: background-image 0.3s ease;
+        height: 35px;
+        width: 35px;
+        display: inline-block; /* Align the logo within the td */
+    }
+
+    .round {
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        height: 45px;
+        width: 45px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        border: none;
+        background-color: white; /* Ensure no background color */
+    }
+
+    table td {
+        font-family: 'Jaldi', sans-serif;
+        font-weight: 600;
+        font-size: 18px;
+    }
+
+
+    /*.downloadRep {
+        background: transparent;
+        position: relative;
+        padding: 3px 10px;
+        display: flex;
+        align-items: center;
+        font-size: 17px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        border: 1px solid #082948;
+        border-radius: 25px;
+        outline: none;
+        overflow: hidden;
+        color: #082948;
+        transition: color 0.3s 0.1s ease-out;
+        text-align: center;
+        justify-content:center;
+        margin: 5px auto;
+    }
+
+        .downloadRep span {
+            margin: 10px;
+        }
+
+        .downloadRep::before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            content: '';
+            border-radius: 50%;
+            display: block;
+            width: 20em;
+            height: 20em;
+            left: -5em;
+            text-align: center;
+            transition: box-shadow 0.5s ease-out;
+            z-index: -1;
+        }
+
+        .downloadRep:hover {
+            color: white;
+            border: 1px solid #082948;
+        }
+
+            .downloadRep:hover::before {
+                box-shadow: inset 0 0 0 10em #082948;
+            }*/
+
+
+</style>
+
+<style>
+    .closebutton {
+        position: relative;
+        width: 2em;
+        height: 2em;
+        border: none;
+        background: rgba(180, 83, 107, 0.11);
+        border-radius: 5px;
+        transition: background 0.5s;
+    }
+
+    .X {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 2em;
+        height: 1.5px;
+        background-color: rgb(0 0 0);
+        transform: translateX(-50%) rotate(45deg);
+    }
+
+    .Y {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 2em;
+        height: 1.5px;
+        background-color: rgb(0 0 0);
+        transform: translateX(-50%) rotate(-45deg);
+    }
+
+    .close {
+        position: absolute;
+        display: flex;
+        padding: 0.8rem 1.5rem;
+        align-items: center;
+        justify-content: center;
+        transform: translateX(-50%);
+        top: -70%;
+        left: 50%;
+        width: 3em;
+        height: 1.7em;
+        font-size: 12px;
+        background-color: rgb(19, 22, 24);
+        color: rgb(187, 229, 236);
+        border: none;
+        border-radius: 3px;
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    .closebutton:hover {
+        background-color: rgb(211, 21, 21);
+
+        
+    }
+
+        .closebutton:hover .Y {
+            background-color: white;
+        }
+        .closebutton:hover .X {
+            background-color: white;
+        }
+
+        .closebutton:active {
+            background-color: rgb(130, 0, 0);
+        }
+
+    .closebutton:hover > .close {
+        animation: close 0.2s forwards 0.25s;
+    }
+
+    @@keyframes close {
+        100% {
+            opacity: 1;
+        }
+    }
+</style>
+
+<style>
+    #overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    }
+
+    .img {
+        position: absolute;
+        top: 28%;
+        left: 42%;
+        z-index: 100;
+        background-color: white;
+        padding: 7px;
+        border-radius: 120px;
+        cursor: pointer;
+    }
+
+    #overlay-content {
+        background-color: white;
+        width: 350px;
+        height: 390px;
+        border-radius: 12px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        z-index: 10;
+        /* Add additional styling for the overlay content */
+    }
+
+    .blue-half {
+        display: flex;
+        width: 600px;
+        height: 225px;
+        background-color: #113545;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
+    /*.dp {
+            width: 210px;
+            height: 210px;
+            border-radius: 100px;
+            box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+            cursor: pointer;
+        }*/
+
+    .desc {
+        padding: 10px 0px;
+    }
+
+    .headname {
+        font-size: 2.5rem;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .headrole {
+        color: #9D9D9D;
+        font-size: 14px;
+        font-family: 'Jaldi', sans-serif;
+    }
+
+    .homebtn {
+        background-color: #D9D9D9;
+        border-radius: 8px;
+        width: 90px;
+        height: 32px;
+        color: black;
+        font-family: 'Jaldi', sans-serif;
+        font-size: 14px;
+        border: none;
+        font-weight: 500;
+    }
+
+        .homebtn:focus {
+            color: white;
+            background-color: #113545;
+            border: 1px solid white;
+        }
+
+    .dp1 {
+        margin-top: 20px;
+        width: 150px;
+        height: 150px;
+        border-radius: 75px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        cursor: pointer;
+    }
+
+    .welcomeName {
+        font-size: 23px;
+        text-decoration: none;
+        color: inherit;
+        color: white;
+        font-weight: 400;
+        padding-left: 12px;
+        padding-right: 6px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 5px;
+        font-family: 'Jaldi', sans-serif;
+    }
+
+    .welcome {
+        color: #082948;
+        font-size: 45px;
+/*        font-family: 'Poppins', sans-serif;
+*/        font-family: 'Jaldi', sans-serif;
+        /*  font-family: "Merriweather", serif;
+*/ font-weight: 600;
+        font-style: normal;
+    }
+
+    .focus {
+        color: #082948;
+        font-size: 18px;
+        /*font-family: "Merriweather", serif;*/
+        font-family: 'Jaldi', sans-serif;
+        /*font-family: 'Poppins', sans-serif;*/
+        font-weight: 700;
+        font-style: normal;
+    }
+
+    .drop1 {
+        border-radius: 8px;
+        /*font-family: "Merriweather", serif;*/
+        font-family: 'Jaldi', sans-serif;
+        font-size: 18px;
+        color: #082948;
+        font-weight: 700;
+    }
+
+    .dropdown1 {
+        background-color: #f5f5f5;
+        border: none;
+        color: #082948;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 18px;
+        outline: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-family: 'Jaldi', sans-serif;
+        /*font-family: "Merriweather", serif;*/
+    }
+
+        .dropdown1:hover {
+            border-color: none;
+            color: #082948;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .dropdown1:focus {
+            box-shadow: none;
+            cursor: pointer;
+        }
+
+
+    
+
+</style>
+
+<style>
+    .beautiful-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: 'Jaldi', sans-serif;
+    }
+
+        .beautiful-table th, .beautiful-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-family: 'Jaldi', sans-serif;
+            font-size: 20px;
+        }
+
+        .beautiful-table th {
+            background-color: #f2f2f2;
+            color: black;
+        }
+
+        .beautiful-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .beautiful-table tr:hover {
+            background-color: #ddd;
+        }
+
+        .beautiful-table th, .beautiful-table td {
+            white-space: nowrap;
+        }
+</style>
+<html lang="en">
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const popup1 = document.getElementById('popup1');
+            const popup2 = document.getElementById('popup2');
+            const popup3 = document.getElementById('popup3');
+            const popup5 = document.getElementById('popup5');
+            const closeBtn = document.querySelector('.close-btn');
+            /*const closeBtn1 = document.querySelector('.closebutton');*/
+            const statsLogo = document.querySelector('.stats-logo2');
+            const callback = document.querySelector('.callback');
+
+
+            const closeButtons = document.querySelectorAll('.closebutton');
+            const popups = [popup1, popup2, popup3, popup4, popup5];
+
+
+
+            statsLogo.addEventListener('click', () => {
+                popup1.style.display = 'flex';
+                popup1.style.flexDirection = 'column';
+            });
+
+            callback.addEventListener('click', () => {
+                popup3.style.display = 'flex';
+            });
+
+
+
+            const AgentCases = document.getElementsByClassName('AgentCases');
+
+            for (let i = 0; i < AgentCases.length; i++) {
+                AgentCases[i].addEventListener('click', () => {
+                    popup1.style.display = 'none';
+                    popup2.style.display = 'flex';
+                });
+            }
+
+            const CallbackCases = document.getElementsByClassName('CallbackCases');
+
+            for (let i = 0; i < CallbackCases.length; i++) {
+                CallbackCases[i].addEventListener('click', () => {
+                    popup3.style.display = 'none';
+                    popup4.style.display = 'flex';
+                });
+            }
+
+            closeButtons.forEach((closeBtn, index) => {
+                closeBtn.addEventListener('click', () => {
+                    popups[index].style.display = 'none';
+                });
+            });
+
+            window.addEventListener('click', (event) => {
+                if (event.target == popup1) {
+                    popup1.style.display = 'none';
+                }
+
+                if (event.target == popup2) {
+                    popup2.style.display = 'none';
+                }
+
+                if (event.target == popup3) {
+                    popup3.style.display = 'none';
+                }
+
+                if (event.target == popup4) {
+                    popup4.style.display = 'none';
+                }
+                if (event.target == popup5) {
+                    popup5.style.display = 'none';
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $(".AgentData").click(function () {
+
+
+                let url = '@Url.Action("_AgentCases")';
+                let agentCasesValue = $(this).data("value");
+                let sec = $(this).data("sec");
+                let state = "event"
+
+                $.ajax({
+                    url: url,
+                    type: "Post",
+                    data: {
+                        query: agentCasesValue,
+                        section: sec,
+                        state: state
+                    },
+                    success: function (dataview) {
+                        $('#AgentcasesView').html(dataview);
+                      //  console.log(dataview);
+                      /*  $("#AgentcasesView").load = dataview;*/
+                    }
+                })
+            })
+        });
+
+         $(document).ready(function () {
+             $(".CallbackCases").click(function () {
+                let url = '@Url.Action("_AgentCases")';
+                let agentCasesValue = $(this).data("value");
+                let state = "callback"
+                let sec = $(this).data("sec");
+
+               /* alert(agentCasesValue)*/
+                $.ajax({
+                    url: url,
+                    type: "Post",
+                    data: {
+                        query: agentCasesValue,
+                        section: sec,
+                        state: state
+                    },
+                    success: function (dataview) {
+                        $('#CallbackCases').html(dataview);
+                    //    console.log(dataview);
+                    }
+                })
+            })
+        });
+
+    </script>
+
+
+    <script>
+
+        let url = '@Url.Action("_AgentCases")';
+        let agentCasesValue ;
+        let state;
+        let sec;
+        let button;
+
+
+        $(document).ready(function () {
+                 $(".downloadRep").click(function () {
+                     const popup5 = document.getElementById('popup5');
+                     popup5.style.display = 'flex';
+
+                      button = "clicked";
+
+                     //alert(url)
+                     //alert(agentCasesValue)
+                     //alert(state)
+                     //alert(sec)
+                     //alert(button)
+
+                        $.ajax({
+                            url: url,
+                            type: "Post",
+                            data: {
+                                query: agentCasesValue,
+                                section: sec,
+                                state: state,
+                                button: button,
+                            },
+                            //success: function (dataview) {
+                            //    $('#segments1').html(dataview);
+                            //}
+                        })
+                 })
+        });
+
+        $(document).ready(function () {
+                     $(".segment1").click(function () {
+                         const popup5 = document.getElementById('popup5');
+                         popup5.style.display = 'flex';
+
+                 url = '@Url.Action("_AgentCases")';
+                 agentCasesValue = $(this).data("value");
+                 state = "segment1"
+                 sec = $(this).data("sec");
+
+
+                $.ajax({
+                    url: url,
+                    type: "Post",
+                    data: {
+                        query: agentCasesValue,
+                        section: sec,
+                        state: state
+                    },
+                    success: function (dataview) {
+                        $('#segments1').html(dataview);
+                    //    console.log(dataview);
+                    }
+                })
+            })
+                 });
+
+        $(document).ready(function () {
+                     $(".segment2").click(function () {
+                         const popup5 = document.getElementById('popup5');
+                         popup5.style.display = 'flex';
+
+                 url = '@Url.Action("_AgentCases")';
+                 agentCasesValue = $(this).data("value");
+                 state = "segment2"
+                 sec = $(this).data("sec");
+
+                         //alert(agentCasesValue)
+                         //alert(state)
+                         //alert(sec)
+
+                $.ajax({
+                    url: url,
+                    type: "Post",
+                    data: {
+                        query: agentCasesValue,
+                        section: sec,
+                        state: state
+                    },
+                    success: function (dataview) {
+                        $('#segments1').html(dataview);
+                    //    console.log(dataview);
+                    }
+                })
+            })
+        });
+
+
+
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Function to show the overlay
+            function showOverlay() {
+                $("#overlay").fadeIn(200);
+            }
+
+            // Function to hide the overlay
+            function hideOverlay() {
+                $("#overlay").fadeOut(200);
+            }
+
+            // Example: Show overlay when a button is clicked
+            $(".dp").click(function (e) {
+                e.stopPropagation(); // Prevent the click event from reaching the document
+
+                showOverlay();
+
+                // Perform your asynchronous operation here (e.g., AJAX call)
+            });
+
+            $("#close").click(function (e) {
+                e.stopPropagation(); // Prevent the click event from reaching the document
+                hideOverlay();
+                // Perform your asynchronous operation here (e.g., AJAX call)
+            });
+
+            $(document).keyup(function (e) {
+                if (e.key === "Escape") {
+                    hideOverlay();
+                    hideOverlayfe();
+
+                }
+            });
+
+            function hideOverlayfe() {
+                $("#overlayFe").fadeOut(200);
+            }
+
+
+
+        });
+    </script>
+
+   
+    <script>
+
+    function handleSegmentClick(label, value, datasetIndex) {
+        const popup5 = document.getElementById('popup5');
+        popup5.style.display = 'flex';
+
+        let url = '@Url.Action("_AgentCases")';
+        let query = label;
+        let state = "segment2";
+        let sec = "";
+
+        if (datasetIndex === 0) {
+             sec = "all";
+        } else if (datasetIndex === 1) {
+             sec = "worked";
+        }
+
+         $.ajax({
+             url: url,
+             type: "POST",
+             data: {
+                 query: query,
+                 state: state,
+                 section: sec,
+             },
+             success: function (dataview) {
+                 $('#segments1').html(dataview);
+             }
+         });
+    }
+
+
+
+    const data2 = {
+        labels: @Html.Raw(Json.Encode(ViewBag.distinctSegments2)),
+        datasets: [
+            {
+                label: 'Total Cases',
+                data: @Html.Raw(Json.Encode(ViewBag.segment2Counts)),
+                backgroundColor: '#082948' // Yellow
+            },
+            {
+                label: 'Cases Worked',
+                data: @Html.Raw(Json.Encode(ViewBag.BatchNotWorked)),
+                backgroundColor: '#00806e' // Blue
+            }
+        ]
+    };
+
+    const config2 = {
+        type: 'bar',
+        data: data2,
+        options: {
+            scales: {
+                x: {
+                    grid: {
+                        display: false // Remove gridlines from the x-axis
+                    }
+                },
+                y: {
+                    grid: {
+                        display: false // Remove gridlines from the y-axis
+                    },
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true
+                    }
+                }
+            },
+            categorySpacing: 0,
+            onClick: function(event, elements) {
+                // Check if a segment was clicked
+                if (elements.length > 0) {
+                    const clickedElement = elements[0];
+                    const segmentLabel = data2.labels[clickedElement.index];
+                    const datasetIndex = clickedElement.datasetIndex;
+                    const segmentValue = data2.datasets[datasetIndex].data[clickedElement.index];
+
+                    // Call your function with segment information
+                    handleSegmentClick(segmentLabel, segmentValue, datasetIndex);
+                }
+            }
+        }
+    };
+
+    // Ensure the DOM is fully loaded before initializing the chart
+    window.addEventListener('load', () => {
+        const ctx = document.getElementById('myChart2').getContext('2d');
+        const myChart2 = new Chart(ctx, config2);
+    });
+    </script>
+    <script>
+        $(document).ready(function () {
+            document.getElementById('agentDropdown').addEventListener('change', function () {
+                var selectedValue = this.value;
+                let url = '@Url.Action("Index", "Home")';
+
+              /*  alert(selectedValue)*/
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data:{
+                        filter: selectedValue
+                    },
+                    success: function (dataview) {
+                        window.location.href = url + '?filter=' + encodeURIComponent(selectedValue);
+                        
+                    }
+                })
+
+            });
+        });
+    </script>
+
+
+</head>
+<body>
+    <div style="display: flex; flex-direction: column;">
+        <div style="padding: 5px 10px 0px 10px; display: flex; flex-direction: row; align-items:center;">
+            <img src="@Url.Action("DisplayProfilePic", "Home", new { snr = @User.Identity.GetUserId() })" alt="Profile Picture" class="dp" onerror="this.src='@Url.Content("~/Content/Images/placeholder.png")'" />
+
+           
+            <div style="display: flex; flex-direction: column; padding: 0px 10px;">
+                <div style="display: flex; flex-direction: row;">
+                    <div class="welcome">Welcome &nbsp;</div>
+                    <div class="welcome">@User.Identity.GetUserName()</div>
                 </div>
-                <button type="reset" class="close-btn">
-                    <svg viewBox="0 0 20 20" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
-                        <path clip-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" fill-rule="evenodd"></path>
-                    </svg>
-                </button>
-            </label>
-        </form>
-    </div>*@
+               
+                <div style="padding: 0px 10px; display: flex; flex-direction: row;">
+                    <div class="focus">Focus : </div>
+                    @{
+                        var agents = ViewBag.allAgents as List<string>;
+                    }
 
-    <div class="stats1">
-        <div class="allStats">
-            <img src="~/Content/Images/call-back.png" class="stats-img" />
-            <div class="stats-text">
-                <div class="stat-text1">Call back</div>
-                <div class="stat-text2">27</div>
-            </div>
-        </div>
+                    <div class="drop1">
 
-        <div class="allStats">
-            <img src="~/Content/Images/calendar-check.png" class="stats-img" />
-            <div class="stats-text">
-                <div class="stat-text1">Daily events</div>
-                <div class="stat-text2">20</div>
-            </div>
-        </div>
-        <div class="allStats">
-            <img src="~/Content/Images/call-back.png" class="stats-img" />
-            <div class="stats-text">
-                <div class="stat-text1">Call back</div>
-                <div class="stat-text2">27</div>
-            </div>
-        </div>
-        <div class="allStats">
-            <img src="~/Content/Images/arrow.png" class="stats-img" />
-            <div class="stats-text">
-                <div class="stat-text1">Follow up</div>
-                <div class="stat-text2">07</div>
-            </div>
-        </div>
-        <div class="allStats">
-            <img src="~/Content/Images/call-back.png" class="stats-img" />
-            <div class="stats-text">
-                <div class="stat-text1">Call back</div>
-                <div class="stat-text2">27</div>
+                        <select class="dropdown1" id="agentDropdown">
+                            <option></option>
+                            @if (agents != null)
+                            {
+                                if (!User.IsInRole("Agent"))
+                                {
+                                    <option value="All" @(ViewBag.Filter == "All" ? "selected" : "")>All</option>
+                                }
+                                foreach (var agent in agents)
+                                {
+                                    <option value="@agent" @(ViewBag.Filter == agent ? "selected" : "")>@agent</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
 
+        <div class="container">
+            <div class="sidebar">
+                <div class="stat-box">
+                    <div class="stats-text">
+                        <div class="stat-text2">@ViewBag.recentEvents</div>
+                        <div class="stat-text1">Daily events</div>
+                    </div>
+                    <div class="stats-logo2">
+                        <div class="stats-img2"></div>
+                    </div>
+                </div>
+
+                <div class="stat-box">
+
+                    <div class="stats-text">
+                        <div class="stat-text2">@ViewBag.callbackCountThisMonth</div>
+                        <div class="stat-text1">Call back</div>
+
+                    </div>
+                    <div class="stats-logo callback">
+                        <div class="stats-img"></div>
+                    </div>
+
+                </div>
+
+                <div class="stat-box">
+                    <div class="stats-text">
+                        <div class="stat-text2">0</div>
+                        <div class="stat-text1">Demo</div>
+                    </div>
+                    <div class="stats-logo">
+                        <div class="stats-img"> </div>
+                    </div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stats-text">
+                        <div class="stat-text2">0</div>
+                        <div class="stat-text1">Demo</div>
+
+                    </div>
+                    <div class="stats-logo2">
+                        <div class="stats-img2"></div>
+                    </div>
+                </div>
+
+                <div id="popup1" class="popup1">
+                   
+                    <div class="popup1-content">
+
+                        <button class="closebutton" style=" display: flex;margin: 0 0 0 auto;">
+                            <span class="X"></span>
+                            <span class="Y"></span>
+                            <div class="close">Close</div>
+                        </button>
+                        <span class="close-btn">&times;</span>
+
+                        @if (Model.Any())
+                        {
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Agent</th>
+                                        <th>Today's Case</th>
+                                        <th>Month's Case</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr class="AgentCases ">
+                                            <td>@item.ModifiedAgent</td>
+                                            <td style="display: flex; justify-content:center;" class="AgentData rowclick" data-sec="day" data-value="@item.ModifiedAgent">@item.CasesCountToday</td>
+                                            <td style="text-align: center;" class="AgentData rowclick" data-sec="month" data-value="@item.ModifiedAgent">@item.CasesCountThisMonth</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot class="footer-style">
+                                    <tr>
+                                        <td>Total</td>
+                                        <td style="text-align: center;">@ViewBag.recentEvents</td>
+                                        <td style="text-align: center;">@ViewBag.CasesCountThisMonth</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        }
+                        else
+                        {
+                            <p>No data available.</p>
+                        }
+                    </div>
+                </div>
+
+                <div id="popup2" class="popup2">
+
+                    <div class="popup2-content">
+                        <button class="closebutton" style=" display: flex;margin: 0 0 0 auto;">
+                            <span class="X"></span>
+                            <span class="Y"></span>
+                            <div class="close">Close</div>
+                        </button>
+                        @*<span class="close-btn">&times;</span>*@
+                        <div id="AgentcasesView">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div id="popup3" class="popup1">
+                    <div class="popup1-content">
+                        <button class="closebutton" style=" display: flex;margin: 0 0 0 auto;">
+                            <span class="X"></span>
+                            <span class="Y"></span>
+                            <div class="close">Close</div>
+                        </button>
+                        <span class="close-btn">&times;</span>
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Agent</th>
+                                    <th>Today's Call back</th>
+                                    <th>Due</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in agentCallBackCount)
+                                {
+                                    <tr>
+                                        <td>@item.Agent</td>
+                                        <td style="display: flex; justify-content:center;" class="CallbackCases rowclick" data-value="@item.Agent" data-sec="day">@item.CallBackCountToday</td>
+                                        <td style="text-align: center;" class="CallbackCases rowclick" data-value="@item.Agent" data-sec="prev">@item.CallBackCountPrev</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+                <div id="popup4" class="popup2">
+                    <div class="popup2-content">
+                        <button class="closebutton" style=" display: flex;margin: 0 0 0 auto;">
+                            <span class="X"></span>
+                            <span class="Y"></span>
+                            <div class="close">Close</div>
+                        </button>
+                        <span class="close-btn">&times;</span>
+                        <div id="CallbackCases">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div id="popup5" class="popup2">
+
+                    <div class="popup2-content">
+                        <button class="closebutton" style=" display: flex;margin: 0 0 0 auto;">
+                            <span class="X"></span>
+                            <span class="Y"></span>
+                            <div class="close">Close</div>
+                        </button>
+                        @*<button class="downloadRep">
+                            <span>Download</span>
+                        </button>*@
+
+                        <span class="close-btn">&times;</span>
+                        <div id="segments1">
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="main-content">
+
+
+
+                <div style="display: flex; flex-direction: row;">
+                    @*<div>
+                        <img src="@Url.Action("DisplayProfilePic", "Home", new { snr = @User.Identity.GetUserId() })" alt="Profile Picture" class="dp" onerror="this.src='@Url.Content("~/Content/Images/placeholder.png")'" />
+                    </div>*@
+
+                    
+
+                </div>
+                <div class="charts-row">
+
+                    <div class="chart chart-container">
+                        <h3>Segments</h3>
+                        <div>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td style="white-space: nowrap; color: #082948;">Total</td>
+                                        <td style="white-space: nowrap; color: #082948;">Non Worked</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <div class="round">
+                                                <div class="logo2" />
+                                            </div>
+                                        </td>
+                                        <td class="AgentData">Bounced Cheque</td>
+                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="all" data-value="Bounced Cheque">@ViewBag.segmentCounts[0]</td>
+                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="notworked" data-value="Bounced Cheque">@ViewBag.segmentNotWorked[0]</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="round">
+                                                <div class="logo3" />
+                                            </div>
+                                        </td>
+                                        <td class="AgentData">Bounced Cheque & Renewal</td>
+                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="all" data-value="Bounced Cheque and Renewal">@(ViewBag.segmentCounts[1] != null ? ViewBag.segmentCounts[1] : 0)</td>
+                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="notworked" data-value="Bounced Cheque and Renewal">
+                                            @(ViewBag.segmentNotWorked != null && ViewBag.segmentNotWorked.Count > 2 ? ViewBag.segmentNotWorked[1] : 0)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="round">
+                                                <div class="logo" />
+                                            </div>
+                                        </td>
+                                        <td class="AgentData">Renewal</td>
+                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="all" data-value="Renewal">@(ViewBag.segmentCounts[2] != null ? ViewBag.segmentCounts[2] : 0)</td>
+                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="notworked" data-value="Renewal">@(ViewBag.segmentNotWorked[2] != null ? ViewBag.segmentNotWorked[2] : 0)</td>
+                                    </tr>
+
+
+                                </tbody>
+                                <tfoot class="footer-style">
+                                    @*<tr>
+                                        <td></td>
+                                        <td></td>
+
+                                        <td style="white-space: nowrap; color: #082948;">Total</td>
+                                        <td style="white-space: nowrap; color: #082948;">Non Worked</td>
+                                    </tr>*@
+                                    <tr>
+                                        <td></td>
+                                        <td>Total</td>
+                                        <td style="text-align: center; font-size: 20px;">@ViewBag.totalCases </td>
+                                        <td style="text-align: center; font-size: 20px;">@ViewBag.totalCasesnotworked</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+
+                        </div>
+                    </div>
+
+                    <div class="chart chart-container2">
+                        <h4>Batches</h4>
+
+                        <div style="display: flex; align-items:center; justify-content:center;">
+                            <table style="width: 100%; height: 100%; overflow: auto; ">
+
+
+                                <tbody>
+                                    <tr style="white-space: nowrap;">
+                                        <th style="background-color: white; color: black;"></th>
+                                        @if (ViewBag.allbatches != null)
+                                        {
+                                            foreach (var item1 in ViewBag.allbatches)
+                                            {
+                                                <th style="background-color: white; color: black;" class="segment2 rowclick" data-value=" @item1">
+                                                    @item1
+                                                </th>
+                                            }
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <th style="background-color: white; color: black;">Worked</th>
+
+                                        @if (ViewBag.BatchWorked != null)
+                                        {
+                                            int index = 0;
+                                            foreach (var item in ViewBag.BatchWorked)
+                                            {
+
+                                                <td style="text-align: center; font-size: 20px;" class="segment2 rowclick" data-sec="worked" data-value="@ViewBag.allbatches[index]">
+                                                    @(item != null && item > 0 ? item : 0)
+                                                </td>
+                                                index++;
+                                            }
+                                        }
+                                    </tr>
+
+                                    <tr>
+                                        <th style="background-color: white; color: black;">Not Worked</th>
+                                        @if (ViewBag.BatchNotWorked != null)
+                                        {
+                                            int index = 0;
+                                            foreach (var item in ViewBag.BatchNotWorked)
+                                            {
+                                                <td style="text-align: center; font-size: 20px;" class="segment2 rowclick" data-sec="notworked" data-value="@ViewBag.allbatches[index]">
+                                                    @(item != null && item >= 0 ? item : 0)
+                                                </td>
+                                                index++;
+                                            }
+                                        }
+                                        @*<td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="notworked" data-value="Bounced Cheque">@ViewBag.segmentNotWorked[0]</td>
+                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="notworked" data-value="Bounced Cheque and Renewal">
+                                            @(ViewBag.segmentNotWorked != null && ViewBag.segmentNotWorked.Count > 2 ? ViewBag.segmentNotWorked[1] : 0)
+                                        </td>
+                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="notworked" data-value="Renewal">@ViewBag.segmentNotWorked[2]</td>
+                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="notworked" data-value="Renewal">@ViewBag.segmentNotWorked[2]</td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <th style="background-color: white; color: black;">Total</th>
+                                        @if (ViewBag.TotalBatches != null)
+                                        {
+                                            foreach (var item in ViewBag.TotalBatches)
+                                            {
+                                                <td style="text-align: center; font-size: 20px;">
+                                                    @(item != null && item >= 0 ? item : 0)
+                                                </td>
+                                            }
+                                        }
+                                        @*<td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="all" data-value="Bounced Cheque">@ViewBag.segmentCounts[0]</td>
+                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="all" data-value="Bounced Cheque and Renewal">@ViewBag.segmentCounts[1]</td>
+                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="all" data-value="Renewal">@ViewBag.segmentCounts[2]</td>
+                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="all" data-value="Renewal">@ViewBag.segmentCounts[2]</td>*@
+                                    </tr>
+                                </tbody>
+
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="charts-row">
+                    <div class="chart chart-container3">
+                        <div>
+                            @*<table class="beautiful-table">
+            <tbody>
+                <tr>
+                    <th>Agents</th>
+                    @if (ViewBag.allbatches != null)
+                    {
+                        foreach (var item1 in ViewBag.allAgents)
+                        {
+                            <th class="segment2 " data-value="@item1">
+                                @item1
+                            </th>
+                        }
+                    }
+                </tr>
+                <tr>
+                    <th>Assigned Cases</th>
+                    @if (ViewBag.totalCasesList != null)
+                    {
+                        int index = 0;
+                        foreach (var item in ViewBag.totalCasesList)
+                        {
+                            <td class="segment2">
+                                @(item != null && item > 0 ? item : 0)
+                            </td>
+                            index++;
+                        }
+                    }
+                </tr>
+            </tbody>ide
+        </table>*@
+
+                            <table class="beautiful-table">
+                                <tbody>
+                                    <tr>
+                                        <th style="text-align:center;">Agents</th>
+                                        <th style="text-align:center;">Cases</th>
+                                    </tr>
+
+                                    @if (ViewBag.allAgents != null && ViewBag.totalCasesList != null)
+                                    {
+                                        int index = 0;
+                                        foreach (var agent in ViewBag.allAgents)
+                                        {
+                                            <tr>
+                                                <td class="segment2" style="text-align:center;" data-value="@agent">
+                                                    @agent
+                                                </td>
+                                                <td class="segment2" style="text-align:center;">
+                                                    @(ViewBag.totalCasesList.Count > index ? (ViewBag.totalCasesList[index] != null && ViewBag.totalCasesList[index] > 0 ? ViewBag.totalCasesList[index] : 0) : 0)
+                                                </td>
+                                            </tr>
+                                            index++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="overlay">
+            @Html.Partial("_ProfilePic", "Home")
+        </div>
     </div>
-</div>
+</body>
+</html>

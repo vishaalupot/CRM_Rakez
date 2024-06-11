@@ -703,7 +703,7 @@
                         new SelectListItem { Text = "CUSTOMER'S EMAIL REPLIED", Value = "CUSTOMER'S EMAIL REPLIED" },
                     }, new { @class = "form-control box dropdown-styled" })
                     @Html.ValidationMessageFor(model => model.Disposition, "", new { @class = "text-danger" })
-                </div>
+                </div>  
             </div>
 
 
@@ -714,7 +714,24 @@
                     </div>
                 </div>
                 <div class="col-md-10">
-                    @Html.DropDownList("EmailUsed", (IEnumerable<SelectListItem>)ViewBag.EmailUsed, new { @class = "form-control box dropdown-styled", @style="width:100%; height: 100%;"})
+                    @*@Html.DropDownList("EmailUsed", (IEnumerable<SelectListItem>)ViewBag.EmailUsed, new { @class = "form-control box dropdown-styled", @style = "width:100%; height: 100%;" })*@
+
+                    @if (ViewBag.EmailUsed != null)
+                    {
+                        <select id="emailUsedDropdown" name="EmailUsed" class="form-control box dropdown-styled">
+                            <option value="">-</option> <!-- Initial placeholder option -->
+                            @foreach (var item in ViewBag.EmailUsed)
+                            {
+                                <option value="@item.Emails">@item.Emails</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <p>No data available</p>
+                    }
+
+
                     @Html.ValidationMessageFor(model => model.EmailUsed, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -726,9 +743,35 @@
                     </div>
                 </div>
                 <div class="col-md-10">
-                    @Html.DropDownList("DialedNumber", (IEnumerable<SelectListItem>)ViewBag.DialedNumber, new { @class = "form-control box dropdown-styled" })
-                    @Html.ValidationMessageFor(model => model.DialedNumber, "", new { @class = "text-danger" })
+
+                    @*@Html.DropDownListFor(m => m.DialedNumber, new SelectList(ViewBag.DialedNumber, "MobileNo", "MobileNo"), "Select a Mobile Number")*@
+
+                    @*@Html.DropDownListFor(m => m.DialedNumber, new SelectList(ViewBag.DialedNumber, "MobileNo", "MobileNo"), "Select a Mobile Number")*@
+                    @*@Html.DropDownList("DialedNumber", (IEnumerable<SelectListItem>)ViewBag.DialedNumber, new { @class = "form-control box dropdown-styled" })*@
+                    @*@Html.ValidationMessageFor(model => model.DialedNumber, "", new { @class = "text-danger" })*@
+
+
+
+                    @if (ViewBag.DialedNumber != null)
+                    {
+                        <select id="dialedNumberDropdown" name="DialedNumber" class = "form-control box dropdown-styled">
+                            <option value="">-</option> <!-- Initial placeholder option -->
+                            @foreach (var item in ViewBag.DialedNumber)
+                            {
+                                <option value="@item.Numbers">@item.Numbers</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <p>No data available</p>
+                    }
+
+
+
+
                 </div>
+
             </div>
 
 
@@ -804,11 +847,28 @@
     </div>
     <div style=" margin: 100px 0px 0px 50px;">
 
-        <div class="card">
-            <div class="card-details">
+        <div class="card" style="height: max-content;">
+            <div class="card-details" style="height: max-content;">
                 <p class="text-title">Contact Info</p>
+
+
+                @*@{ Html.RenderPartial("_MobileNo", new { id = Model.Id }); }*@
+
+                @{
+                    CPVDBEntities db = new CPVDBEntities();
+                    var mobileNumbers = db.MobileNos.Where(m => m.RecordId == Model.Id).ToList();
+                    Html.RenderPartial("_MobileNo", mobileNumbers);
+                }
+
+                 @{
+                    var EmailIds = db.EmailIds.Where(m => m.RecordId == Model.Id).ToList();
+                    Html.RenderPartial("_EmailId", EmailIds);
+                }
+
+
+
                 <p class="para">
-                    <b>Mobile Numbers</b>
+                    @*<b>Mobile Numbers</b>
                     <br />
                     @foreach (var mobileNumber in new[] { Model?.Mobile1, Model?.Mobile2, Model?.Mobile3, Model?.Mobile4 })
                     {
@@ -821,10 +881,10 @@
                             </span>
                             <br />
                         }
-                    }
+                    }*@
 
                     <br />
-                    <b>Email Ids</b>
+                    @*<b>Email Ids</b>
                     <br />
                     @foreach (var email in new[] { Model?.Email_1, Model?.Email_2, Model?.Email_3 })
                     {
@@ -837,7 +897,7 @@
                             </span>
                             <br />
                         }
-                    }
+                    }*@
                 </p>
             </div>
         </div>
@@ -846,57 +906,57 @@
 
         <script>
            $(document).ready(function () {
-    $('.edit-icon').click(function () {
-        var editableField = $(this).closest('.editable-field');
-        var value = editableField.find('.value');
-        var modelProperty = editableField.data('model-property');
-        value.replaceWith('<input type="text" value="' + value.text() + '" class="editable-input" style="width:150px;">');
-        editableField.find('.editable-input').focus().data('model-property', modelProperty);
-    });
+            $('.edit-icon').click(function () {
+                var editableField = $(this).closest('.editable-field');
+                var value = editableField.find('.value');
+                var modelProperty = editableField.data('model-property');
+                value.replaceWith('<input type="text" value="' + value.text() + '" class="editable-input" style="width:150px;">');
+                editableField.find('.editable-input').focus().data('model-property', modelProperty);
+            });
 
-    $(document).on('blur', '.editable-input', function () {
-        var editableField = $(this).closest('.editable-field');
-        var input = $(this);
-        var newValue = input.val();
-        input.replaceWith('<span class="value">' + newValue + '</span>');
-        // Here, you can send the updated value to the server using AJAX or handle it as needed
-    });
+            $(document).on('blur', '.editable-input', function () {
+                var editableField = $(this).closest('.editable-field');
+                var input = $(this);
+                var newValue = input.val();
+                input.replaceWith('<span class="value">' + newValue + '</span>');
+                // Here, you can send the updated value to the server using AJAX or handle it as needed
+            });
 
-    $(document).on('keydown', '.editable-input', function (e) {
-        if (e.key === 'Enter' || e.keyCode === 13) {
-            var editableField = $(this).closest('.editable-field');
-            var input = $(this);
-            var newValue = input.val();
-            var modelProperty = input.data('model-property');
-            var recordId = $('input[name="Id"]').val();
+            $(document).on('keydown', '.editable-input', function (e) {
+                if (e.key === 'Enter' || e.keyCode === 13) {
+                    var editableField = $(this).closest('.editable-field');
+                    var input = $(this);
+                    var newValue = input.val();
+                    var modelProperty = input.data('model-property');
+                    var recordId = $('input[name="Id"]').val();
 
-            input.replaceWith('<span class="value">' + newValue + '</span>');
+                    input.replaceWith('<span class="value">' + newValue + '</span>');
 
-            var dataToSend = {
-                value: newValue,
-                modelProperty: modelProperty,
-                id: recordId
-            };
+                    var dataToSend = {
+                        value: newValue,
+                        modelProperty: modelProperty,
+                        id: recordId
+                    };
 
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("EditInfo", "Home")',
-                data: dataToSend,
-                success: function (response) {
-                    console.log(response);
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("EditInfo", "Home")',
+                        data: dataToSend,
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
                 }
             });
-        }
-    });
 
-    $('.copy-icon').click(function () {
-        var value = $(this).data('value');
-        navigator.clipboard.writeText(value);
-    });
-});
+            $('.copy-icon').click(function () {
+                var value = $(this).data('value');
+                navigator.clipboard.writeText(value);
+            });
+        });
 
 
         </script>

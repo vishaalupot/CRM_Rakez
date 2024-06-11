@@ -1,70 +1,111 @@
-﻿@model List<CRM_Raviz.Models.MobileNo>
+﻿@model IEnumerable<CRM_Raviz.Models.MobileNo>
 
-@{
-    ViewData["Title"] = "Mobile Numbers";
-}
-    
-<h1>Mobile Numbers</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Number</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+@if (Model != null && Model.Any())
+{
+    <div>
+        <b>Mobile Numbers</b>
+
+        <img src="~/Content/Images/addNo.png" style="width: 16px; height: 16px; cursor: pointer; display: flex; justify-content: center; margin: 0px 2px;" class="add" />
+
+    </div>
+
+
+    foreach (var mobileNo in Model)
+    {
+
+        if (mobileNo.Validity != "Invalid")
         {
-            <tr>
-                <td>@item.Numbers</td>
-                <td>
-                    <button onclick="copyToClipboard('@item.Numbers')">
-                        <i class="fas fa-copy"></i>
-                    </button>
-                    <button onclick="editNumber(@item.Id, '@item.Numbers')">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                </td>
-            </tr>
+            <div>
+                <span class="mobile-number" data-value="@mobileNo.Id">@mobileNo.Numbers</span>
+                <img src="~/Content/Images/edit1.png" style="width: 12px; height: 12px; cursor: pointer;" class="edit-icon" data-value="@mobileNo.Id" />
+                <img src="~/Content/Images/copy.png" style="width: 12px; height: 12px; cursor: pointer;" class="copy-icon" data-value="@mobileNo.Numbers" />
+
+                <input type="text" data-value="@mobileNo.RecordId" style="display: none;" class="recordid" />
+            </div>
         }
-    </tbody>
-</table>
+
+
+    }
+
+}
+else
+{
+    <p>No mobile numbers found.</p>
+}
+
+<style>
+    .add {
+        transition-duration: 0.5s;
+    }
+
+        .add:hover {
+            transform: scale(1.2);
+        }
+</style>
 
 <script>
-    function copyToClipboard(number) {
-        navigator.clipboard.writeText(number).then(() => {
-            alert('Number copied to clipboard');
-        }).catch(err => {
-            console.error('Failed to copy: ', err);
+    $(document).ready(function () {
+
+
+
+        $('.edit-icon').click(function () {
+            var $id = $(this).siblings('.mobile-number').data('value');
+            var $mobileNumber = $(this).siblings('.mobile-number');
+            var currentText = $mobileNumber.text();
+            $mobileNumber.empty().append('<input type="text" class="mobile-number-input" value="' + currentText + '" style="border:none;">' );
+
+            $('.mobile-number-input').keypress(function (event) {
+                if (event.which == 13) {
+                    var id = $id;
+                    var newValue = $(this).val();
+                    $.ajax({
+                        url: '@Url.Action("ChangeMobile", "Home")',
+                        type: 'POST',
+                        data: { id: id, newValue: newValue },
+                        success: function (response) {
+                            location.reload();
+                        },
+                        error: function (xhr, status, error) {
+                            // Handle error response
+                        }
+                    });
+                }
+            });
         });
-    }
-
-    function editNumber(id, number) {
-        const newNumber = prompt("Edit Number", number);
-        if (newNumber !== null && newNumber !== number) {
-            const form = document.createElement("form");
-            form.method = "post";
-            form.action = "/MobileNo/EditNumber";
-
-            const idField = document.createElement("input");
-            idField.type = "hidden";
-            idField.name = "id";
-            idField.value = id;
-
-            const numberField = document.createElement("input");
-            numberField.type = "hidden";
-            numberField.name = "newNumber";
-            numberField.value = newNumber;
-
-            form.appendChild(idField);
-            form.appendChild(numberField);
-            document.body.appendChild(form);
-
-            form.submit();
-        }
-    }
+    });
 </script>
 
-<!-- Include FontAwesome for icons -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+<script>
+    $(document).ready(function () {
+        $('.add').click(function () {
+            // Create a textbox dynamically
+            var textbox = $(' <input type="text" class="mobile-numbers-input" style="width: 100px;" />');
+            // Append the textbox to the container
+            $(this).parent().append(textbox);
+            // Focus on the newly created textbox
+            textbox.focus();
+        });
+
+        // Listen for 'Enter' key press event in the dynamically created textbox
+        $(document).on('keypress', '.mobile-numbers-input', function (e) {
+            if (e.which == 13) { // Check if the pressed key is 'Enter'
+                var mobileNumber = $(this).val(); // Get the entered mobile number
+                var id = $(".recordid").data('value'); // Assuming you have some ID associated with the container
+
+                 $.ajax({
+                     url: '@Url.Action("AddMobile", "Home")',
+                     type: 'POST',
+                     data: { id: id, mobileNumber: mobileNumber },
+                     success: function (response) {
+                         location.reload();
+                     },
+                     error: function (xhr, status, error) {
+                         // Handle error response
+                     }
+                 });
+            }
+        });
+    });
+
+</script>

@@ -17,6 +17,7 @@ namespace CRM_Raviz.Models
         public int Id { get; set; }
         public int RecordId { get; set; }
         public string Numbers { get; set; }
+        public string Validity { get; set; }
     
         public virtual RecordData RecordData { get; set; }
     }

@@ -1,0 +1,281 @@
+﻿@model IEnumerable<CRM_Raviz.Models.RecordData>
+@using CRM_Raviz.Models
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+
+<style>
+
+    table tr td {
+        font-size: 16px;
+     
+    }
+
+    .icons {
+        transition-duration: 0.3s;
+    }
+
+        .icons:hover {
+            transform: scale(1.2);
+        }
+
+    .drops {
+        white-space: nowrap;
+    }
+
+    .drop {
+        text-decoration: none;
+        border: none;
+        background-color: #ffffff00;
+        transition-duration: 0.3s;
+        font-size: 14px;
+    }
+
+
+
+    .tableHead {
+        white-space: nowrap;
+        font-size: 18px;
+    }
+
+
+
+
+    .paste-button {
+        position: relative;
+        display: block;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .button {
+        background-color: white;
+        color: #212121;
+        padding: 5px 2.5px;
+        font-size: 15px;
+        font-weight: bold;
+        border: 2px solid transparent;
+        border-radius: 15px;
+        cursor: pointer;
+    }
+
+    .dropdown-content {
+        width: max-content;
+        display: none;
+        font-size: 13px;
+        position: absolute;
+        z-index: 1;
+        border: 1px solid black;
+        border-radius: 6px;
+    }
+
+        .dropdown-content a {
+            width: 100%;
+            display: block;
+            transition: 0.1s;
+        }
+
+            .dropdown-content a:hover {
+                background-color: #000000;
+                color: white;
+            }
+
+            .dropdown-content a:focus {
+                background-color: #727171;
+                color: #000000;
+            }
+
+    .paste-button:hover .dropdown-content {
+        display: block;
+    }
+
+    .changeAgentButton {
+        width: 25px;
+        cursor: pointer;
+        transition-duration: 0.5s;
+    }
+
+        .changeAgentButton:hover {
+            transform: scale(1.1);
+        }
+
+    .downloadRep {
+        background: transparent;
+        position: relative;
+        padding: 3px 10px;
+        display: flex;
+        align-items: center;
+        font-size: 17px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        border: 1px solid #082948;
+        border-radius: 25px;
+        outline: none;
+        overflow: hidden;
+        color: #082948;
+        transition: color 0.3s 0.1s ease-out;
+        text-align: center;
+        justify-content: center;
+        margin: 5px auto;
+    }
+
+        .downloadRep span {
+            margin: 10px;
+        }
+
+        .downloadRep::before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            content: '';
+            border-radius: 50%;
+            display: block;
+            width: 20em;
+            height: 20em;
+            left: -5em;
+            text-align: center;
+            transition: box-shadow 0.5s ease-out;
+            z-index: -1;
+        }
+
+        .downloadRep:hover {
+            color: white;
+            border: 1px solid #082948;
+        }
+
+            .downloadRep:hover::before {
+                box-shadow: inset 0 0 0 10em #082948;
+            }
+</style>
+
+
+
+<script>
+
+
+
+$(document).ready(function () {
+    $(".downloadRep").click(function () {
+        let url = '@Url.Action("DownloadAgentCases", "Home")';
+        let records = JSON.stringify(@Html.Raw(Json.Encode(ViewBag.Data)));
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ records }),
+            xhrFields: {
+                responseType: 'blob' // Set the response type to blob (binary large object)
+            },
+            success: function (response, status, xhr) {
+                // Check if the content type of the response is Excel
+                var contentType = xhr.getResponseHeader('Content-Type');
+                if (contentType.toLowerCase().indexOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") !== -1) {
+                    // Create a blob object from the response
+                    var blob = new Blob([response], { type: contentType });
+
+                    // Create a temporary anchor element
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(blob);
+
+                    // Set the anchor element's attributes
+                    a.href = url;
+                    a.download = 'CaseReport.xlsx'; // Set the file name
+
+                    // Append the anchor element to the body and trigger a click event to start the download
+                    document.body.appendChild(a);
+                    a.click();
+
+                    // Remove the anchor element after download
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                } else {
+                    // Handle non-Excel responses
+                    alert('Unexpected response type: ' + contentType);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('AJAX error: ' + error);
+            }
+        });
+    });
+});
+
+
+
+</script>
+
+<div>
+ 
+
+    <button class="downloadRep">
+        <span>Download</span>
+    </button>
+
+    <table style="display: flex; justify-content: center;">
+        <tr>
+            <td class="tableHead">Account no</td>
+            <td class="tableHead">Customer Name</td>
+            <td class="tableHead">O/S Balance</td>
+            <td class="tableHead">Renewal Fee</td>
+            <td class="tableHead">
+                Last Event
+            </td>
+            <td class="tableHead">
+                Batch
+            </td>
+            <td class="tableHead">
+                Segment
+            </td>
+        </tr>
+
+        @{
+            foreach (var item in Model)
+            {
+                <tr class="redirectCase" data-id="@item.Id" data-accountno="@item.AccountNo" style=" cursor: pointer;">
+
+
+                    <td>@Html.DisplayFor(modelItem => item.AccountNo, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.CustomerName, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.OS_Billing, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.ExpectedRenewalFee, new { @class = "tablecont" })</td>
+                    <td class="tablecont">
+                        @if (item.ModifiedDate.HasValue)
+                        {
+                            @item.ModifiedDate.Value.Date.ToString("MM/dd/yyyy")
+                            <br />
+                            @item.ModifiedDate.Value.ToString("hh:mm tt")}
+                    </td>
+                    <td style="white-space: nowrap;">@Html.DisplayFor(modelItem => item.DerbyBatch, new { @class = "tablecont" })</td>
+                    <td>@Html.DisplayFor(modelItem => item.Segments, new { @class = "tablecont" })</td>
+                </tr>
+            }
+        }
+
+
+    </table>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+    $(".redirectCase").click(function () {
+        var itemId = $(this).data("id"); // Assuming you have data-id attribute in your HTML
+        var accountNo = $(this).data("accountno"); // Assuming you have data-accountno attribute in your HTML
+
+        window.location = '@Url.Action("RealEditAllocation", "Home")' + '?id=' + itemId + '&AccountNo=' + accountNo;
+    });
+
+});
+
+</script>
+
+
