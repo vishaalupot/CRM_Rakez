@@ -56,6 +56,16 @@
         transition: background-image 0.3s ease;
     }
 
+    .stats-img3 {
+        height: 35px;
+        margin: 12px;
+        width: 35px;
+         background-image: url(@Url.Content("~/Content/Images/phone-call.png"));
+        background-size: cover;
+        background-position: center;
+        transition: background-image 0.3s ease;
+    }
+
     .stats-text {
         display: flex;
         flex-direction: column;
@@ -78,6 +88,7 @@
     }
 
     .stats-logo {
+        height: 65px;
         border-radius: 50%;
         box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         display: flex;
@@ -94,6 +105,11 @@
 
             .stats-logo:hover .stats-img {
                 background-image: url(@Url.Content("~/Content/Images/call-back2.png"));
+                animation: flip 0.5s linear 1;
+            }
+
+            .stats-logo:hover .stats-img3 {
+                background-image: url(@Url.Content("~/Content/Images/phone-call1.png"));
                 animation: flip 0.5s linear 1;
             }
 
@@ -245,7 +261,7 @@
         margin: 20px 0px;
         padding: 20px;
         background-color: #fff;
-        height: 90vh;
+        height: 80vh;
         box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
         border-radius: 8px;
         background-color: #082948;
@@ -315,6 +331,10 @@
         width: 170px;
         background-color: #4CAF50;
         color: white;
+        height: 55px;
+    }
+    tr {
+        height: max-content;
     }
 
     tbody tr:nth-child(even) {
@@ -337,18 +357,17 @@
 </style>
 <style>
     .chart-container {
-        height: 430px;
+        height: 380px;
         display: flex;
-        justify-content: center;
         flex-direction: column;
         overflow: hidden;
-/*        background: linear-gradient(to right,#082948 15%, #00806e 95%);
-*/        background: linear-gradient(to right,#082948 15%, #035c5e 95%);
+        /*        background: linear-gradient(to right,#082948 15%, #00806e 95%);
+*/ background: linear-gradient(to right,#082948 15%, #035c5e 95%);
     }
 
     .chart-container2 {
         width: 500px;
-        height: 430px;
+        height: 380px;
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -356,12 +375,10 @@
     }
 
     .chart-container3 {
-        width: 70vw;
         height: 100%;
         display: flex;
         justify-content: center;
         flex-direction: column;
-        overflow: hidden;
         background: linear-gradient(to right,#082948 25%, #035c5e 95%);
     }
 
@@ -379,8 +396,17 @@
 
         font-family: 'Poppins', sans-serif;
         font-weight: 600;
-        font-size: 40px;
+        font-size: 30px;
         text-align: center;
+        color: white;
+        padding: 10px;
+    }
+
+     h5 {
+
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 15px;
         color: white;
         padding: 10px;
     }
@@ -388,13 +414,13 @@
     h4 {
         font-family: 'Poppins', sans-serif;
         font-weight: 600;
-        font-size: 40px;
-        text-align: center;
+        font-size: 30px;
+        /*text-align: center;*/
         color: white;
         padding: 10px 10px;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        /*align-items: center;
+        justify-content: center;*/
     }
 
     .logo {
@@ -445,59 +471,7 @@
     }
 
 
-    /*.downloadRep {
-        background: transparent;
-        position: relative;
-        padding: 3px 10px;
-        display: flex;
-        align-items: center;
-        font-size: 17px;
-        font-weight: 600;
-        text-decoration: none;
-        cursor: pointer;
-        border: 1px solid #082948;
-        border-radius: 25px;
-        outline: none;
-        overflow: hidden;
-        color: #082948;
-        transition: color 0.3s 0.1s ease-out;
-        text-align: center;
-        justify-content:center;
-        margin: 5px auto;
-    }
-
-        .downloadRep span {
-            margin: 10px;
-        }
-
-        .downloadRep::before {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            margin: auto;
-            content: '';
-            border-radius: 50%;
-            display: block;
-            width: 20em;
-            height: 20em;
-            left: -5em;
-            text-align: center;
-            transition: box-shadow 0.5s ease-out;
-            z-index: -1;
-        }
-
-        .downloadRep:hover {
-            color: white;
-            border: 1px solid #082948;
-        }
-
-            .downloadRep:hover::before {
-                box-shadow: inset 0 0 0 10em #082948;
-            }*/
-
-
+    
 </style>
 
 <style>
@@ -631,14 +605,6 @@
         justify-content: flex-end;
     }
 
-    /*.dp {
-            width: 210px;
-            height: 210px;
-            border-radius: 100px;
-            box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-            cursor: pointer;
-        }*/
-
     .desc {
         padding: 10px 0px;
     }
@@ -693,17 +659,14 @@
         justify-content: center;
         align-items: center;
         padding-top: 5px;
-        font-family: 'Jaldi', sans-serif;
+        font-family: 'Poppins', sans-serif;
     }
 
     .welcome {
         color: #082948;
-        font-size: 45px;
-/*        font-family: 'Poppins', sans-serif;
-*/        font-family: 'Jaldi', sans-serif;
-        /*  font-family: "Merriweather", serif;
-*/ font-weight: 600;
-        font-style: normal;
+        font-size: 40px;
+        font-weight: 700;
+        font-family: 'Poppins', sans-serif;
     }
 
     .focus {
@@ -723,6 +686,7 @@
         font-size: 18px;
         color: #082948;
         font-weight: 700;
+       
     }
 
     .dropdown1 {
@@ -755,7 +719,6 @@
     
 
 </style>
-
 <style>
     .beautiful-table {
         width: 100%;
@@ -772,9 +735,11 @@
         }
 
         .beautiful-table th {
-            background-color: #f2f2f2;
-            color: black;
+            background-color: #808080ad;
+            color: white;
+            height: 45px;
         }
+
 
         .beautiful-table tr:nth-child(even) {
             background-color: #f9f9f9;
@@ -795,6 +760,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
+
         document.addEventListener('DOMContentLoaded', () => {
             const popup1 = document.getElementById('popup1');
             const popup2 = document.getElementById('popup2');
@@ -804,10 +770,11 @@
             /*const closeBtn1 = document.querySelector('.closebutton');*/
             const statsLogo = document.querySelector('.stats-logo2');
             const callback = document.querySelector('.callback');
+            const ring = document.querySelector('.ring');
 
 
             const closeButtons = document.querySelectorAll('.closebutton');
-            const popups = [popup1, popup2, popup3, popup4, popup5];
+            const popups = [popup1, popup2, popup3, popup4, popup5, popup6];
 
 
 
@@ -818,6 +785,10 @@
 
             callback.addEventListener('click', () => {
                 popup3.style.display = 'flex';
+            });
+
+            ring.addEventListener('click', () => {
+                popup6.style.display = 'flex';
             });
 
 
@@ -840,30 +811,54 @@
                 });
             }
 
+            const Ringing = document.getElementsByClassName('ringing');
+
+            for (let i = 0; i < Ringing.length; i++) {
+                Ringing[i].addEventListener('click', () => {
+                    popup6.style.display = 'none';
+                    popup4.style.display = 'flex';
+                });
+            }
+
+
+
+
             closeButtons.forEach((closeBtn, index) => {
                 closeBtn.addEventListener('click', () => {
                     popups[index].style.display = 'none';
                 });
             });
 
+
+
             window.addEventListener('click', (event) => {
                 if (event.target == popup1) {
                     popup1.style.display = 'none';
+                    clearPopupContent(popup1);
+
                 }
 
                 if (event.target == popup2) {
                     popup2.style.display = 'none';
+                    clearPopupContent(popup2);
                 }
 
                 if (event.target == popup3) {
                     popup3.style.display = 'none';
+                    clearPopupContent(popup3);
                 }
 
                 if (event.target == popup4) {
                     popup4.style.display = 'none';
+                    clearPopupContent(popup4);
                 }
                 if (event.target == popup5) {
                     popup5.style.display = 'none';
+                    clearPopupContent(popup5);
+                }
+                if (event.target == popup6) {
+                    popup6.style.display = 'none';
+                    clearPopupContent(popup6);
                 }
             });
         });
@@ -901,7 +896,6 @@
                 let state = "callback"
                 let sec = $(this).data("sec");
 
-               /* alert(agentCasesValue)*/
                 $.ajax({
                     url: url,
                     type: "Post",
@@ -919,7 +913,6 @@
         });
 
     </script>
-
 
     <script>
 
@@ -964,27 +957,30 @@
                          const popup5 = document.getElementById('popup5');
                          popup5.style.display = 'flex';
 
-                 url = '@Url.Action("_AgentCases")';
-                 agentCasesValue = $(this).data("value");
-                 state = "segment1"
-                 sec = $(this).data("sec");
+                     url = '@Url.Action("_AgentCases")';
+                     agentCasesValue = $(this).data("value");
+                     state = "segment1"
+                     sec = $(this).data("sec");
+
+                    button = "@(ViewBag.Filter)";
 
 
-                $.ajax({
-                    url: url,
-                    type: "Post",
-                    data: {
-                        query: agentCasesValue,
-                        section: sec,
-                        state: state
-                    },
-                    success: function (dataview) {
-                        $('#segments1').html(dataview);
-                    //    console.log(dataview);
-                    }
+                    $.ajax({
+                        url: url,
+                        type: "Post",
+                        data: {
+                            query: agentCasesValue,
+                            section: sec,
+                            state: state,
+                            button:button
+                        },
+                        success: function (dataview) {
+                            $('#segments1').html(dataview);
+                        //    console.log(dataview);
+                        }
+                    })
                 })
-            })
-                 });
+        });
 
         $(document).ready(function () {
                      $(".segment2").click(function () {
@@ -995,11 +991,6 @@
                  agentCasesValue = $(this).data("value");
                  state = "segment2"
                  sec = $(this).data("sec");
-
-                         //alert(agentCasesValue)
-                         //alert(state)
-                         //alert(sec)
-
                 $.ajax({
                     url: url,
                     type: "Post",
@@ -1010,12 +1001,70 @@
                     },
                     success: function (dataview) {
                         $('#segments1').html(dataview);
-                    //    console.log(dataview);
                     }
                 })
             })
         });
 
+        $(document).ready(function () {
+    $(".ringing").click(function () {
+        var url = '@Url.Action("Ringing")';
+        var agent = $(this).data("value");
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {
+                Agent: agent
+            },
+            success: function (data) {
+                // Handle the JSON data here
+                console.log(data);
+                // For example, you might want to populate a table:
+                populateTable(data);
+            },
+            error: function (xhr, status, error) {
+                console.error("An error occurred: " + error);
+            }
+        });
+    });
+});
+
+              function populateTable(data) {
+    var table = $('#CallbackCases');
+    table.empty(); // Clear existing content
+
+    // Create table headers
+    var headers = '<tr><th>Index</th><th>Account No</th><th>Customer Name</th><th>Agents</th></tr>';
+    table.append(headers);
+
+    // Add rows for each item in the data
+    $.each(data, function (index, item) {
+        var row = $('<tr>').append(
+            $('<td>').text(index + 1), // Adding index number (index + 1 for 1-based index)
+            $('<td>').text(item.AccountNo),
+            $('<td>').text(item.CustomerName),
+            $('<td>').text(item.AgentName)
+        );
+
+        // Add click event to the row
+        row.click(function () {
+            window.location = '@Url.Action("RealEditAllocation", "Home")' + '?id=' + item.itemId + '&AccountNo=' + item.AccountNo;
+        });
+
+        // Add hover effects
+        row.css('cursor', 'pointer'); // Change cursor to pointer
+        row.hover(
+            function() {
+                $(this).css('background-color', '#f0f0f0'); // Light grey on hover
+            },
+            function() {
+                $(this).css('background-color', ''); // Return to original color on hover out
+            }
+        );
+
+        table.append(row);
+    });
+}
 
 
 
@@ -1064,8 +1113,6 @@
 
         });
     </script>
-
-   
     <script>
 
     function handleSegmentClick(label, value, datasetIndex) {
@@ -1185,7 +1232,6 @@
         });
     </script>
 
-
 </head>
 <body>
     <div style="display: flex; flex-direction: column;">
@@ -1195,8 +1241,8 @@
            
             <div style="display: flex; flex-direction: column; padding: 0px 10px;">
                 <div style="display: flex; flex-direction: row;">
-                    <div class="welcome">Welcome &nbsp;</div>
-                    <div class="welcome">@User.Identity.GetUserName()</div>
+                    <div class="welcome">WELCOME &nbsp;</div>
+                    <div class="welcome">@User.Identity.GetUserName().ToUpper()</div>
                 </div>
                
                 <div style="padding: 0px 10px; display: flex; flex-direction: row;">
@@ -1205,7 +1251,7 @@
                         var agents = ViewBag.allAgents as List<string>;
                     }
 
-                    <div class="drop1">
+                    <div class="drop1" style=" padding-bottom: 10px;">
 
                         <select class="dropdown1" id="agentDropdown">
                             <option></option>
@@ -1253,11 +1299,11 @@
 
                 <div class="stat-box">
                     <div class="stats-text">
-                        <div class="stat-text2">0</div>
-                        <div class="stat-text1">Demo</div>
+                        <div class="stat-text2">@ViewBag.RingingNos</div>
+                        <div class="stat-text1">Pending cases</div>
                     </div>
-                    <div class="stats-logo">
-                        <div class="stats-img"> </div>
+                    <div class="stats-logo  ring">
+                        <div class="stats-img3"> </div>
                     </div>
                 </div>
 
@@ -1273,7 +1319,7 @@
                 </div>
 
                 <div id="popup1" class="popup1">
-                   
+
                     <div class="popup1-content">
 
                         <button class="closebutton" style=" display: flex;margin: 0 0 0 auto;">
@@ -1333,7 +1379,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div id="popup3" class="popup1">
                     <div class="popup1-content">
                         <button class="closebutton" style=" display: flex;margin: 0 0 0 auto;">
@@ -1389,13 +1434,42 @@
                             <div class="close">Close</div>
                         </button>
                         @*<button class="downloadRep">
-                            <span>Download</span>
-                        </button>*@
+                    <span>Download</span>
+                </button>*@
 
                         <span class="close-btn">&times;</span>
                         <div id="segments1">
 
                         </div>
+                    </div>
+                </div>
+
+                <div id="popup6" class="popup1">
+                    <div class="popup1-content">
+                        <button class="closebutton" style=" display: flex;margin: 0 0 0 auto;">
+                            <span class="X"></span>
+                            <span class="Y"></span>
+                            <div class="close">Close</div>
+                        </button>
+                        <span class="close-btn">&times;</span>
+
+                        <table style="text-align: center">
+                            <thead>
+                                <tr>
+                                    <th>Agent</th>
+                                    <th>Cases</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var agent in ViewBag.RingingAccounts)
+                                {
+                                    <tr>
+                                        <td>@(agent?.GetType().GetProperty("AgentName")?.GetValue(agent, null) ?? "Unknown")</td>
+                                        <td class="rowclick ringing" data-value="@(agent?.GetType().GetProperty("AgentName")?.GetValue(agent, null) ?? "Unknown")" >@(agent?.GetType().GetProperty("AccountCount")?.GetValue(agent, null) ?? "Unknown")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -1406,28 +1480,28 @@
 
 
                 <div style="display: flex; flex-direction: row;">
-                    @*<div>
-                        <img src="@Url.Action("DisplayProfilePic", "Home", new { snr = @User.Identity.GetUserId() })" alt="Profile Picture" class="dp" onerror="this.src='@Url.Content("~/Content/Images/placeholder.png")'" />
-                    </div>*@
-
-                    
-
                 </div>
                 <div class="charts-row">
 
                     <div class="chart chart-container">
-                        <h3>Segments</h3>
+                        <div style="display: flex; flex-direction: row; justify-content:space-between;">
+                            <div>
+                                <h3>Segments</h3>
+                            </div>
+                            
+                            <div style="display: flex; flex-direction: row; color: white; justify-content:flex-end; align-items:center;">
+                                <h5>Total</h5>
+                                <h5>Non Worked</h5>
+                            </div>
+                        </div>
+                        
+                        
                         <div>
                             <table>
                                 <tbody>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td style="white-space: nowrap; color: #082948;">Total</td>
-                                        <td style="white-space: nowrap; color: #082948;">Non Worked</td>
-                                    </tr>
 
-                                    <tr>
+
+                                    <tr style="height: 79px;">
                                         <td>
                                             <div class="round">
                                                 <div class="logo2" />
@@ -1437,7 +1511,7 @@
                                         <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="all" data-value="Bounced Cheque">@ViewBag.segmentCounts[0]</td>
                                         <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="notworked" data-value="Bounced Cheque">@ViewBag.segmentNotWorked[0]</td>
                                     </tr>
-                                    <tr>
+                                    <tr style="height: 79px;">
                                         <td>
                                             <div class="round">
                                                 <div class="logo3" />
@@ -1449,7 +1523,7 @@
                                             @(ViewBag.segmentNotWorked != null && ViewBag.segmentNotWorked.Count > 2 ? ViewBag.segmentNotWorked[1] : 0)
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr style="height: 79px;">
                                         <td>
                                             <div class="round">
                                                 <div class="logo" />
@@ -1463,13 +1537,6 @@
 
                                 </tbody>
                                 <tfoot class="footer-style">
-                                    @*<tr>
-                                        <td></td>
-                                        <td></td>
-
-                                        <td style="white-space: nowrap; color: #082948;">Total</td>
-                                        <td style="white-space: nowrap; color: #082948;">Non Worked</td>
-                                    </tr>*@
                                     <tr>
                                         <td></td>
                                         <td>Total</td>
@@ -1486,80 +1553,43 @@
                     <div class="chart chart-container2">
                         <h4>Batches</h4>
 
-                        <div style="display: flex; align-items:center; justify-content:center;">
-                            <table style="width: 100%; height: 100%; overflow: auto; ">
-
-
-                                <tbody>
+                        <div style="width: 100%; height: 100%; overflow-x: auto;">
+                            <table>
+                                <thead>
                                     <tr style="white-space: nowrap;">
                                         <th style="background-color: white; color: black;"></th>
-                                        @if (ViewBag.allbatches != null)
-                                        {
-                                            foreach (var item1 in ViewBag.allbatches)
-                                            {
-                                                <th style="background-color: white; color: black;" class="segment2 rowclick" data-value=" @item1">
-                                                    @item1
-                                                </th>
-                                            }
-                                        }
-                                    </tr>
-                                    <tr>
                                         <th style="background-color: white; color: black;">Worked</th>
-
-                                        @if (ViewBag.BatchWorked != null)
-                                        {
-                                            int index = 0;
-                                            foreach (var item in ViewBag.BatchWorked)
-                                            {
-
-                                                <td style="text-align: center; font-size: 20px;" class="segment2 rowclick" data-sec="worked" data-value="@ViewBag.allbatches[index]">
-                                                    @(item != null && item > 0 ? item : 0)
-                                                </td>
-                                                index++;
-                                            }
-                                        }
-                                    </tr>
-
-                                    <tr>
                                         <th style="background-color: white; color: black;">Not Worked</th>
-                                        @if (ViewBag.BatchNotWorked != null)
-                                        {
-                                            int index = 0;
-                                            foreach (var item in ViewBag.BatchNotWorked)
-                                            {
-                                                <td style="text-align: center; font-size: 20px;" class="segment2 rowclick" data-sec="notworked" data-value="@ViewBag.allbatches[index]">
-                                                    @(item != null && item >= 0 ? item : 0)
-                                                </td>
-                                                index++;
-                                            }
-                                        }
-                                        @*<td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="notworked" data-value="Bounced Cheque">@ViewBag.segmentNotWorked[0]</td>
-                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="notworked" data-value="Bounced Cheque and Renewal">
-                                            @(ViewBag.segmentNotWorked != null && ViewBag.segmentNotWorked.Count > 2 ? ViewBag.segmentNotWorked[1] : 0)
-                                        </td>
-                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="notworked" data-value="Renewal">@ViewBag.segmentNotWorked[2]</td>
-                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="notworked" data-value="Renewal">@ViewBag.segmentNotWorked[2]</td>*@
-                                    </tr>
-
-                                    <tr>
                                         <th style="background-color: white; color: black;">Total</th>
-                                        @if (ViewBag.TotalBatches != null)
-                                        {
-                                            foreach (var item in ViewBag.TotalBatches)
-                                            {
-                                                <td style="text-align: center; font-size: 20px;">
-                                                    @(item != null && item >= 0 ? item : 0)
-                                                </td>
-                                            }
-                                        }
-                                        @*<td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="all" data-value="Bounced Cheque">@ViewBag.segmentCounts[0]</td>
-                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="all" data-value="Bounced Cheque and Renewal">@ViewBag.segmentCounts[1]</td>
-                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="all" data-value="Renewal">@ViewBag.segmentCounts[2]</td>
-                                        <td style="text-align: center; font-size: 20px;" class="segment1 rowclick" data-sec="all" data-value="Renewal">@ViewBag.segmentCounts[2]</td>*@
                                     </tr>
-                                </tbody>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.allbatches != null)
+                                    {
+                                        int count = ViewBag.allbatches.Count;
+                                        for (int index = count - 1; index >= 0; index--)
+                                        {
+                                            var batch = ViewBag.allbatches[index];
+                                            <tr>
+                                                <th style="background-color: white; color: black;" class="segment2 rowclick" data-value="@batch">
+                                                    @batch
+                                                </th>
+                                                <td style="text-align: center; font-size: 20px;" class="segment2 rowclick" data-sec="worked" data-value="@batch">
+                                                    @(ViewBag.BatchWorked != null && ViewBag.BatchWorked.Count > index && ViewBag.BatchWorked[index] != null && ViewBag.BatchWorked[index] > 0 ? ViewBag.BatchWorked[index] : 0)
+                                                </td>
+                                                <td style="text-align: center; font-size: 20px;" class="segment2 rowclick" data-sec="notworked" data-value="@batch">
+                                                    @(ViewBag.BatchNotWorked != null && ViewBag.BatchNotWorked.Count > index && ViewBag.BatchNotWorked[index] != null && ViewBag.BatchNotWorked[index] >= 0 ? ViewBag.BatchNotWorked[index] : 0)
+                                                </td>
+                                                <td style="text-align: center; font-size: 20px;">
+                                                    @(ViewBag.TotalBatches != null && ViewBag.TotalBatches.Count > index && ViewBag.TotalBatches[index] != null && ViewBag.TotalBatches[index] >= 0 ? ViewBag.TotalBatches[index] : 0)
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
 
+                                </tbody>
                             </table>
+
 
 
                         </div>
@@ -1568,40 +1598,10 @@
                 <div class="charts-row">
                     <div class="chart chart-container3">
                         <div>
-                            @*<table class="beautiful-table">
-            <tbody>
-                <tr>
-                    <th>Agents</th>
-                    @if (ViewBag.allbatches != null)
-                    {
-                        foreach (var item1 in ViewBag.allAgents)
-                        {
-                            <th class="segment2 " data-value="@item1">
-                                @item1
-                            </th>
-                        }
-                    }
-                </tr>
-                <tr>
-                    <th>Assigned Cases</th>
-                    @if (ViewBag.totalCasesList != null)
-                    {
-                        int index = 0;
-                        foreach (var item in ViewBag.totalCasesList)
-                        {
-                            <td class="segment2">
-                                @(item != null && item > 0 ? item : 0)
-                            </td>
-                            index++;
-                        }
-                    }
-                </tr>
-            </tbody>ide
-        </table>*@
 
                             <table class="beautiful-table">
                                 <tbody>
-                                    <tr>
+                                    <tr style="height: 45px;">
                                         <th style="text-align:center;">Agents</th>
                                         <th style="text-align:center;">Cases</th>
                                     </tr>
@@ -1609,7 +1609,7 @@
                                     @if (ViewBag.allAgents != null && ViewBag.totalCasesList != null)
                                     {
                                         int index = 0;
-                                        foreach (var agent in ViewBag.allAgents)
+                                        foreach (var agent in ViewBag.Agents)
                                         {
                                             <tr>
                                                 <td class="segment2" style="text-align:center;" data-value="@agent">

@@ -10,6 +10,7 @@
 <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
+
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -22,7 +23,6 @@
             //alert(dropdownValue == "");
 
             if (dropdownValue == "") {
-
                 // Show SweetAlert
                 Swal.fire({
                     icon: 'error',
@@ -58,13 +58,14 @@
 </script>
 <style>
 
-    table{
+    table {
         min-height: 500px;
+
     }
 
-    table tr td {
-        font-size: 16px;
-    }
+        table tr td {
+            font-size: 16px;
+        }
 
     .icons {
         transition-duration: 0.3s;
@@ -154,177 +155,228 @@
         .changeAgentButton:hover {
             transform: scale(1.1);
         }
-
-
-
-
 </style>
 
-<div>
-    @using (Html.BeginForm("RealEditAllocation", "Home", FormMethod.Post))
-    {
-        <table style="display: flex; justify-content: center;">
-            <tr>
-                <td class="tableHead">Account no</td>
-                <td class="tableHead">Customer Name</td>
-                <td class="tableHead">O/S Balance</td>
-                <td class="tableHead">Renewal Fee</td>
-                <td class="tableHead">
-                    <div class="paste-button">
-                        Last Event
-                        <button class="button drop" disabled>▼</button>
-                        <div class="dropdown-content">
-                            <h6 style="text-align: center;">Filter</h6>
-                            <a class="event-link" data-value="Recent events" id="top" href="#">Recent events</a>
-                            <a class="event-link" data-value="Old events" id="middle" href="#">Old events</a>
-                        </div>
-                    </div>
-                </td>
-                <td class="tableHead">
 
-                    <div class="paste-button">
-                        Batch
-                        <button class="button drop" disabled>▼</button>
-                        <div class="dropdown-content">
-                            <h6 style="text-align: center;">Filter</h6>
-                            <a class="event-link2" data-value="Batch 1" href="#">Batch 1</a>
-                            <a class="event-link2" data-value="Batch 2" href="#">Batch 2</a>
-                            <a class="event-link2" data-value="Batch 3" href="#">Batch 3</a>
-                            <a class="event-link2" data-value="Batch 4" href="#">Batch 4</a>
-                        </div>
-                    </div>
-                </td>
-                <td class="tableHead">
-                    <div class="paste-button">
-                        Segment
-                        <button class="button drop" disabled>▼</button>
-                        <div class="dropdown-content">
-                            <h6 style="text-align: center;">Filter</h6>
-                            <a class="event-link3" data-value="Bounced Cheque" href="#">Bounced Cheque</a>
-                            <a class="event-link3" data-value="Renewal" href="#">Renewal</a>
-                            <a class="event-link3" data-value="Bounced Cheque and Renewal" href="#">Bounced Cheque and Renewal</a>
-                        </div>
-                    </div>
-                </td>
-                <td class="tableHead">
-                    <div class="paste-button">
-                        Disposition
-                        <button class="button drop" disabled>▼</button>
-                        <div class="dropdown-content">
-                            <h6 style="text-align: center;">Filter</h6>
-                            <a class="event-link3" data-value="ACCOUNT EXCLUDED" href="#">ACCOUNT EXCLUDED</a>
-                            <a class="event-link3" data-value="CALLBACK LANGUAGE" href="#">CALLBACK LANGUAGE</a>
-                            <a class="event-link3" data-value="BILL DISPUTE" href="#">BILL DISPUTE</a>
-                            <a class="event-link3" data-value="CALLBACK" href="#">CALLBACK</a>
-                            <a class="event-link3" data-value="BILL DISPUTE REFUSE TO PAY" href="#">BILL DISPUTE REFUSE TO PAY</a>
-                            <a class="event-link3" data-value="CUSTOMER DECEASED" href="#">CUSTOMER DECEASED</a>
-                            <a class="event-link3" data-value="CUSTOMER HUNG UP" href="#">CUSTOMER HUNG UP</a>
-                            <a class="event-link3" data-value="CUSTOMER OUT OF COUNTRY" href="#">CUSTOMER OUT OF COUNTRY</a>
-                            <a class="event-link3" data-value="BILL DISPUTE" href="#">BILL DISPUTE</a>
-                            <a class="event-link3" data-value="DE-REGISTRATION" href="#">DE-REGISTRATION</a>
-                            <a class="event-link3" data-value="DE-REGISTRATION DONE" href="#">DE-REGISTRATION DONE</a>
-                            <a class="event-link3" data-value="DO NOT CALL" href="#">DO NOT CALL</a>
-                            <a class="event-link3" data-value="FOLLOW UP" href="#">FOLLOW UP</a>
-                            <a class="event-link3" data-value="INVALID NUMBER" href="#">INVALID NUMBER</a>
-                            <a class="event-link3" data-value="LINE BUSY" href="#">LINE BUSY</a>
-                            <a class="event-link3" data-value="PAYMENT INSTALLMENT APPROVED" href="#">PAYMENT INSTALLMENT APPROVED</a>
-                            <a class="event-link3" data-value="PAYMENT INSTALLMENT REQUEST" href="#">PAYMENT INSTALLMENT REQUEST</a>
-                            <a class="event-link3" data-value="PAYMENT MADE" href="#">PAYMENT MADE</a>
-                            <a class="event-link3" data-value="PAYMENT MISSING" href="#">PAYMENT MISSING</a>
-                            <a class="event-link3" data-value="PAYMENT REMINDER" href="#">PAYMENT REMINDER</a>
-                            <a class="event-link3" data-value="PROMISE TO PAY" href="#">PROMISE TO PAY</a>
-                            <a class="event-link3" data-value="RECALLED" href="#">RECALLED</a>
-                            <a class="event-link3" data-value="REFUSE TO DE-REGISTER" href="#">REFUSE TO DE-REGISTER</a>
-                            <a class="event-link3" data-value="REFUSE TO RENEW" href="#">REFUSE TO RENEW</a>
-                            <a class="event-link3" data-value="RENEWAL DONE" href="#">RENEWAL DONE</a>
-                            <a class="event-link3" data-value="RENEWAL INQUIRY" href="#">RENEWAL INQUIRY</a>
-                            <a class="event-link3" data-value="RINGING" href="#">RINGING</a>
-                            <a class="event-link3" data-value="STATEMENT OF ACCOUNT REQUEST" href="#">STATEMENT OF ACCOUNT REQUEST</a>
-                            <a class="event-link3" data-value="SWITCH OFF" href="#">SWITCH OFF</a>
-                            <a class="event-link3" data-value="THIRD PARTY CALLBACK" href="#">THIRD PARTY CALLBACK</a>
-                            <a class="event-link3" data-value="THIRD PARTY CONTACT" href="#">THIRD PARTY CONTACT</a>
-                            <a class="event-link3" data-value="THIRD PARTY CTC INFO UPDATE" href="#">THIRD PARTY CTC INFO UPDATE</a>
-                        </div>
-
-                    </div>
-                </td>
-                <td class="tableHead">Actions</td>
-                <td class="tableHead">
-                   <div class="paste-button">
-                       Users
-                       <button class="button drop" disabled>▼</button>
-                       <div class="dropdown-content">
-                           <h6 style="text-align: center;">Filter</h6>
-                           <a class="event-link4" data-value="Arshad" href="#">Arshad</a>
-                           <a class="event-link4" data-value="Shoeb" href="#">Shoeb</a>
-                           <a class="event-link4" data-value="Joshua" href="#">Joshua</a>
-                           <a class="event-link4" data-value="TestAgent" href="#">TestAgent</a>
-                       </div>
-                   </div>
-                </td>
-
-
-                <td class="tableHead">Transfer</td>
-                <td class="tableHead">Save</td>
-            </tr>
-
-            @{
-                int counter = 1;
-                foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => item.AccountNo, new { @class = "tablecont" })</td>
-                        <td>@Html.DisplayFor(modelItem => item.CustomerName, new { @class = "tablecont" })</td>
-                        <td>@Html.DisplayFor(modelItem => item.OS_Billing, new { @class = "tablecont" })</td>
-                        <td>@Html.DisplayFor(modelItem => item.ExpectedRenewalFee, new { @class = "tablecont" })</td>
-                        <td class="tablecont">
-                            @if (item.ModifiedDate.HasValue)
-                            {
-                                @item.ModifiedDate.Value.Date.ToString("MM/dd/yyyy")
-                                <br />
-                                @item.ModifiedDate.Value.ToString("hh:mm tt")}
-                        </td>
-                        <td style="white-space: nowrap;">@Html.DisplayFor(modelItem => item.DerbyBatch, new { @class = "tablecont" })</td>
-                        <td>@Html.DisplayFor(modelItem => item.Segments, new { @class = "tablecont" })</td>
-                        <td>@Html.DisplayFor(modelItem => item.Disposition, new { @class = "tablecont" })</td>
-                        <td style="text-align: center;">
-                            @Html.HiddenFor(modelItem => item.Id)
-                            <a href='@Url.Action("RealEditAllocation", "Home", new { id = item.Id, AccountNo = item.AccountNo })'>
-                                <img src="~/Content/Images/edit1.png" style="width: 20px; height: 20px; cursor: pointer;" data-id='@item.Id' class="submitBtn icons" />
-                            </a>
-                        </td>
-                        <td>@Html.DisplayFor(modelItem => item.Agent, new { @class = "tablecont" })</td>
-                        <td>
-                            @Html.DropDownList("FEList",
-                              new SelectList(CRM_Raviz.Controllers.HomeController.GetAllUsers()), " ", new { @class = "box", id = "dropdown" })
-                        </td>
-                        <td>
-                            <img src="~/Content/Images/transfer.png" class="changeAgentButton" data-record-id="@item.Id" />
-                        </td>
-
-                    </tr>
-                    counter++;
-                }
+<div style="display: flex; flex-direction:column;">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            @if (currentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0);" onclick="loadRecords(@(currentPage - 1))" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
             }
-        </table>
-    }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </span>
+                </li>
+            }
+
+            <li class="page-item disabled">
+                <span class="page-link">
+                    Page @(currentPage) of @(totalPages)
+                </span>
+            </li>
+
+            @if (currentPage < totalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0);" onclick="loadRecords(@(currentPage + 1))" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </span>
+                </li>
+            }
+        </ul>
+    </nav>
+
+    <div>
+        @using (Html.BeginForm("RealEditAllocation", "Home", FormMethod.Post))
+        {
+            <table style="display: flex; justify-content: center;">
+                <tr>
+                    <td class="tableHead">Account no</td>
+                    <td class="tableHead">Customer Name</td>
+                    <td class="tableHead">O/S Balance</td>
+                    <td class="tableHead">Renewal Fee</td>
+                    <td class="tableHead">
+                        <div class="paste-button">
+                            Last Event
+                            <button class="button drop" disabled>▼</button>
+                            <div class="dropdown-content">
+                                <h6 style="text-align: center;">Filter</h6>
+                                <a class="event-link" data-value="Recent events" id="top" href="#">Recent events</a>
+                                <a class="event-link" data-value="Old events" id="middle" href="#">Old events</a>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="tableHead">
+
+                        <div class="paste-button">
+                            Batch
+                            <button class="button drop" disabled>▼</button>
+                            <div class="dropdown-content">
+                                <h6 style="text-align: center;">Filter</h6>
+                                @foreach (var batch in ViewBag.allbatches)
+                                {
+                                    <a class="event-link2" data-value="@batch" href="#">@batch</a>
+                                }
+                            </div>
+                        </div>
+                    </td>
+                    <td class="tableHead">
+                        <div class="paste-button">
+                            Segment
+                            <button class="button drop" disabled>▼</button>
+                            <div class="dropdown-content">
+                                <h6 style="text-align: center;">Filter</h6>
+                                <a class="event-link3" data-value="Bounced Cheque" href="#">Bounced Cheque</a>
+                                <a class="event-link3" data-value="Renewal" href="#">Renewal</a>
+                                <a class="event-link3" data-value="Bounced Cheque and Renewal" href="#">Bounced Cheque and Renewal</a>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="tableHead">
+                        <div class="paste-button">
+                            Disposition
+                            <button class="button drop" disabled>▼</button>
+                            <div class="dropdown-content">
+                                <h6 style="text-align: center;">Filter</h6>
+                                <a class="event-link3" data-value="QUOTATION SENT" href="#">QUOTATION SENT</a>
+                                <a class="event-link3" data-value="QUOTATION REQUESTED" href="#">QUOTATION REQUESTED</a>
+                                <a class="event-link3" data-value="ACCOUNT EXCLUDED" href="#">ACCOUNT EXCLUDED</a>
+                                <a class="event-link3" data-value="CALLBACK LANGUAGE" href="#">CALLBACK LANGUAGE</a>
+                                <a class="event-link3" data-value="BILL DISPUTE" href="#">BILL DISPUTE</a>
+                                <a class="event-link3" data-value="CALLBACK" href="#">CALLBACK</a>
+                                <a class="event-link3" data-value="BILL DISPUTE REFUSE TO PAY" href="#">BILL DISPUTE REFUSE TO PAY</a>
+                                <a class="event-link3" data-value="CUSTOMER DECEASED" href="#">CUSTOMER DECEASED</a>
+                                <a class="event-link3" data-value="CUSTOMER HUNG UP" href="#">CUSTOMER HUNG UP</a>
+                                <a class="event-link3" data-value="CUSTOMER OUT OF COUNTRY" href="#">CUSTOMER OUT OF COUNTRY</a>
+                                <a class="event-link3" data-value="BILL DISPUTE" href="#">BILL DISPUTE</a>
+                                <a class="event-link3" data-value="DE-REGISTRATION" href="#">DE-REGISTRATION</a>
+                                <a class="event-link3" data-value="DE-REGISTRATION DONE" href="#">DE-REGISTRATION DONE</a>
+                                <a class="event-link3" data-value="DO NOT CALL" href="#">DO NOT CALL</a>
+                                <a class="event-link3" data-value="FOLLOW UP" href="#">FOLLOW UP</a>
+                                <a class="event-link3" data-value="INVALID NUMBER" href="#">INVALID NUMBER</a>
+                                <a class="event-link3" data-value="LINE BUSY" href="#">LINE BUSY</a>
+                                <a class="event-link3" data-value="PAYMENT INSTALLMENT APPROVED" href="#">PAYMENT INSTALLMENT APPROVED</a>
+                                <a class="event-link3" data-value="PAYMENT INSTALLMENT REQUEST" href="#">PAYMENT INSTALLMENT REQUEST</a>
+                                <a class="event-link3" data-value="PAYMENT MADE" href="#">PAYMENT MADE</a>
+                                <a class="event-link3" data-value="PAYMENT MISSING" href="#">PAYMENT MISSING</a>
+                                <a class="event-link3" data-value="PAYMENT REMINDER" href="#">PAYMENT REMINDER</a>
+                                <a class="event-link3" data-value="PROMISE TO PAY" href="#">PROMISE TO PAY</a>
+                                <a class="event-link3" data-value="RECALLED" href="#">RECALLED</a>
+                                <a class="event-link3" data-value="REFUSE TO DE-REGISTER" href="#">REFUSE TO DE-REGISTER</a>
+                                <a class="event-link3" data-value="REFUSE TO RENEW" href="#">REFUSE TO RENEW</a>
+                                <a class="event-link3" data-value="RENEWAL DONE" href="#">RENEWAL DONE</a>
+                                <a class="event-link3" data-value="RENEWAL INQUIRY" href="#">RENEWAL INQUIRY</a>
+                                <a class="event-link3" data-value="RINGING" href="#">RINGING</a>
+                                <a class="event-link3" data-value="STATEMENT OF ACCOUNT REQUEST" href="#">STATEMENT OF ACCOUNT REQUEST</a>
+                                <a class="event-link3" data-value="SWITCH OFF" href="#">SWITCH OFF</a>
+                                <a class="event-link3" data-value="THIRD PARTY CALLBACK" href="#">THIRD PARTY CALLBACK</a>
+                                <a class="event-link3" data-value="THIRD PARTY CONTACT" href="#">THIRD PARTY CONTACT</a>
+                                <a class="event-link3" data-value="THIRD PARTY CTC INFO UPDATE" href="#">THIRD PARTY CTC INFO UPDATE</a>
+                            </div>
+
+                        </div>
+                    </td>
+                    <td class="tableHead">Actions</td>
+                    <td class="tableHead">
+                        <div class="paste-button">
+                            Users
+                            <button class="button drop" disabled>▼</button>
+                            <div class="dropdown-content">
+                                <h6 style="text-align: center;">Filter</h6>
+                                @foreach (var Agents in ViewBag.AgentNames)
+                                {
+                                    <a class="event-link4" data-value="@Agents" href="#">@Agents</a>
+                                }
+                            </div>
+                        </div>
+                    </td>
+
+
+                    <td class="tableHead">Transfer</td>
+                    <td class="tableHead">Save</td>
+                </tr>
+
+                @{
+                    int counter = 1;
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.AccountNo, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.CustomerName, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.OS_Billing, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.ExpectedRenewalFee, new { @class = "tablecont" })</td>
+                            <td class="tablecont">
+                                @if (item.ModifiedDate.HasValue)
+                                {
+                                    @item.ModifiedDate.Value.Date.ToString("MM/dd/yyyy")
+                                    <br />
+                                    @item.ModifiedDate.Value.ToString("hh:mm tt")}
+                            </td>
+                            <td style="white-space: nowrap;">@Html.DisplayFor(modelItem => item.DerbyBatch, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.Segments, new { @class = "tablecont" })</td>
+                            <td>@Html.DisplayFor(modelItem => item.Disposition, new { @class = "tablecont" })</td>
+                            <td style="text-align: center;">
+                                @Html.HiddenFor(modelItem => item.Id)
+                                <a href='@Url.Action("RealEditAllocation", "Home", new { id = item.Id, AccountNo = item.AccountNo })'>
+                                    <img src="~/Content/Images/edit1.png" style="width: 20px; height: 20px; cursor: pointer;" data-id='@item.Id' class="submitBtn icons" />
+                                </a>
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.Agent, new { @class = "tablecont" })</td>
+                            <td>
+                                @Html.DropDownList("FEList",
+                                  new SelectList(CRM_Raviz.Controllers.HomeController.GetAllUsers()), " ", new { @class = "box", id = "dropdown" })
+                            </td>
+                            <td>
+                                <img src="~/Content/Images/transfer.png" class="changeAgentButton" data-record-id="@item.Id" />
+                            </td>
+
+                        </tr>
+                        counter++;
+                    }
+                }
+            </table>
+        }
+    </div>
+
+
+    <div class="pagination">
+        @if (currentPage > 1)
+        {
+            <a href="javascript:void(0);" onclick="loadRecords(@(currentPage - 1))">Previous</a>
+        }
+
+        Page @(currentPage) of @(totalPages)
+
+        @if (currentPage < totalPages)
+        {
+            <a href="javascript:void(0);" onclick="loadRecords(@(currentPage + 1))">Next</a>
+        }
+    </div>
+
 </div>
 
 
-
-<div class="pagination">
-    @if (currentPage > 1)
-    {
-        <a href="javascript:void(0);" onclick="loadRecords(@(currentPage - 1))">Previous</a>
-    }
-
-    Page @(currentPage) of @(totalPages)
-
-    @if (currentPage < totalPages)
-    {
-        <a href="javascript:void(0);" onclick="loadRecords(@(currentPage + 1))">Next</a>
-    }
-</div>
 
 <script>
     function loadRecords(page) {
@@ -338,136 +390,136 @@
 </script>
 
 @*<script>
-    $(document).ready(function () {
-        // Click event for event links
-        $(".event-link").click(function (e) {
-            var drop1 = $(this).data("value"); // Get the data-event attribute value
+        $(document).ready(function () {
+            // Click event for event links
+            $(".event-link").click(function (e) {
+                var drop1 = $(this).data("value"); // Get the data-event attribute value
 
 
-            $.ajax({
-                url: '@Url.Action("_Records", "Home")',
-                type: 'POST', // Change to 'GET' if required
-                data: { drop1: drop1 }, // Pass additional data if needed
-                success: function (result) {
-                    // Handle success response if needed
-                    console.log("AJAX request successful. Server response:", result);
-                    var verifyListElement = $("#VerifyList");
+                $.ajax({
+                    url: '@Url.Action("_Records", "Home")',
+                    type: 'POST', // Change to 'GET' if required
+                    data: { drop1: drop1 }, // Pass additional data if needed
+                    success: function (result) {
+                        // Handle success response if needed
+                        console.log("AJAX request successful. Server response:", result);
+                        var verifyListElement = $("#VerifyList");
 
-                    if (verifyListElement.length > 0) {
-                        // If it exists, update its content
-                        verifyListElement.html(result);
-                        console.log("Updated #VerifyList with server response.");
-                    } else {
-                        // If it does not exist, log an error
-                        console.error("#VerifyList element not found.");
+                        if (verifyListElement.length > 0) {
+                            // If it exists, update its content
+                            verifyListElement.html(result);
+                            console.log("Updated #VerifyList with server response.");
+                        } else {
+                            // If it does not exist, log an error
+                            console.error("#VerifyList element not found.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error response if needed
+                        console.error(xhr.responseText);
                     }
-                },
-                error: function (xhr, status, error) {
-                    // Handle error response if needed
-                    console.error(xhr.responseText);
-                }
+                });
             });
         });
-    });
 
-    $(document).ready(function () {
-      // Click event for event links
-      $(".event-link2").click(function (e) {
-          var drop2 = $(this).data("value"); // Get the data-event attribute value
+        $(document).ready(function () {
+          // Click event for event links
+          $(".event-link2").click(function (e) {
+              var drop2 = $(this).data("value"); // Get the data-event attribute value
 
 
-          $.ajax({
-              url: '@Url.Action("_Records", "Home")',
-              type: 'POST', // Change to 'GET' if required
-              data: { drop2: drop2 }, // Pass additional data if needed
-              success: function (result) {
-                  // Handle success response if needed
-                  console.log("AJAX request successful. Server response:", result);
-                  var verifyListElement = $("#VerifyList");
+              $.ajax({
+                  url: '@Url.Action("_Records", "Home")',
+                  type: 'POST', // Change to 'GET' if required
+                  data: { drop2: drop2 }, // Pass additional data if needed
+                  success: function (result) {
+                      // Handle success response if needed
+                      console.log("AJAX request successful. Server response:", result);
+                      var verifyListElement = $("#VerifyList");
 
-                  if (verifyListElement.length > 0) {
-                      // If it exists, update its content
-                      verifyListElement.html(result);
-                      console.log("Updated #VerifyList with server response.");
-                  } else {
-                      // If it does not exist, log an error
-                      console.error("#VerifyList element not found.");
+                      if (verifyListElement.length > 0) {
+                          // If it exists, update its content
+                          verifyListElement.html(result);
+                          console.log("Updated #VerifyList with server response.");
+                      } else {
+                          // If it does not exist, log an error
+                          console.error("#VerifyList element not found.");
+                      }
+                  },
+                  error: function (xhr, status, error) {
+                      // Handle error response if needed
+                      console.error(xhr.responseText);
                   }
-              },
-              error: function (xhr, status, error) {
-                  // Handle error response if needed
-                  console.error(xhr.responseText);
-              }
+              });
           });
       });
-  });
-    
-    $(document).ready(function () {
-      // Click event for event links
-      $(".event-link3").click(function (e) {
-          var drop3 = $(this).data("value"); // Get the data-event attribute value
+
+        $(document).ready(function () {
+          // Click event for event links
+          $(".event-link3").click(function (e) {
+              var drop3 = $(this).data("value"); // Get the data-event attribute value
 
 
-          $.ajax({
-              url: '@Url.Action("_Records", "Home")',
-              type: 'POST', // Change to 'GET' if required
-              data: { drop3: drop3 }, // Pass additional data if needed
-              success: function (result) {
-                  // Handle success response if needed
-                  console.log("AJAX request successful. Server response:", result);
-                  var verifyListElement = $("#VerifyList");
+              $.ajax({
+                  url: '@Url.Action("_Records", "Home")',
+                  type: 'POST', // Change to 'GET' if required
+                  data: { drop3: drop3 }, // Pass additional data if needed
+                  success: function (result) {
+                      // Handle success response if needed
+                      console.log("AJAX request successful. Server response:", result);
+                      var verifyListElement = $("#VerifyList");
 
-                  if (verifyListElement.length > 0) {
-                      // If it exists, update its content
-                      verifyListElement.html(result);
-                      console.log("Updated #VerifyList with server response.");
-                  } else {
-                      // If it does not exist, log an error
-                      console.error("#VerifyList element not found.");
+                      if (verifyListElement.length > 0) {
+                          // If it exists, update its content
+                          verifyListElement.html(result);
+                          console.log("Updated #VerifyList with server response.");
+                      } else {
+                          // If it does not exist, log an error
+                          console.error("#VerifyList element not found.");
+                      }
+                  },
+                  error: function (xhr, status, error) {
+                      // Handle error response if needed
+                      console.error(xhr.responseText);
                   }
-              },
-              error: function (xhr, status, error) {
-                  // Handle error response if needed
-                  console.error(xhr.responseText);
-              }
+              });
           });
       });
-  });
-    
-    $(document).ready(function () {
-      // Click event for event links
-      $(".event-link4").click(function (e) {
-          var drop4 = $(this).data("value"); // Get the data-event attribute value
+
+        $(document).ready(function () {
+          // Click event for event links
+          $(".event-link4").click(function (e) {
+              var drop4 = $(this).data("value"); // Get the data-event attribute value
 
 
-          $.ajax({
-              url: '@Url.Action("_Records", "Home")',
-              type: 'POST', // Change to 'GET' if required
-              data: { drop4: drop4 }, // Pass additional data if needed
-              success: function (result) {
-                  // Handle success response if needed
-                  console.log("AJAX request successful. Server response:", result);
-                  var verifyListElement = $("#VerifyList");
+              $.ajax({
+                  url: '@Url.Action("_Records", "Home")',
+                  type: 'POST', // Change to 'GET' if required
+                  data: { drop4: drop4 }, // Pass additional data if needed
+                  success: function (result) {
+                      // Handle success response if needed
+                      console.log("AJAX request successful. Server response:", result);
+                      var verifyListElement = $("#VerifyList");
 
-                  if (verifyListElement.length > 0) {
-                      // If it exists, update its content
-                      verifyListElement.html(result);
-                      console.log("Updated #VerifyList with server response.");
-                  } else {
-                      // If it does not exist, log an error
-                      console.error("#VerifyList element not found.");
+                      if (verifyListElement.length > 0) {
+                          // If it exists, update its content
+                          verifyListElement.html(result);
+                          console.log("Updated #VerifyList with server response.");
+                      } else {
+                          // If it does not exist, log an error
+                          console.error("#VerifyList element not found.");
+                      }
+                  },
+                  error: function (xhr, status, error) {
+                      // Handle error response if needed
+                      console.error(xhr.responseText);
                   }
-              },
-              error: function (xhr, status, error) {
-                  // Handle error response if needed
-                  console.error(xhr.responseText);
-              }
+              });
           });
       });
-  });
-    
-    
-</script>*@
+
+
+    </script>*@
 
 <script>
     $(document).ready(function () {
@@ -480,12 +532,6 @@
         }
       // Click event for event links
       $(".event-link, .event-link2, .event-link3, .event-link4").click(function (e) {
-
-          //var drop1 = $(".event-link").data("value"); // Get the data-event attribute value
-          //var drop2 = $(".event-link2").data("value"); // Get the data-event attribute value
-          //var drop3 = $(".event-link3").data("value"); // Get the data-event attribute value
-          //var drop4 = $(".event-link4").data("value"); // Get the data-event attribute value
-
 
           var drop1 = localStorage.getItem('drop1');
           var drop2 = localStorage.getItem('drop2');
@@ -513,7 +559,7 @@
               console.log("event-link4 value: " + drop4);
           }
 
-          
+
 
           $.ajax({
               url: '@Url.Action("_Records", "Home")',

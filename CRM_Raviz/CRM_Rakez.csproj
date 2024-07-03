@@ -352,10 +352,13 @@
     <Content Include="Content\Images\event2.png" />
     <Content Include="Content\Images\logo.png" />
     <Content Include="Content\Images\logo1.png" />
+    <Content Include="Content\Images\phone-call.png" />
+    <Content Include="Content\Images\phone-call1.png" />
     <Content Include="Content\Images\placeholder.png" />
     <Content Include="Content\Images\rakez.jpg" />
     <Content Include="Content\Images\rakez1.jpg" />
     <Content Include="Content\Images\renewal.png" />
+    <Content Include="Content\Images\Report.gif" />
     <Content Include="Content\Images\search-interface-symbol.png" />
     <Content Include="Content\Images\search.png" />
     <Content Include="Content\Images\setting.png" />

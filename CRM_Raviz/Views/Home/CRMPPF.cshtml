@@ -36,6 +36,7 @@
             align-items: flex-start;
             margin-bottom: 20px;
             flex-direction: row;
+            width:600px;
         }
 
         .date-input {
@@ -64,156 +65,180 @@
     </style>
 </head>
 <body>
-    <h1 class="heading">CRM Post Production File</h1>
+    <div style="display: flex;">
+        <div>
+            <h1 class="heading">CRM Post Production File</h1>
 
-    <div class="container1" >
-        @using (Html.BeginForm("DownloadCases", "Home", FormMethod.Get))
-        {
-            <div class="row space">
-                @{
-                    // Retrieve the AgentNames values from the ViewBag
-                    var agentNames = ViewBag.AgentNames as List<string>;
+            <div class="container1">
+                @using (Html.BeginForm("DownloadCases", "Home", FormMethod.Get))
+                {
+                    <div class="row space">
+                        @{
+                            // Retrieve the AgentNames values from the ViewBag
+                            var agentNames = ViewBag.AgentNames as List<string>;
+                        }
+
+                        @*<div class="form-group col-sm-12 col-md-4 col-xl-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.Label("DerbyBatch", htmlAttributes: new { @class = "control-label label" })
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                @Html.DropDownList("DerbyBatch",
+                                    new SelectList(ViewBag.allbatches),
+                                    "Select Derby Batch",
+                                    new { @class = "form-control box dropdown-styled", id = "DerbyBatch" })
+                            </div>
+                        </div>*@
+
+                        <div class="form-group col-sm-12 col-md-4 col-xl-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.Label("Agents", htmlAttributes: new { @class = "control-label label" })
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                @Html.DropDownList("Users", new SelectList(agentNames.Select(x => new { Text = x, Value = x }), "Value", "Text"), "Select User Role", new { @class = "form-control box dropdown-styled", id = "SubDispo" })
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-4 col-xl-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.Label("Calltype", htmlAttributes: new { @class = "control-label label" })
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.CallType, new List<SelectListItem>
+                                {
+                                    new SelectListItem { Text = "-", Value = "-" },
+                                    new SelectListItem { Text = "OUTBOUND", Value = "OUTBOUND" },
+                                    new SelectListItem { Text = "INBOUND", Value = "INBOUND" },
+                                    new SelectListItem { Text = "EMAIL UPDATE", Value = "EMAIL UPDATE" }
+                                }, new { @class = "form-control box dropdown-styled" })
+                                @Html.ValidationMessageFor(model => model.CallType, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-3 col-xl-3" id="firstDropdown">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.Label("Disposition", htmlAttributes: new { @class = "control-label label" })
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.Disposition, new List<SelectListItem>
+                                {
+                                    new SelectListItem { Text = "-", Value = "-" },
+                                    new SelectListItem { Text = "QUOTATION SENT", Value = "QUOTATION SENT" },
+                                    new SelectListItem { Text = "QUOTATION REQUESTED", Value = "QUOTATION REQUESTED" },
+                                    new SelectListItem { Text = "ACCOUNT EXCLUDED", Value = "ACCOUNT EXCLUDED" },
+                                    new SelectListItem { Text = "CALLBACK LANGUAGE", Value = "CALLBACK LANGUAGE" },
+                                    new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
+                                    new SelectListItem { Text = "CALLBACK", Value = "CALLBACK" },
+                                    new SelectListItem { Text = "BILL DISPUTE REFUSE TO PAY", Value = "BILL DISPUTE REFUSE TO PAY" },
+                                    new SelectListItem { Text = "CUSTOMER DECEASED", Value = "CUSTOMER DECEASED" },
+                                    new SelectListItem { Text = "CUSTOMER HUNG UP", Value = "CUSTOMER HUNG UP" },
+                                    new SelectListItem { Text = "CUSTOMER OUT OF COUNTRY", Value = "CUSTOMER OUT OF COUNTRY" },
+                                    new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
+                                    new SelectListItem { Text = "DE-REGISTRATION", Value = "DE-REGISTRATION" },
+                                    new SelectListItem { Text = "DE-REGISTRATION DONE", Value = "DE-REGISTRATION DONE" },
+                                    new SelectListItem { Text = "DO NOT CALL", Value = "DO NOT CALL" },
+                                    new SelectListItem { Text = "FOLLOW UP", Value = "FOLLOW UP" },
+                                    new SelectListItem { Text = "INVALID NUMBER", Value = "INVALID NUMBER" },
+                                    new SelectListItem { Text = "LINE BUSY", Value = "LINE BUSY" },
+                                    new SelectListItem { Text = "PAYMENT INSTALLMENT APPROVED", Value = "PAYMENT INSTALLMENT APPROVED" },
+                                    new SelectListItem { Text = "PAYMENT INSTALLMENT REQUEST", Value = "PAYMENT INSTALLMENT REQUEST" },
+                                    new SelectListItem { Text = "PAYMENT MADE", Value = "PAYMENT MADE" },
+                                    new SelectListItem { Text = "PAYMENT MISSING", Value = "PAYMENT MISSING" },
+                                    new SelectListItem { Text = "PAYMENT REMINDER", Value = "PAYMENT REMINDER" },
+                                    new SelectListItem { Text = "PROMISE TO PAY", Value = "PROMISE TO PAY" },
+                                    new SelectListItem { Text = "RECALLED", Value = "RECALLED" },
+                                    new SelectListItem { Text = "REFUSE TO DE-REGISTER", Value = "REFUSE TO DE-REGISTER" },
+                                    new SelectListItem { Text = "REFUSE TO RENEW", Value = "REFUSE TO RENEW" },
+                                    new SelectListItem { Text = "RENEWAL DONE", Value = "RENEWAL DONE" },
+                                    new SelectListItem { Text = "RENEWAL INQUIRY", Value = "RENEWAL INQUIRY" },
+                                    new SelectListItem { Text = "RINGING", Value = "RINGING" },
+                                    new SelectListItem { Text = "STATEMENT OF ACCOUNT REQUEST", Value = "STATEMENT OF ACCOUNT REQUEST" },
+                                    new SelectListItem { Text = "SWITCH OFF", Value = "SWITCH OFF" },
+                                    new SelectListItem { Text = "THIRD PARTY CALLBACK", Value = "THIRD PARTY CALLBACK" },
+                                    new SelectListItem { Text = "THIRD PARTY CONTACT", Value = "THIRD PARTY CONTACT" },
+                                    new SelectListItem { Text = "THIRD PARTY CTC INFO UPDATE", Value = "THIRD PARTY CTC INFO UPDATE" }
+                                }, new { @class = "form-control box dropdown-styled" })
+                                @Html.ValidationMessageFor(model => model.Disposition, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-3 col-xl-3" id="secondDropdown" style="display:none;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.Label("SubDisposition", htmlAttributes: new { @class = "control-label label" })
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.SubDisposition, new List<SelectListItem>
+                                {
+                                    new SelectListItem {  Text = "-", Value = "-"  },
+                                    new SelectListItem { Text = "English", Value = "English" },
+                                    new SelectListItem { Text = "Arabic", Value = "Arabic" },
+                                    new SelectListItem { Text = "Hindi", Value = "Hindi" },
+                                }, new { @class = "form-control box dropdown-styled" })
+                                @Html.ValidationMessageFor(model => model.SubDisposition, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-md-3 col-xl-" id="callbackDateTime" style="display:none;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.LabelFor(model => model.CallbackTime, "Callback", htmlAttributes: new { @class = "control-label label" })
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                @Html.TextBoxFor(model => model.CallbackTime, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control box", type = "datetime-local", pattern = @"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}", title = "Please enter a valid datetime in the format yyyy-MM-ddTHH:mm" })
+                                <!-- You can adjust the formatting and attributes as needed -->
+                                @Html.ValidationMessageFor(model => model.CallbackTime, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div class="form-group col-sm-12 col-md-12 col-xl-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.Label("Start Date", htmlAttributes: new { @class = "control-label label" })
+                                </div>
+                            </div>
+                            <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select a date" name="specificDate">
+                        </div>
+
+                        <div>
+                            <label>
+                                <input type="checkbox" id="showEndDate" name="showEndDate" /> Show End Date
+                            </label>
+                        </div>
+
+                        <div id="endDateContainer">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.Label("End Date", htmlAttributes: new { @class = "control-label label" })
+                                </div>
+                            </div>
+                            <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select end date" name="endDate">
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn submit-button">Submit</button>
+                    </div>
                 }
-
-                <div class="form-group col-sm-12 col-md-4 col-xl-3">
-                    <div class="row">
-                        <div class="col-md-12">
-                            @Html.Label("Agents", htmlAttributes: new { @class = "control-label label" })
-                        </div>
-                    </div>
-                    <div class="col-md-10">
-                    @Html.DropDownList("Users", new SelectList(agentNames.Select(x => new { Text = x, Value = x }), "Value", "Text"), "Select User Role", new { @class = "form-control box dropdown-styled", id = "SubDispo" })
-                    </div>
-                </div>
-
-                <div class="form-group col-sm-12 col-md-4 col-xl-3">
-                    <div class="row">
-                        <div class="col-md-12">
-                            @Html.Label("Calltype", htmlAttributes: new { @class = "control-label label" })
-                        </div>
-                    </div>
-                    <div class="col-md-10">
-                        @Html.DropDownListFor(model => model.CallType, new List<SelectListItem>
-                        {
-                            new SelectListItem { Text = "-", Value = "-" },
-                            new SelectListItem { Text = "OUTBOUND", Value = "OUTBOUND" },
-                            new SelectListItem { Text = "INBOUND", Value = "INBOUND" },
-                            new SelectListItem { Text = "EMAIL UPDATE", Value = "EMAIL UPDATE" }
-                        }, new { @class = "form-control box dropdown-styled" })
-                        @Html.ValidationMessageFor(model => model.CallType, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group col-sm-12 col-md-3 col-xl-3" id="firstDropdown">
-                    <div class="row">
-                        <div class="col-md-12">
-                            @Html.Label("Disposition", htmlAttributes: new { @class = "control-label label" })
-                        </div>
-                    </div>
-                    <div class="col-md-10">
-                        @Html.DropDownListFor(model => model.Disposition, new List<SelectListItem>
-                        {
-                            new SelectListItem { Text = "-", Value = "-" },
-                            new SelectListItem { Text = "ACCOUNT EXCLUDED", Value = "ACCOUNT EXCLUDED" },
-                            new SelectListItem { Text = "CALLBACK LANGUAGE", Value = "CALLBACK LANGUAGE" },
-                            new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
-                            new SelectListItem { Text = "CALLBACK", Value = "CALLBACK" },
-                            new SelectListItem { Text = "BILL DISPUTE REFUSE TO PAY", Value = "BILL DISPUTE REFUSE TO PAY" },
-                            new SelectListItem { Text = "CUSTOMER DECEASED", Value = "CUSTOMER DECEASED" },
-                            new SelectListItem { Text = "CUSTOMER HUNG UP", Value = "CUSTOMER HUNG UP" },
-                            new SelectListItem { Text = "CUSTOMER OUT OF COUNTRY", Value = "CUSTOMER OUT OF COUNTRY" },
-                            new SelectListItem { Text = "BILL DISPUTE", Value = "BILL DISPUTE" },
-                            new SelectListItem { Text = "DE-REGISTRATION", Value = "DE-REGISTRATION" },
-                            new SelectListItem { Text = "DE-REGISTRATION DONE", Value = "DE-REGISTRATION DONE" },
-                            new SelectListItem { Text = "DO NOT CALL", Value = "DO NOT CALL" },
-                            new SelectListItem { Text = "FOLLOW UP", Value = "FOLLOW UP" },
-                            new SelectListItem { Text = "INVALID NUMBER", Value = "INVALID NUMBER" },
-                            new SelectListItem { Text = "LINE BUSY", Value = "LINE BUSY" },
-                            new SelectListItem { Text = "PAYMENT INSTALLMENT APPROVED", Value = "PAYMENT INSTALLMENT APPROVED" },
-                            new SelectListItem { Text = "PAYMENT INSTALLMENT REQUEST", Value = "PAYMENT INSTALLMENT REQUEST" },
-                            new SelectListItem { Text = "PAYMENT MADE", Value = "PAYMENT MADE" },
-                            new SelectListItem { Text = "PAYMENT MISSING", Value = "PAYMENT MISSING" },
-                            new SelectListItem { Text = "PAYMENT REMINDER", Value = "PAYMENT REMINDER" },
-                            new SelectListItem { Text = "PROMISE TO PAY", Value = "PROMISE TO PAY" },
-                            new SelectListItem { Text = "RECALLED", Value = "RECALLED" },
-                            new SelectListItem { Text = "REFUSE TO DE-REGISTER", Value = "REFUSE TO DE-REGISTER" },
-                            new SelectListItem { Text = "REFUSE TO RENEW", Value = "REFUSE TO RENEW" },
-                            new SelectListItem { Text = "RENEWAL DONE", Value = "RENEWAL DONE" },
-                            new SelectListItem { Text = "RENEWAL INQUIRY", Value = "RENEWAL INQUIRY" },
-                            new SelectListItem { Text = "RINGING", Value = "RINGING" },
-                            new SelectListItem { Text = "STATEMENT OF ACCOUNT REQUEST", Value = "STATEMENT OF ACCOUNT REQUEST" },
-                            new SelectListItem { Text = "SWITCH OFF", Value = "SWITCH OFF" },
-                            new SelectListItem { Text = "THIRD PARTY CALLBACK", Value = "THIRD PARTY CALLBACK" },
-                            new SelectListItem { Text = "THIRD PARTY CONTACT", Value = "THIRD PARTY CONTACT" },
-                            new SelectListItem { Text = "THIRD PARTY CTC INFO UPDATE", Value = "THIRD PARTY CTC INFO UPDATE" }
-                        }, new { @class = "form-control box dropdown-styled" })
-                        @Html.ValidationMessageFor(model => model.Disposition, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group col-sm-12 col-md-3 col-xl-3" id="secondDropdown" style="display:none;">
-                    <div class="row">
-                        <div class="col-md-12">
-                            @Html.Label("SubDisposition", htmlAttributes: new { @class = "control-label label" })
-                        </div>
-                    </div>
-                    <div class="col-md-10">
-                        @Html.DropDownListFor(model => model.SubDisposition, new List<SelectListItem>
-                        {
-                            new SelectListItem {  Text = "-", Value = "-"  },
-                            new SelectListItem { Text = "English", Value = "English" },
-                            new SelectListItem { Text = "Arabic", Value = "Arabic" },
-                            new SelectListItem { Text = "Hindi", Value = "Hindi" },
-                        }, new { @class = "form-control box dropdown-styled" })
-                        @Html.ValidationMessageFor(model => model.SubDisposition, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group col-sm-12 col-md-3 col-xl-" id="callbackDateTime" style="display:none;">
-                    <div class="row">
-                        <div class="col-md-12">
-                            @Html.LabelFor(model => model.CallbackTime, "Callback", htmlAttributes: new { @class = "control-label label" })
-                        </div>
-                    </div>
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(model => model.CallbackTime, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control box", type = "datetime-local", pattern = @"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}", title = "Please enter a valid datetime in the format yyyy-MM-ddTHH:mm" })
-                        <!-- You can adjust the formatting and attributes as needed -->
-                        @Html.ValidationMessageFor(model => model.CallbackTime, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-
-                <div class="form-group col-sm-12 col-md-12 col-xl-12">
-                    <div class="row">
-                        <div class="col-md-12">
-                            @Html.Label("Start Date", htmlAttributes: new { @class = "control-label label" })
-                        </div>
-                    </div>
-                    <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select a date" name="specificDate">
-                </div>
-
-                <div>
-                    <label>
-                        <input type="checkbox" id="showEndDate" name="showEndDate" /> Show End Date
-                    </label>
-                </div>
-
-                <div id="endDateContainer">
-                    <div class="row">
-                        <div class="col-md-12">
-                            @Html.Label("End Date", htmlAttributes: new { @class = "control-label label" })
-                        </div>
-                    </div>
-                    <input type="date" class="form-control box dropdown-styled date-input" placeholder="Select end date" name="endDate">
-                </div>
             </div>
+        </div>
 
-            <div>
-                <button type="submit" class="btn submit-button">Submit</button>
-            </div>
-        }
+        <div>
+            <img src="~/Content/Images/Report.gif" />
+        </div>
     </div>
-
+   
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

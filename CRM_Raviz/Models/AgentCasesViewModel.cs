@@ -16,5 +16,8 @@ namespace CRM_Raviz.Models
         public int CasesCountThisMonth { get; set; }
         public int CallBackCountToday { get; set; }
         public int CallBackCountPrev { get; set; }
+        public int RingingToday { get; set; }
+
+
     }
 }

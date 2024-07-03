@@ -124,6 +124,15 @@ namespace CRM_Raviz.Controllers
             // Pass the dispositionValues to the view
             ViewBag.AgentNames = AgentNames;
 
+            List<string> allbatches = db.RecordDatas
+                  .Where(r => !string.IsNullOrEmpty(r.DerbyBatch))
+                  .Select(r => r.DerbyBatch)
+                  .Distinct()
+                  .OrderBy(DerbyBatch => DerbyBatch)
+                  .ToList();
+
+            ViewBag.allbatches = allbatches;
+
             return View(recordData);
 
         }
@@ -139,6 +148,14 @@ namespace CRM_Raviz.Controllers
                         .Distinct()
                         .ToList();
 
+            List<string> allbatches = db.RecordDatas
+                  .Where(r => !string.IsNullOrEmpty(r.DerbyBatch))
+                  .Select(r => r.DerbyBatch)
+                  .Distinct()
+                  .OrderBy(DerbyBatch => DerbyBatch)
+                  .ToList();
+
+            ViewBag.allbatches = allbatches;
             // Pass the dispositionValues to the view
             ViewBag.AgentNames = AgentNames;
 
@@ -210,305 +227,6 @@ namespace CRM_Raviz.Controllers
             return Json(new { success = true });
         }
 
-
-
-
-
-        //public ActionResult Index()
-        //{
-        //    DateTime today = DateTime.Today;
-
-        //    CPVDBEntities db = new CPVDBEntities();
-
-        //    // Query to get the list of all agents
-        //    var allAgents = db.RecordDatas.Select(a => a.Agent).Distinct().ToList();
-
-
-        //    var startOfDay = today.Date;
-        //    var endOfDay = today.Date.AddDays(1).AddTicks(-1); // Set end of day to 23:59:59.999
-
-        //    var agentCasesCount = db.RecordDatas
-        //                            .Where(r => r.ModifiedDate.HasValue && r.ModifiedDate >= startOfDay && r.ModifiedDate <= endOfDay)
-        //                            .GroupBy(r => r.Agent)
-        //                            .Select(g => new { Agent = g.Key, CasesCount = g.Count() })
-        //                            .ToList();
-
-
-
-        //    var agentsWithCasesCount = allAgents
-        //                                .Select(agent => new
-        //                                {
-        //                                    Agent = agent,
-        //                                    CasesCount = agentCasesCount.FirstOrDefault(ac => ac.Agent == agent)?.CasesCount ?? 0
-        //                                })
-        //                                .ToList();
-
-        //    ViewBag.AgentsWithCasesCount = agentsWithCasesCount; // Pass the list of agents with counts to the view using ViewBag
-
-        //    return View();
-        //}
-
-
-
-        //public ActionResult Index()
-        //{
-        //    DateTime today = DateTime.Today;
-
-        //    using (CPVDBEntities db = new CPVDBEntities())
-        //    {
-        //        // Query to get the list of all agents
-        //        var allAgents = db.RecordDatas.Select(a => a.Agent).Distinct().ToList();
-
-        //        var startOfDay = today.Date;
-        //        var endOfDay = today.Date.AddDays(1).AddTicks(-1); // Set end of day to 23:59:59.999
-
-        //        // Query to get the count of cases for each agent for today's date
-        //        var agentCasesCount = db.RecordDatas
-        //                                .Where(r => r.ModifiedDate.HasValue && r.ModifiedDate >= startOfDay && r.ModifiedDate <= endOfDay)
-        //                                .GroupBy(r => r.Agent)
-        //                                .Select(g => new { Agent = g.Key, CasesCount = g.Count() })
-        //                                .ToList();
-
-        //        // Combine all agents with today's cases count
-
-        //        var agentsWithCasesCount = allAgents
-        //                                    .Select(agent => new
-        //                                    {
-        //                                        Agent = agent,
-        //                                        CasesCount = agentCasesCount.FirstOrDefault(ac => ac.Agent == agent)?.CasesCount ?? 0
-        //                                    })
-        //                                    .ToList();
-
-        //        ViewBag.AgentsWithCasesCount = agentsWithCasesCount; // Pass the list of agents with counts to the view using ViewBag
-        //    }
-
-        //    return View();
-        //}
-
-        //public ActionResult Index()
-        //{
-        //    DateTime today = DateTime.Today;
-        //    using (CPVDBEntities db = new CPVDBEntities())
-        //    {
-        //        var allAgents = db.RecordDatas.Select(a => a.Agent).Distinct().ToList();
-
-        //        var startOfDay = today.Date;
-        //        var endOfDay = today.Date.AddDays(1).AddTicks(-1); 
-
-
-        //        var agentCasesCount = db.RecordDatas
-        //            .Where(r => r.ModifiedDate.HasValue && r.ModifiedDate >= startOfDay && r.ModifiedDate <= endOfDay)
-        //            .GroupBy(r => r.Agent)
-        //            .Select(g => new { Agent = g.Key, CasesCount = g.Count() })
-        //            .ToList();
-
-        //        // Combine all agents with today's cases count
-        //        var agentsWithCasesCount = allAgents
-        //            .Select(agent => new AgentCasesViewModel
-        //            {
-        //                Agent = agent,
-        //                CasesCount = agentCasesCount.FirstOrDefault(ac => ac.Agent == agent)?.CasesCount ?? 0
-        //            })
-        //            .ToList();
-
-        //        return View(agentsWithCasesCount);
-        //    }
-        //}
-
-        //public ActionResult Index()                                                                 
-        //{
-        //    DateTime today = DateTime.Today;
-        //    using (CPVDBEntities db = new CPVDBEntities())
-        //    {
-        //        var allAgents = db.RecordDatas
-        //            .Where(a => a.Agent != null)
-        //            .Select(a => a.Agent)
-        //            .Distinct()
-        //            .ToList();
-                        
-        //        var startOfDay = today.Date;
-        //        var endOfDay = today.Date.AddDays(1).AddTicks(-1);
-
-        //        var startOfMonth = new DateTime(today.Year, today.Month, 1);
-        //        var endOfMonth = startOfMonth.AddMonths(1).AddTicks(-1);
-
-
-        //        int casesCountToday = db.RecordDatas
-        //        .Where(r => r.ModifiedDate.HasValue && r.ModifiedDate >= startOfDay && r.ModifiedDate <= endOfDay)
-        //        .Count();
-
-        //        int casesCountThisMonth = db.RecordDatas
-        //        .Where(r => r.ModifiedDate.HasValue && r.ModifiedDate >= startOfMonth && r.ModifiedDate <= endOfMonth)
-        //        .Count();
-
-        //        int totalCases = db.RecordDatas
-        //        .Count();
-
-        //         int totalCasesnotworked = db.RecordDatas
-        //         .Where(r => r.ModifiedDate == null )
-        //         .Count();
-
-                
-
-        //         int callbackCountThisMonth = db.RecordDatas
-        //        .Where(r => r.CallbackTime.HasValue && r.CallbackTime >= startOfDay && r.CallbackTime <= endOfDay)
-        //        .Count();
-
-        //        var segmentCounts = db.RecordDatas
-        //        .Where(r => !string.IsNullOrEmpty(r.Segments))
-        //        .GroupBy(r => r.Segments)
-        //        .OrderBy(g => g.Key) // Order groups by segment name
-        //        .Select(g => g.Count())
-        //        .ToList();
-
-        //        //var segmentNotWorked = db.RecordDatas
-        //        //.Where(r => !string.IsNullOrEmpty(r.Segments) && r.ModifiedDate == null)
-        //        //.GroupBy(r => r.Segments)
-        //        //.OrderBy(g => g.Key) 
-        //        //.Select(g => g.Count())
-        //        //.ToList();
-
-
-        //        // Define your list of segments to check
-        //        //List<string> allSegmentsToCheck = new List<string> { "Segment1", "Segment2", /* add more segments as needed */ };
-
-
-        //        List<string> allSegments = db.RecordDatas
-        //        .Where(r => !string.IsNullOrEmpty(r.Segments))
-        //        .Select(r => r.Segments)
-        //        .Distinct()
-        //        .OrderBy(segment => segment)
-        //        .ToList();
-
-
-        //        List<int> segmentNotWorked = allSegments
-        //        .Select(segment => db.RecordDatas
-        //            .Count(r => r.Segments == segment && r.ModifiedDate == null))
-        //        .ToList();
-
-        //        // Query the database
-
-        //        //var segmentNotWorked = allSegments
-        //        //    .Select(segment => new
-        //        //    {
-        //        //        Segment = segment,
-        //        //        Count = db.RecordDatas
-        //        //            .Where(r => r.Segments == segment && r.ModifiedDate == null)
-        //        //            .Count()
-        //        //    })
-        //        //    .OrderBy(result => result.Segment)
-        //        //    .ToList();
-
-
-
-        //        var distinctSegments = db.RecordDatas
-        //        .Where(r => !string.IsNullOrEmpty(r.Segments))
-        //        .Select(r => r.Segments)
-        //        .OrderBy(segment => segment) // Order by segment name
-        //        .Distinct()
-        //        .ToList();
-
-
-        //        var segment2Counts = db.RecordDatas
-        //        .Where(r => !string.IsNullOrEmpty(r.Segments))
-        //        .GroupBy(r => r.DerbyBatch)
-        //        .OrderBy(g => g.Key) // Order groups by segment name
-        //        .Select(g => g.Count())
-        //        .ToList();
-
-        //        var BatchNotWorked = db.RecordDatas
-        //        .Where(r => !string.IsNullOrEmpty(r.Segments) && r.ModifiedDate == null)
-        //        .GroupBy(r => r.DerbyBatch)
-        //        .OrderBy(g => g.Key) // Order groups by segment name
-        //        .Select(g => g.Count())
-        //        .ToList();
-
-        //        var BatchWorked = db.RecordDatas
-        //        .Where(r => !string.IsNullOrEmpty(r.Segments) && r.ModifiedDate != null)
-        //        .GroupBy(r => r.DerbyBatch)
-        //        .OrderBy(g => g.Key) // Order groups by segment name
-        //        .Select(g => g.Count())
-        //        .ToList();
-
-
-        //        var distinctSegments2 = db.RecordDatas
-        //        .Where(r => !string.IsNullOrEmpty(r.Segments))
-        //        .Select(r => r.DerbyBatch)
-        //        .OrderBy(DerbyBatch => DerbyBatch) // Order by segment name
-        //        .Distinct()
-        //        .ToList();
-
-
-
-
-
-        //        ViewBag.totalCasesnotworked = totalCasesnotworked;
-        //        ViewBag.totalCases = totalCases;
-
-        //        ViewBag.segmentNotWorked = segmentNotWorked;
-        //        ViewBag.BatchNotWorked = BatchNotWorked;
-        //        ViewBag.BatchWorked = BatchWorked;
-        //        ViewBag.segment2Counts = segment2Counts;
-        //        ViewBag.distinctSegments2 = distinctSegments2;
-        //        ViewBag.distinctSegments = distinctSegments;
-        //        ViewBag.segmentCounts = segmentCounts;
-        //        ViewBag.recentEvents = casesCountToday;
-        //        ViewBag.callbackCountThisMonth = callbackCountThisMonth;
-        //        ViewBag.CasesCountThisMonth = casesCountThisMonth;
-
-        //        var agentCasesCountToday = db.RecordDatas
-        //            .Where(r => r.ModifiedDate.HasValue && r.ModifiedDate >= startOfDay && r.ModifiedDate <= endOfDay)
-        //            .GroupBy(r => r.Agent)
-        //            .Select(g => new { Agent = g.Key, CasesCountToday = g.Count() })
-        //            .ToList();
-
-
-
-        //        var agentCasesCountThisMonth = db.RecordDatas
-        //            .Where(r => r.ModifiedDate.HasValue && r.ModifiedDate >= startOfMonth && r.ModifiedDate <= endOfMonth)
-        //            .GroupBy(r => r.Agent)
-        //            .Select(g => new { Agent = g.Key, CasesCountThisMonth = g.Count() })
-        //            .ToList();
-
-        //        var agentsWithCasesCount = allAgents
-        //            .Select(agent => new AgentCasesViewModel
-        //            {
-        //                Agent = agent,
-        //                CasesCountToday = agentCasesCountToday.FirstOrDefault(ac => ac.Agent == agent)?.CasesCountToday ?? 0,
-        //                CasesCountThisMonth = agentCasesCountThisMonth.FirstOrDefault(ac => ac.Agent == agent)?.CasesCountThisMonth ?? 0
-        //            })
-        //            .ToList();
-
-        //        var agentCallBackCountToday = db.RecordDatas
-        //            .Where(r => r.CallbackTime.HasValue && r.CallbackTime >= startOfDay && r.CallbackTime <= endOfDay)
-        //            .GroupBy(r => r.Agent)
-        //            .Select(g => new { Agent = g.Key, CallBackCountToday = g.Count() })
-        //            .ToList();
-
-
-
-        //        var agentCallBackCountPrev = db.RecordDatas
-        //            .Where(r => r.CallbackTime.HasValue && r.CallbackTime <= startOfDay && r.CallbackTime != new DateTime(2000, 1, 1))
-        //            .GroupBy(r => r.Agent)
-        //            .Select(g => new { Agent = g.Key, CallBackCountPrev = g.Count() })
-        //            .ToList();
-
-        //        var agentCallBackCount = allAgents
-        //            .Select(agent => new AgentCasesViewModel
-        //            {
-        //                Agent = agent,
-        //                CallBackCountToday = agentCallBackCountToday.FirstOrDefault(ac => ac.Agent == agent)?.CallBackCountToday ?? 0,
-        //                CallBackCountPrev = agentCallBackCountPrev.FirstOrDefault(ac => ac.Agent == agent)?.CallBackCountPrev ?? 0
-        //            })
-        //            .ToList();
-
-
-        //        ViewBag.AgentCallBackCount = agentCallBackCount;
-
-        //        return View(agentsWithCasesCount);
-        //    }
-        //}
-
         public ActionResult Index(string filter)
         {
             DateTime today = DateTime.Today;
@@ -559,8 +277,11 @@ namespace CRM_Raviz.Controllers
                 else if (filter != "all" && !User.IsInRole("Agent") && filter != null)
                 {
 
-                    recordDatasQuery = db.RecordDatas.Where(r => r.ModifiedAgent == filter);
+                    //recordDatasQuery = db.RecordDatas.Where(r => r.ModifiedAgent == filter);
                     eventTableQuery = db.EventTables.Where(r => r.Agent == filter);
+
+                    recordDatasQuery = db.RecordDatas.Where(r => (r.ModifiedAgent ?? r.Agent) == filter);
+
 
                     allAgents = db.AspNetUsers
                       .Where(r => r.UserRole == "Agent" && r.UserName == filter)
@@ -574,8 +295,8 @@ namespace CRM_Raviz.Controllers
                
                 if (User.IsInRole("Agent"))
                 {
-                    recordDatasQuery = recordDatasQuery.Where(r => r.ModifiedAgent == currentUser);
-                    eventTableQuery = eventTableQuery.Where(r => r.Agent == currentUser);
+                    recordDatasQuery = db.RecordDatas.Where(r => (r.ModifiedAgent ?? r.Agent) == currentUser);
+                    eventTableQuery = db.EventTables.Where(r => r.Agent == currentUser);
 
                      allAgents = db.AspNetUsers
                        .Where(r => r.UserRole == "Agent" && r.UserName == currentUser)
@@ -633,13 +354,10 @@ namespace CRM_Raviz.Controllers
                 .OrderBy(segment => segment)
                 .ToList();
 
-
                 List<int> segmentCounts = allSegments
                     .Select(segment => recordDatasQuery
                         .Count(r => r.Segments == segment))
                     .ToList();
-
-
 
                 List<int> segmentNotWorked = allSegments
                     .Select(segment => recordDatasQuery
@@ -673,8 +391,6 @@ namespace CRM_Raviz.Controllers
                     .Count())
                 .ToList();
 
-               
-
                 List<int> totalBatches = allbatches
                    .Select(DerbyBatch => recordDatasQuery
                        .Count(r => r.DerbyBatch == DerbyBatch))
@@ -696,6 +412,7 @@ namespace CRM_Raviz.Controllers
                 
                 ViewBag.totalCasesList = totalCasesList;
                 ViewBag.allAgents = fliterAllAgents;
+                ViewBag.Agents = allAgents;
                 ViewBag.allbatches = allbatches;
                 ViewBag.totalCasesNotWorked = totalCasesNotWorked;
                 ViewBag.totalCases = totalCases;
@@ -718,8 +435,6 @@ namespace CRM_Raviz.Controllers
                         Agent = g.Key,
                         CasesCountToday = g.Select(r => r.AccountNo).Distinct().Count()
                         //CasesCountToday = g.Count()
-
-
                     })
                     .ToList();
 
@@ -755,21 +470,134 @@ namespace CRM_Raviz.Controllers
                     .Select(g => new { ModifiedAgent = g.Key, CallBackCountPrev = g.Count() })
                     .ToList();
 
+
+                var casesRinging = eventTableQuery
+                    .GroupBy(r => r.AccountNo)
+                    .Where(g => g.Count(r => r.Dispo == "RINGING" || r.Dispo == "SWITCH OFF") == g.Count())
+                    .Select(g => new { Agent = g.Key, RingingToday = g.Count() });
+
+                //var casesRinging = eventTableQuery
+                //    .GroupBy(r => r.AccountNo)
+                //    .Where(g => g.Count(r => new[] {
+                //        "RINGING", "SWITCH OFF", "STATEMENT OF ACCOUNT REQUEST",
+                //        "THIRD PARTY CALLBACK", "THIRD PARTY CONTACT",
+                //        "THIRD PARTY CTC INFO UPDATE", "REFUSE TO DE-REGISTER",
+                //        "REFUSE TO RENEW", "PAYMENT MISSING", "INVALID NUMBER",
+                //        "LINE BUSY", "CUSTOMER HUNG UP", "CUSTOMER OUT OF COUNTRY",
+                //        "ACCOUNT EXCLUDED"
+                //    }.Contains(r.Dispo)) == g.Count())
+                //    .Select(g => new { Agent = g.Key, RingingToday = g.Count() });
+
+
+
                 var agentCallBackCount = allAgents
                     .Select(agent => new AgentCasesViewModel
                     {
-
                         Agent = agent,
                         CallBackCountToday = agentCallBackCountToday.FirstOrDefault(ac => ac.ModifiedAgent == agent)?.CallBackCountToday ?? 0,
                         CallBackCountPrev = agentCallBackCountPrev.FirstOrDefault(ac => ac.ModifiedAgent == agent)?.CallBackCountPrev ?? 0
                     })
                     .ToList();
 
+                //var ringingAccounts1 = db.EventTables
+                //    .GroupBy(r => r.AccountNo)
+                //    .Where(g => g.Count() == g.Sum(r => r.Dispo == "RINGING" ? 1 : 0))
+                //    .Select(g => g.Key) // Select the account numbers
+                //    .ToList();
+
+                var validDispositions = new[] {
+                    "RINGING", "SWITCH OFF", "STATEMENT OF ACCOUNT REQUEST",
+                    "THIRD PARTY CALLBACK", "THIRD PARTY CONTACT",
+                    "THIRD PARTY CTC INFO UPDATE", "REFUSE TO DE-REGISTER",
+                    "REFUSE TO RENEW", "PAYMENT MISSING", "INVALID NUMBER",
+                    "LINE BUSY", "CUSTOMER HUNG UP", "CUSTOMER OUT OF COUNTRY",
+                    "ACCOUNT EXCLUDED"
+                };
+
+                var ringingAccounts1 = db.EventTables
+                    .GroupBy(r => r.AccountNo)
+                    .Where(g => g.Count() == g.Count(r => validDispositions.Contains(r.Dispo)))
+                    .Select(g => g.Key) // Select the account numbers
+                    .ToList();
+
+
+                // Second query to get the count of these accounts grouped by agent
+                var RingingAccounts = db.RecordDatas
+                    .Where(r => ringingAccounts1.Contains(r.AccountNo)) // Use the list of account numbers
+                    .GroupBy(r => r.Agent ?? r.ModifiedAgent)
+                    .Select(g => new
+                    {
+                        AgentName = g.Key,
+                        AccountCount = g.Count()
+                    })
+                    .ToList();
+
+
+
+
+                //var agentRing = allAgents
+                //   .Select(agent => new AgentCasesViewModel
+                //   {
+                //       Agent = agent,
+                //       ringingAccounts = ringingAccounts.FirstOrDefault(ac => ac.Agent == agent)?.RingingToday ?? 0,
+                //   })
+                //   .ToList();
+
+                ViewBag.RingingNos = ringingAccounts1.Count;
+
+                ViewBag.RingingAccounts = RingingAccounts;
+
                 ViewBag.AgentCallBackCount = agentCallBackCount;
 
                 return View(agentsWithCasesCount);
             }
         }
+
+        public ActionResult Ringing(string Agent)
+        {
+            using (CPVDBEntities db = new CPVDBEntities())
+            {
+                IQueryable<EventTable> events = db.EventTables;
+                IQueryable<RecordData> recordDatas = db.RecordDatas;
+
+                var filteredEventTables = events.Where(r => r.Agent == Agent).ToList();
+
+                var validDispositions = new[] {
+                    "RINGING", "SWITCH OFF", "STATEMENT OF ACCOUNT REQUEST",
+                    "THIRD PARTY CALLBACK", "THIRD PARTY CONTACT",
+                    "THIRD PARTY CTC INFO UPDATE", "REFUSE TO DE-REGISTER",
+                    "REFUSE TO RENEW", "PAYMENT MISSING", "INVALID NUMBER",
+                    "LINE BUSY", "CUSTOMER HUNG UP", "CUSTOMER OUT OF COUNTRY",
+                    "ACCOUNT EXCLUDED"
+                };
+
+                var ringingAccounts1 = db.EventTables
+                    .GroupBy(r => r.AccountNo)
+                    .Where(g => g.Count() == g.Count(r => validDispositions.Contains(r.Dispo)))
+                    .Select(g => g.Key) // Select the account numbers
+                    .ToList();
+
+                int i = 0;
+
+                var RingingAccounts = recordDatas
+                 .Where(r => ringingAccounts1.Contains(r.AccountNo) && r.Agent == Agent)
+                 .Select(r => new
+                 {
+                     Index = i + 1,
+                     AccountNo = r.AccountNo,
+                     AgentName = r.Agent,
+                     CustomerName = r.CustomerName,
+                     itemId = r.Id
+                 })
+                 .Distinct()
+                 .ToList();
+
+               
+
+                return Json(RingingAccounts, JsonRequestBehavior.AllowGet);
+            }
+        }
+
 
 
         public ActionResult About()
@@ -951,58 +779,6 @@ namespace CRM_Raviz.Controllers
         }
 
 
-        //public ActionResult EditInfo()
-        //{
-        //    CPVDBEntities db = new CPVDBEntities();
-        //    var results1 = db.RecordDatas.ToList();
-        //    results1 = db.RecordDatas
-        //           .Where(item => item.Agent == @User.Identity.GetUserName())
-        //           .ToList();
-        //    return PartialView(results1);
-        //}
-
-        //[HttpPost]
-        //public ActionResult EditInfo(string value, string modelProperty)
-        //{
-        //    // Get the model instance from the repository or service
-        //    CPVDBEntities db = new CPVDBEntities();
-        //    RecordData recordData = new RecordData();
-
-        //    // Update the corresponding property of the model
-        //    switch (modelProperty)
-        //    {
-        //        case "Mobile1":
-        //            recordData.Mobile1 = value;
-        //            break;
-        //        case "Mobile2":
-        //            recordData.Mobile2 = value;
-        //            break;
-        //         case "Mobile3":
-        //            recordData.Mobile3 = value;
-        //            break;
-        //        case "Mobile4":
-        //            recordData.Mobile4 = value;
-        //            break;
-        //        case "Email_1":
-        //            recordData.Email_1 = value;
-        //            break;
-        //        case "Email_2":
-        //            recordData.Email_2 = value;
-        //            break;
-        //        case "Email_3":
-        //            recordData.Email_3 = value;
-        //            break;
-                
-        //        default:
-        //            break;
-        //    }
-
-
-        //    db.Entry(recordData).State = System.Data.Entity.EntityState.Modified;
-        //    db.SaveChanges();
-        //    // Return a success response or perform any other necessary actions
-        //    return Json(new { success = true });
-        //}
 
 
 
@@ -1076,6 +852,22 @@ namespace CRM_Raviz.Controllers
                    .Where(item => item.Agent == @User.Identity.GetUserName())
                    .ToList();
             }
+            List<string> allbatches = db.RecordDatas
+                  .Where(r => !string.IsNullOrEmpty(r.DerbyBatch))
+                  .Select(r => r.DerbyBatch)
+                  .Distinct()
+                  .OrderBy(DerbyBatch => DerbyBatch)
+                  .ToList();
+
+            var allAgents = db.AspNetUsers
+                     .Where(r => r.UserRole == "Agent")
+                     .Select(r => r.UserName)
+                     .Distinct()
+                     .ToList();
+
+            ViewBag.allAgents = allAgents;
+
+            ViewBag.allbatches = allbatches;
             return PartialView(results1);
         }
 
@@ -1105,9 +897,17 @@ namespace CRM_Raviz.Controllers
 
             switch (drop3)
             {
-                case "ACCOUNT EXCLUDED":
+
+                case "QUOTATION REQUESTED":
+                    records = records.Where(et => et.Disposition == "QUOTATION REQUESTED").AsQueryable();
+                    break;
+                 case "QUOTATION SENT":
+                    records = records.Where(et => et.Disposition == "QUOTATION SENT").AsQueryable();
+                    break;
+                 case "ACCOUNT EXCLUDED":
                     records = records.Where(et => et.Disposition == "ACCOUNT EXCLUDED").AsQueryable();
                     break;
+                
                 case "CALLBACK LANGUAGE":
                     records = records.Where(et => et.Disposition == "CALLBACK LANGUAGE").AsQueryable();
                     break;
@@ -1205,6 +1005,8 @@ namespace CRM_Raviz.Controllers
 
 
 
+
+
             if (drop1 == "Recent events")
             {
                 records = records.OrderByDescending(et => et.ModifiedDate).AsQueryable(); // Order by ModifiedDate for recent events
@@ -1215,21 +1017,18 @@ namespace CRM_Raviz.Controllers
                 records = records.OrderBy(et => et.ModifiedDate).AsQueryable(); // Order by ModifiedDate for old events
             }
 
-            if(drop2 == "Batch 1")
+            List<string> allbatches = records
+                  .Where(r => !string.IsNullOrEmpty(r.DerbyBatch))
+                  .Select(r => r.DerbyBatch)
+                  .Distinct()
+                  .OrderBy(DerbyBatch => DerbyBatch)
+                  .ToList();
+
+
+
+            if (allbatches.Contains(drop2))
             {
-                records = records.Where(et => et.DerbyBatch == "Batch 1").AsQueryable();
-            }
-            else if (drop2 == "Batch 2")
-            {
-                records = records.Where(et => et.DerbyBatch == "Batch 2").AsQueryable();
-            }
-            else if (drop2 == "Batch 3")
-            {
-                records = records.Where(et => et.DerbyBatch == "Batch 3").AsQueryable();
-            }
-            else if (drop2 == "Batch 4")
-            {
-                records = records.Where(et => et.DerbyBatch == "Batch 4").AsQueryable();
+                records = records.Where(et => et.DerbyBatch == drop2).AsQueryable();
             }
 
             if(drop3 == "Bounced Cheque")
@@ -1245,22 +1044,27 @@ namespace CRM_Raviz.Controllers
                 records = records.Where(et => et.Segments == "Bounced Cheque and Renewal").AsQueryable();
             }
 
-             if(drop4 == "Arshad")
+            if (AgentNames.Contains(drop4))
             {
-                records = records.Where(et => et.Agent == "Arshad").AsQueryable();
+                records = records.Where(et => et.Agent == drop4).AsQueryable();
             }
-            else if (drop4 == "Shoeb")
-            {
-                records = records.Where(et => et.Agent == "Shoeb").AsQueryable();
-            }
-            else if (drop4 == "Joshua")
-            {
-                records = records.Where(et => et.Agent == "Joshua").AsQueryable();
-            }
-              else if (drop4 == "TestAgent")
-            {
-                records = records.Where(et => et.Agent == "TestAgent").AsQueryable();
-            }
+
+            //if (drop4 == "Arshad")
+            //{
+            //    records = records.Where(et => et.Agent == "Arshad").AsQueryable();
+            //}
+            //else if (drop4 == "Shoeb")
+            //{
+            //    records = records.Where(et => et.Agent == "Shoeb").AsQueryable();
+            //}
+            //else if (drop4 == "Joshua")
+            //{
+            //    records = records.Where(et => et.Agent == "Joshua").AsQueryable();
+            //}
+            //  else if (drop4 == "TestAgent")
+            //{
+            //    records = records.Where(et => et.Agent == "TestAgent").AsQueryable();
+            //}
 
 
 
@@ -1277,11 +1081,15 @@ namespace CRM_Raviz.Controllers
             }
 
             int totalRecords = records.Count();
+
             var results = records
-                .OrderBy(item => item.Id) // Ensure stable ordering
+                .OrderByDescending(item => item.DerbyBatch) // Order by the latest DerbyBatch
+                .ThenBy(item => item.Id) // Ensure stable ordering by Id
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
+
+            ViewBag.allbatches = allbatches;
 
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
@@ -1307,9 +1115,28 @@ namespace CRM_Raviz.Controllers
             var startOfMonth = new DateTime(today.Year, today.Month, 1);
             var endOfMonth = startOfMonth.AddMonths(1).AddTicks(-1);
 
-           
 
-            if (state == "callback")
+
+            if (state == "ringing")
+            {
+                ////records = records.Where(item => item.ModifiedAgent == query && item.CallbackTime >= startOfDay && item.CallbackTime <= endOfDay);
+                //IQueryable<EventTable> events = db.EventTables;
+                //eventTables = eventTables
+                //        .GroupBy(r => r.AccountNo)
+                //        .Where(g => g.Count() == g.Sum(r => r.Dispo == "RINGING" ? 1 : 0))
+                //        .Select(g => g.Key);
+
+                var settings = new JsonSerializerSettings
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    };
+
+                    ViewBag.Data = JsonConvert.SerializeObject(events, settings);
+
+               
+                return PartialView("_AgentCases", events);
+            }
+            else if (state == "callback")
             {
                 if (section == "day")
                 {
@@ -1337,8 +1164,6 @@ namespace CRM_Raviz.Controllers
             }
             else if (state == "event")
             {
-                
-
                 if (section == "day")
                 {
                     //records = records.Where(item => item.Agent == query && item.ModifiedDate >= startOfDay && item.ModifiedDate <= endOfDay);
@@ -1382,13 +1207,14 @@ namespace CRM_Raviz.Controllers
             }
             else if (state == "segment1")
             {
+
                 if (section == "all")
                 {
-                    records = records.Where(item => item.Segments == query);
+                    records = records.Where(item => item.Segments == query && item.ModifiedAgent == button);
                 }
                 else if (section == "notworked")
                 {
-                    records = records.Where(item => item.Segments == query && item.ModifiedDate == null);
+                    records = records.Where(item => item.Segments == query && item.ModifiedDate == null && item.ModifiedAgent == button);
                 }
                 //ViewBag.Data = records;
                 var settings = new JsonSerializerSettings
@@ -1402,6 +1228,16 @@ namespace CRM_Raviz.Controllers
             }
             else if (state == "segment2")
             {
+                string currentUser = User.Identity.GetUserName();
+
+                bool isAgent = db.AspNetUsers
+                    .Any(r => r.UserRole == "Agent" && r.UserName == currentUser);
+
+                if (isAgent)
+                {
+                    records = records.Where(item => (item.ModifiedAgent ?? item.Agent) == currentUser);
+                }
+
                 if (section == "notworked")
                 {
                     records = records.Where(item => item.DerbyBatch == query && item.ModifiedDate == null);
@@ -1439,9 +1275,6 @@ namespace CRM_Raviz.Controllers
                 ViewBag.Data = JsonConvert.SerializeObject(records, settings);
                 return PartialView("_AgentCases", records);
             }
-
-           
-
 
         }
 
@@ -1531,169 +1364,7 @@ namespace CRM_Raviz.Controllers
                 return File(emptyImage, "image/jpeg");
             }
         }
-        //private void DownloadAgentCases(List<RecordData> records)
-        //{
-        //    using (var workbook = new XLWorkbook())
-        //    {
-        //        var worksheet = workbook.Worksheets.Add("Agent Cases");
-        //        var currentRow = 1;
-
-        //        // Add column headers
-        //        worksheet.Cell(currentRow, 1).Value = "Agent";
-        //        worksheet.Cell(currentRow, 2).Value = "CallbackTime";
-        //        worksheet.Cell(currentRow, 3).Value = "ModifiedDate";
-        //        worksheet.Cell(currentRow, 4).Value = "Segments";
-        //        worksheet.Cell(currentRow, 5).Value = "DerbyBatch";
-
-        //        // Add data rows
-        //        foreach (var record in records)
-        //        {
-        //            currentRow++;
-        //            worksheet.Cell(currentRow, 1).Value = record.Agent;
-        //            worksheet.Cell(currentRow, 2).Value = record.CallbackTime;
-        //            worksheet.Cell(currentRow, 3).Value = record.ModifiedDate;
-        //            worksheet.Cell(currentRow, 4).Value = record.Segments;
-        //            worksheet.Cell(currentRow, 5).Value = record.DerbyBatch;
-        //        }
-
-        //        using (var stream = new MemoryStream())
-        //        {
-        //            workbook.SaveAs(stream);
-        //            stream.Position = 0;
-
-        //            var fileName = $"AgentCases_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.xlsx";
-        //            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-        //            Response.Clear();
-        //            Response.ContentType = contentType;
-        //            Response.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
-        //            Response.OutputStream.Write(stream.ToArray(), 0, stream.ToArray().Length);
-        //            Response.OutputStream.Flush();
-        //        }
-        //    }
-        //}
-
-        //public ActionResult DownloadAgentCases(List<RecordData> records)
-        //{
-        //    //List<RecordData> records2 = (List<RecordData>)Session["Records"];
-
-
-
-        //    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-        //    using (var package = new ExcelPackage())
-        //    {
-        //        var worksheet = package.Workbook.Worksheets.Add("Agent Cases");
-        //        var currentRow = 1;
-
-        //        // Add column headers
-        //        worksheet.Cells[currentRow, 1].Value = "Agent";
-        //        worksheet.Cells[currentRow, 2].Value = "CallbackTime";
-        //        worksheet.Cells[currentRow, 3].Value = "ModifiedDate";
-        //        worksheet.Cells[currentRow, 4].Value = "Segments";
-        //        worksheet.Cells[currentRow, 5].Value = "DerbyBatch";
-
-        //        // Add data rows
-        //        foreach (var record in records)
-        //        {
-        //            currentRow++;
-        //            worksheet.Cells[currentRow, 1].Value = record.Agent;
-        //            worksheet.Cells[currentRow, 2].Value = record.CallbackTime;
-        //            worksheet.Cells[currentRow, 3].Value = record.ModifiedDate;
-        //            worksheet.Cells[currentRow, 4].Value = record.Segments;
-        //            worksheet.Cells[currentRow, 5].Value = record.DerbyBatch;
-        //        }
-
-        //        using (var stream = new MemoryStream())
-        //        {
-        //            package.SaveAs(stream);
-        //            stream.Position = 0;
-
-        //            var fileName = $"AgentCases_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
-        //            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-        //            //Response.Clear();
-        //            //Response.ContentType = contentType;
-        //            //Response.AddHeader("Content-Disposition", $"attachment; filename={fileName}");
-        //            //stream.CopyTo(Response.OutputStream);
-        //            //Response.Flush();
-        //            //Response.End();
-
-
-
-        //            Response.Clear();
-        //            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-        //            Response.AddHeader("content-disposition", "attachment;filename= " + fileName);
-        //            Response.BinaryWrite(package.GetAsByteArray());
-        //            Response.Flush();
-        //            Response.SuppressContent = true;
-        //            HttpContext.ApplicationInstance.CompleteRequest();
-        //            string ipAddress = System.Web.HttpContext.Current.Request.UserHostAddress;
-        //            return File(Response.OutputStream, Response.ContentType);
-        //        }
-        //    }
-
-
-        //}
-
-
-        //public ActionResult DownloadAgentCases(string records)
-        //{
-        //    List<RecordData> recordList = JsonConvert.DeserializeObject<List<RecordData>>(records);
-
-
-        //    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        //    using (var package = new ExcelPackage())
-        //    {
-        //        var worksheet = package.Workbook.Worksheets.Add("Agent Cases");
-        //        var currentRow = 1;
-        //        // Add column headers
-        //        worksheet.Cells[currentRow, 1].Value = "Agent";
-        //        worksheet.Cells[currentRow, 2].Value = "CallbackTime";
-        //        worksheet.Cells[currentRow, 3].Value = "ModifiedDate";
-        //        worksheet.Cells[currentRow, 4].Value = "Segments";
-        //        worksheet.Cells[currentRow, 5].Value = "DerbyBatch";
-        //        // Add data rows
-        //        foreach (var record in recordList)
-        //        {
-        //            currentRow++;
-        //            worksheet.Cells[currentRow, 1].Value = record.Agent;
-        //            worksheet.Cells[currentRow, 2].Value = record.CallbackTime;
-        //            worksheet.Cells[currentRow, 3].Value = record.ModifiedDate;
-        //            worksheet.Cells[currentRow, 4].Value = record.Segments;
-        //            worksheet.Cells[currentRow, 5].Value = record.DerbyBatch;
-        //        }
-        //        using (var stream = new MemoryStream())
-        //        {
-        //            package.SaveAs(stream);
-        //            stream.Position = 0;
-
-        //            var fileName = $"AgentCases_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
-        //            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-        //            //Response.Clear();
-        //            //Response.ContentType = contentType;
-        //            //Response.AddHeader("Content-Disposition", $"attachment; filename={fileName}");
-        //            //stream.CopyTo(Response.OutputStream);
-        //            //Response.Flush();
-        //            //Response.End();
-
-
-
-        //            Response.Clear();
-        //            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-        //            Response.AddHeader("content-disposition", "attachment;filename= " + fileName);
-        //            Response.BinaryWrite(package.GetAsByteArray());
-        //            Response.Flush();
-        //            Response.SuppressContent = true;
-        //            HttpContext.ApplicationInstance.CompleteRequest();
-        //            string ipAddress = System.Web.HttpContext.Current.Request.UserHostAddress;
-        //            return File(Response.OutputStream, Response.ContentType);
-        //        }
-        //    }
-        //}
-
-
+       
 
         public ActionResult DownloadAgentCases(string records)
         {
@@ -1764,184 +1435,6 @@ namespace CRM_Raviz.Controllers
         }
 
 
-
-
-        //[HttpPost]
-        //public ActionResult _AgentCases(string query,string section, string state, string button)
-        //{
-        //    CPVDBEntities db = new CPVDBEntities();
-        //    IQueryable<RecordData> records = db.RecordDatas;
-
-        //    DateTime today = DateTime.Today;
-        //    var startOfDay = today.Date;
-        //    var endOfDay = today.Date.AddDays(1).AddTicks(-1);
-        //    var startOfMonth = new DateTime(today.Year, today.Month, 1);
-        //    var endOfMonth = startOfMonth.AddMonths(1).AddTicks(-1);
-
-        //    if (state == "callback")
-        //    {
-        //        if(section == "day")
-        //        {
-        //            records = records.Where(item => item.Agent == query && item.CallbackTime >= startOfDay && item.CallbackTime <= endOfDay);
-
-        //        }
-        //        else if (section == "prev")
-        //        {
-        //            records = records.Where(item => item.Agent == query && item.CallbackTime >= startOfMonth && item.CallbackTime <= startOfDay);
-        //        }
-
-        //    }
-        //    else if (state == "event")
-        //    {
-        //        if (section == "day")
-        //        {
-        //            records = records.Where(item => item.Agent == query && item.ModifiedDate >= startOfDay && item.ModifiedDate <= endOfDay);
-
-        //        }
-        //        else if (section == "month")
-        //        {
-        //            records = records.Where(item => item.Agent == query && item.ModifiedDate >= startOfMonth && item.ModifiedDate <= endOfMonth);
-        //        }
-
-        //    }
-        //    else if (state == "segment1")
-        //    {
-
-        //        if (section == "all")
-        //        {
-        //            records = records.Where(item => item.Segments == query);
-
-        //        }
-        //        else if (section == "notworked")
-        //        {
-        //            records = records.Where(item => item.Segments == query && item.ModifiedDate == null);
-        //        }
-
-        //    } 
-        //    else if (state == "segment2")
-        //    {
-        //        if (section == "notworked")
-        //        {
-        //            records = records.Where(item => item.DerbyBatch == query && item.ModifiedDate == null);
-
-        //        }
-        //        else if (section == "worked")
-        //        {
-        //            records = records.Where(item => item.DerbyBatch == query && item.ModifiedDate != null);
-        //        }
-        //    }   
-        //    else
-        //    {
-        //        records = records.Where(item => item.Agent == query);
-        //    }
-        //    if (button == "clicked")
-        //    {
-        //         DownloadAgentCases(records.ToList());
-        //        return PartialView("_AgentCases", records);
-        //    }
-        //    else
-        //    {
-        //        return PartialView("_AgentCases", records);
-        //    }
-
-
-        //}
-
-        //public ActionResult DownloadAgentCases(List<RecordData> records)
-        //{
-        //    using (var workbook = new XLWorkbook())
-        //    {
-        //        var worksheet = workbook.Worksheets.Add("AgentCases");
-        //        var currentRow = 1;
-
-        //        // Add header row
-        //        worksheet.Cell(currentRow, 1).Value = "Agent";
-        //        worksheet.Cell(currentRow, 2).Value = "CallbackTime";
-        //        worksheet.Cell(currentRow, 3).Value = "ModifiedDate";
-        //        worksheet.Cell(currentRow, 4).Value = "Segments";
-        //        worksheet.Cell(currentRow, 5).Value = "DerbyBatch";
-
-        //        // Add data rows
-        //        foreach (var record in records)
-        //        {
-        //            currentRow++;
-        //            worksheet.Cell(currentRow, 1).Value = record.Agent;
-        //            worksheet.Cell(currentRow, 2).Value = record.CallbackTime;
-        //            worksheet.Cell(currentRow, 3).Value = record.ModifiedDate;
-        //            worksheet.Cell(currentRow, 4).Value = record.Segments;
-        //            worksheet.Cell(currentRow, 5).Value = record.DerbyBatch;
-        //        }
-
-        //        using (var stream = new MemoryStream())
-        //        {
-        //            workbook.SaveAs(stream);
-        //            stream.Position = 0; // Reset the stream position to the beginning
-
-        //            var content = stream.ToArray();
-
-        //            return new FileContentResult(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        //            {
-        //                FileDownloadName = "AgentCases.xlsx"
-        //            };
-        //        }
-        //    }
-        //}
-
-
-
-        //[HttpPost]
-        //public ActionResult _FilterRecords(string query)
-        //{
-        //    CPVDBEntities db = new CPVDBEntities();
-
-        //    var results = db.RecordDatas.ToList();
-
-        //    return PartialView("_Records", results);
-        //}
-
-
-
-
-
-
-        //[HttpPost]
-        //public ActionResult _Records(string query)
-        //{
-
-        //    CPVDBEntities db = new CPVDBEntities();
-        //    RecordData recordData = new RecordData();
-        //    EventTable eventTable = new EventTable();
-        //    var DateTime = db.EventTables.ToList();
-        //    var results1 = db.RecordDatas.Take(200).ToList();
-        //    var userName = User.Identity.GetUserName();
-
-        //    if (query == "")
-        //    {
-        //        if (User.IsInRole("Agent"))
-        //        {
-        //            results1 = db.RecordDatas
-        //               .Where(item => item.Agent == userName)
-        //               .ToList();
-        //        }
-
-        //    }
-        //    else if (query != "")
-        //    {
-        //            results1 = db.RecordDatas
-        //            .Where(item => item.CustomerName == query ||
-        //                           item.AccountNo == query)
-        //            .ToList();
-
-        //    }
-        //        else
-        //        {
-        //            results1 = db.RecordDatas.ToList();
-        //        }
-
-
-        //    return PartialView("_Records", results1);
-        //}
-
         public ActionResult _History()
         {
 
@@ -1981,65 +1474,7 @@ namespace CRM_Raviz.Controllers
             return PartialView("_History", results2);
         }
 
-        //[HttpPost]
-        //public ActionResult UploadCases(HttpPostedFileBase file)
-        //{
-        //    CPVDBEntities db = new CPVDBEntities();
-        //    if (file != null && file.ContentLength > 0)
-        //    {
-        //        try
-        //        {
-        //            using (var package = new ExcelPackage(file.InputStream))
-        //            {
-        //                ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-
-        //                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-        //                int rowCount = worksheet.Dimension.Rows;
-
-        //                for (int row = 1; row <= rowCount; row++)
-        //                {
-        //                    var caseEntity = new RecordData
-        //                    {
-        //                        AccountNo = worksheet.Cells[row, 1].Value?.ToString(),
-        //                        CustomerName = worksheet.Cells[row, 2].Value?.ToString(),
-        //                        BCheque = worksheet.Cells[row, 3].Value?.ToString(),
-        //                        BCheque_P = worksheet.Cells[row, 4].Value?.ToString(),
-        //                        IPTelephone_Billing = worksheet.Cells[row, 5].Value?.ToString(),
-        //                        Utility_Billing = worksheet.Cells[row, 6].Value?.ToString(),
-        //                        Others = worksheet.Cells[row, 7].Value?.ToString(),
-        //                        OS_Billing = worksheet.Cells[row, 8].Value?.ToString(),
-        //                        License_expiry = worksheet.Cells[row, 9].Value?.ToString(),
-        //                        Contact_Person = worksheet.Cells[row, 11].Value?.ToString(),
-        //                        Nationality = worksheet.Cells[row, 12].Value?.ToString(),
-        //                        Mobile1 = worksheet.Cells[row, 13].Value?.ToString(),
-        //                        Mobile2 = worksheet.Cells[row, 14].Value?.ToString(),
-        //                        Mobile3 = worksheet.Cells[row, 15].Value?.ToString(),
-        //                        Mobile4 = worksheet.Cells[row, 16].Value?.ToString(),
-        //                        Email_1 = worksheet.Cells[row, 17].Value?.ToString(),
-        //                        Email_2 = worksheet.Cells[row, 18].Value?.ToString(),
-        //                        Email_3 = worksheet.Cells[row, 19].Value?.ToString(),
-        //                    };
-
-        //                    db.RecordDatas.Add(caseEntity);
-        //                }
-
-        //                db.SaveChanges();
-        //            }
-        //            ViewBag.Message = "File uploaded successfully.";
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            ViewBag.Error = $"Error: {ex.Message}";
-        //        }
-        //    }
-        //    else
-        //    {
-        //        ViewBag.Error = "Please upload a valid Excel file.";
-        //    }
-
-        //    return View();
-        //}
-
+       
 
         [HttpPost]
         public ActionResult UploadCases(HttpPostedFileBase file, string dropdown)
@@ -2273,6 +1708,8 @@ namespace CRM_Raviz.Controllers
 
             var key = "";
 
+          
+
             if (Users != "")
             {
                 query = query.Where(et => et.Agent == Users);
@@ -2303,7 +1740,7 @@ namespace CRM_Raviz.Controllers
             {
                 query = query.Where(et => et.CallbackTime == CallbackTime);
                 caseTables = query.ToList();
-            }
+            } 
 
             if (specificDate != null)
             {
@@ -2316,10 +1753,7 @@ namespace CRM_Raviz.Controllers
                 query = query.Where(et => et.Datetime <= endDate);
                 caseTables = query.ToList();
             }
-
-
-
-
+         
 
             var header = new List<string>() {  "AccountNo","Agent","CustomerName", "BCheque", "BCheque_P", "IPTelephone_Billing",
                 "Utility_Billing", "Others", "OS_Billing", "License_expiry", "Contact_Person","ModifiedDate", "Nationality", "Mobile1",
@@ -2330,17 +1764,17 @@ namespace CRM_Raviz.Controllers
 
             var header1 = new List<string>()
             {
-                "AccountNo","Agent", "DialedNumber", "EmailUsed", "Dispo", "SubDispo", "CallbackTime", "Comments", "Segments"
+                "AccountNo","Agent", "DialedNumber", "EmailUsed", "Dispo", "SubDispo", "CallbackTime", "Comments", "Segments","DateTime"
             };
 
             var header2 = new List<string>()
             {
-                "Account No","Event Created by", "Dialed Number", "Email Used", "Disposition", "Sub Disposition", "CallbackTime", "Comments", "Segments"
+                "Account No","Event Created by", "Dialed Number", "Email Used", "Disposition", "Sub Disposition", "CallbackTime", "Comments", "Segments","DateTime"
             };
 
             var bouncedDetailHeaders = new List<string>()
             {
-                 "AccountNo","ChequeNumber", "ReasonCode","Text","DateBounced", "ChequeDate","TotalAmount"
+                 "AccountNo","ChequeNumber", "ReasonCode","Text","DateBounced", " ChequeDate","TotalAmount"
             };
 
 
@@ -2367,22 +1801,27 @@ namespace CRM_Raviz.Controllers
                     foreach (var headName in header1)
                     {
                         var property = typeof(EventTable).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
-                        object value = property.GetValue(items);
 
-                        if (property != null && property.Name == "AccountNo")
-                        {
-                            key = value.ToString();
-                            accountNoList.Add(value?.ToString());
-                        }
-
-                        if (value != null && value.ToString() == "1/1/2000 12:00:00 AM")
+                        if (property != null && items != null)
                         {
 
-                            worksheet.Cells[row, col++].Value = "-";
-                        }
-                        else
-                        {
-                            worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
+                            object value = property.GetValue(items);
+
+                            if (property != null && property.Name == "AccountNo")
+                            {
+                                key = value.ToString();
+                                accountNoList.Add(value?.ToString());
+                            }
+
+                            if (value != null && value.ToString() == "1/1/2000 12:00:00 AM")
+                            {
+
+                                worksheet.Cells[row, col++].Value = "-";
+                            }
+                            else
+                            {
+                                worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
+                            }
                         }
                     }
 
@@ -2412,48 +1851,6 @@ namespace CRM_Raviz.Controllers
 
                     row++;
                 }
-
-                //foreach (var items in recordDatas)
-                //{
-
-
-                //    //recordDatas = db.RecordDatas.Where(rd => rd.AccountNo != key).ToList();
-
-                //    recordDatas = db.RecordDatas
-                //    .Where(rd => !accountNoList.Contains(rd.AccountNo))
-                //    .ToList();
-
-                //    foreach (var itemcase in recordDatas)
-                //    {
-                //        col = 1;
-                //        foreach (var headName in header)
-                //        {
-                //            var property = typeof(RecordData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
-
-                //            object value = property.GetValue(itemcase);
-
-                //            if (property.PropertyType == typeof(DateTime))
-                //            {
-                //                worksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
-                //            }
-                //            else
-                //            {
-                //                worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
-                //            }
-
-
-                //        }
-                //        for (int i = 0; i < 10; i++)
-                //        {
-                //            worksheet.Cells[row, col++].Value = "-";
-                //        }
-                //        row++;
-                //    }
-
-
-
-                //}
-
                 var bouncedWorksheet = package.Workbook.Worksheets.Add("BouncedDetails");
                 col = 1;
                 foreach (var headerName in bouncedDetailHeaders)
@@ -2499,216 +1896,8 @@ namespace CRM_Raviz.Controllers
             }
         }
 
-        public ActionResult DownloadRecordCases(string Users, string CallType, string Disposition, string SubDisposition, DateTime? CallbackTime = null, DateTime? specificDate = null, DateTime? endDate = null)
+        public ActionResult DownloadRecordCases(string Users, string CallType, string Disposition, string SubDisposition, string DerbyBatch, DateTime? CallbackTime = null, DateTime? specificDate = null, DateTime? endDate = null)
         {
-            //CPVDBEntities db = new CPVDBEntities();
-            //HttpResponseBase Response = HttpContext.Response;
-            //ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-            //List<RecordData> recordDatas = new List<RecordData>(); // Initialize with an empty list
-            //List<EventTable> eventTables = new List<EventTable>();
-            //List<BouncedRecord> bouncedRecords = new List<BouncedRecord>();
-
-            //bouncedRecords = db.BouncedRecords.ToList();    
-
-            //var key = "";
-            //eventTables =  db.EventTables
-            //                   .ToList();
-
-
-
-            //if (specificDate.HasValue && endDate.HasValue)
-            //{
-            //    eventTables = db.EventTables
-            //                    .Where(et => et.Datetime >= specificDate.Value && et.Datetime <= endDate.Value)
-            //                    .ToList();
-            //}
-            //else if (specificDate.HasValue)
-            //{
-            //    eventTables = db.EventTables
-            //                    .Where(et => et.Datetime > specificDate.Value)
-            //                    .ToList();
-
-
-            //}
-
-            //var header = new List<string>() {  "AccountNo","Agent","CustomerName", "BCheque", "BCheque_P", "IPTelephone_Billing", 
-            //    "Utility_Billing", "Others", "OS_Billing", "License_expiry", "Contact_Person","ModifiedDate", "Nationality", "Mobile1",
-            //    "Mobile2", "Mobile3", "Mobile4", "Email_1", "Email_2", "Email_3", "ExpectedRenewalFee", 
-            //     "SRNumber", "EmployeeVisaQuota", "EmployeeVisaUtilized", "ProjectBundleName",
-            //    "LicenseType", "FacilityType", "NoYears", "DerbyBatch", "CallType"};
-
-
-            //var header1 = new List<string>()
-            //{
-            //    "AccountNo","Agent", "DialedNumber", "EmailUsed", "Dispo", "SubDispo", "CallbackTime", "Comments", "Segments"
-            //};
-
-            // var header2 = new List<string>()
-            //{
-            //    "Account No","Event Created by", "Dialed Number", "Email Used", "Disposition", "Sub Disposition", "CallbackTime", "Comments", "Segments"
-            //};
-
-            //var bouncedDetailHeaders = new List<string>()
-            //{
-            //     "AccountNo","ChequeNumber", "ReasonCode","Text","DateBounced", "ChequeDate","TotalAmount"
-            //};
-
-
-            //using (var package = new ExcelPackage())
-            //{
-            //    int col = 1;
-            //    var worksheet = package.Workbook.Worksheets.Add("Sheet1");
-            //    var combinedList = header.Concat(header2).ToList();
-            //    List<string> accountNoList = new List<string>();
-
-            //    foreach (var headerName in combinedList )
-            //    {
-            //        worksheet.Cells[1, col++].Value = headerName.ToString();
-            //    }
-
-
-
-            //    int row = 2;
-
-            //    foreach (var items in eventTables)
-            //    {
-            //        col = 31;
-            //        foreach (var headName in header1)
-            //        {
-            //            var property = typeof(EventTable).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
-            //            object value = property.GetValue(items);
-
-            //            if (property != null && property.Name == "AccountNo")
-            //            {
-            //                key = value.ToString();
-            //                accountNoList.Add(value?.ToString());
-            //            }
-
-            //            if (value != null && value.ToString() == "1/1/2000 12:00:00 AM")
-            //            {
-
-            //                worksheet.Cells[row, col++].Value = "-";
-            //            }
-            //            else
-            //            {
-            //                worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
-            //            }
-            //        }
-
-            //        recordDatas = db.RecordDatas.Where(rd => rd.AccountNo == key).ToList();
-
-            //        foreach (var itemcase in recordDatas)
-            //        {
-
-            //            col = 1;
-            //            foreach (var headName in header)
-            //            {
-            //                var property = typeof(RecordData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
-
-            //                object value = property.GetValue(itemcase);
-
-            //                if (property.PropertyType == typeof(DateTime))
-            //                {
-            //                    worksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
-            //                }
-            //                else
-            //                {
-            //                worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
-            //                }
-            //            }
-
-            //        }
-
-            //        row++;
-            //    }
-
-            //    foreach (var items in recordDatas)
-            //    {
-
-
-            //        //recordDatas = db.RecordDatas.Where(rd => rd.AccountNo != key).ToList();
-
-            //        recordDatas = db.RecordDatas
-            //        .Where(rd => !accountNoList.Contains(rd.AccountNo))
-            //        .ToList();
-
-            //        foreach (var itemcase in recordDatas)
-            //        {
-            //            col = 1;
-            //            foreach (var headName in header)
-            //            {
-            //                var property = typeof(RecordData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
-
-            //                object value = property.GetValue(itemcase);
-
-            //                if (property.PropertyType == typeof(DateTime))
-            //                {
-            //                    worksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
-            //                }
-            //                else
-            //                {
-            //                    worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
-            //                }
-
-
-            //            }
-            //            for (int i = 0; i < 10; i++)
-            //            {
-            //                worksheet.Cells[row, col++].Value = "-";
-            //            }
-            //            row++;
-            //        }
-
-
-
-            //    }
-
-            //    var bouncedWorksheet = package.Workbook.Worksheets.Add("BouncedDetails");
-            //    col = 1;
-            //    foreach (var headerName in bouncedDetailHeaders)
-            //    {
-            //        bouncedWorksheet.Cells[1, col++].Value = headerName.ToString();
-            //    }
-
-
-            //    row = 2;
-
-            //    foreach (var bouncedDetail in bouncedRecords)
-            //    {
-            //        col = 1;
-            //        foreach (var headerName in bouncedDetailHeaders)
-            //        {
-            //            var property = typeof(BouncedRecord).GetProperty(headerName, BindingFlags.Public | BindingFlags.Instance);
-            //            object value = property.GetValue(bouncedDetail);
-
-            //            if (property.PropertyType == typeof(DateTime))
-            //            {
-            //                bouncedWorksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
-            //            }
-            //            else
-            //            {
-            //                bouncedWorksheet.Cells[row, col++].Value = value != null ? value.ToString() : string.Empty;
-            //            }
-            //        }
-
-
-            //        row++;
-            //    }
-
-            //    Response.Clear();
-            //    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            //    Response.AddHeader("content-disposition", "attachment;filename=Caselist" + (specificDate.HasValue ? specificDate.Value.ToString("yyyy-MM-dd") : DateTime.Today.ToString("yyyy-MM-dd")) + ".xlsx");
-
-            //    Response.BinaryWrite(package.GetAsByteArray());
-            //    Response.Flush();
-            //    Response.SuppressContent = true;
-            //    HttpContext.ApplicationInstance.CompleteRequest();
-
-            //    return File(Response.OutputStream, Response.ContentType);
-            //}
-
-
             CPVDBEntities db = new CPVDBEntities();
             HttpResponseBase Response = HttpContext.Response;
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -2723,6 +1912,12 @@ namespace CRM_Raviz.Controllers
             bouncedRecords = db.BouncedRecords.ToList();
 
             var key = "";
+
+            if(DerbyBatch != null)
+            {
+                query = query.Where(et => et.DerbyBatch == DerbyBatch);
+                caseTables = query.ToList();
+            }
 
             if (Users != "")
             {
@@ -2764,7 +1959,7 @@ namespace CRM_Raviz.Controllers
 
             if (endDate != null)
             {
-                query = query.Where(et => et.ModifiedDate <= endDate);
+                query = query.Where(et => et.ModifiedDate <= endDate.Value.Date);
                 caseTables = query.ToList();
             }
 
@@ -2776,7 +1971,7 @@ namespace CRM_Raviz.Controllers
                 "Utility_Billing", "Others", "OS_Billing", "License_expiry", "Contact_Person","ModifiedDate", "Nationality", "Mobile1",
                 "Mobile2", "Mobile3", "Mobile4", "Email_1", "Email_2", "Email_3", "ExpectedRenewalFee",
                  "SRNumber", "EmployeeVisaQuota", "EmployeeVisaUtilized", "ProjectBundleName",
-                "LicenseType", "FacilityType", "NoYears", "DerbyBatch", "CallType"};
+                "LicenseType", "FacilityType", "NoYears", "DerbyBatch", "CallType","Segments"};
 
 
             var header1 = new List<string>()
@@ -2846,7 +2041,7 @@ namespace CRM_Raviz.Controllers
                     foreach (var itemcase in eventTables)
                     {
 
-                        col = 31;
+                        col = 32;
                         foreach (var headName in header1)
                         {
                             var property = typeof(EventTable).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
