@@ -1,7 +1,6 @@
 ﻿using CRM_Raviz.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity;
-
 using System;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -33,8 +32,6 @@ namespace CRM_Raviz.Controllers
             List<string> listRoles = db.AspNetRoles.Select(s => s.Name).ToList();
             ViewBag.Roles = listRoles;
             return View();
-
-
         }
 
         [HttpPost]
@@ -81,11 +78,8 @@ namespace CRM_Raviz.Controllers
                 if (result.Succeeded)
                 {
                     await UserManager.AddToRoleAsync(user.Id, model.UserRole);
-
-                    //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     return RedirectToAction("UserMaster", "Home");
                 }
-                //AddErrors(result);
             }
             return View(model);
         }
@@ -120,8 +114,6 @@ namespace CRM_Raviz.Controllers
                          .Select(r => r.UserName)
                          .Distinct()
                          .ToList();
-
-            // Pass the dispositionValues to the view
             ViewBag.AgentNames = AgentNames;
 
             List<string> allbatches = db.RecordDatas
@@ -156,7 +148,6 @@ namespace CRM_Raviz.Controllers
                   .ToList();
 
             ViewBag.allbatches = allbatches;
-            // Pass the dispositionValues to the view
             ViewBag.AgentNames = AgentNames;
 
             return View(cases);
@@ -173,8 +164,6 @@ namespace CRM_Raviz.Controllers
 
             db.Entry(mob).State = System.Data.Entity.EntityState.Modified;
             db.SaveChanges();
-
-            // Return any response if needed
             return Json(new { success = true }); 
         }
 
@@ -276,8 +265,6 @@ namespace CRM_Raviz.Controllers
                 }
                 else if (filter != "all" && !User.IsInRole("Agent") && filter != null)
                 {
-
-                    //recordDatasQuery = db.RecordDatas.Where(r => r.ModifiedAgent == filter);
                     eventTableQuery = db.EventTables.Where(r => r.Agent == filter);
 
                     recordDatasQuery = db.RecordDatas.Where(r => (r.ModifiedAgent ?? r.Agent) == filter);
@@ -306,17 +293,14 @@ namespace CRM_Raviz.Controllers
 
                     ViewBag.Filter = currentUser;
                 }
-              
-              
-                    
-            
-
 
                 var startOfDay = today.Date;
                 var endOfDay = today.Date.AddDays(1).AddTicks(-1);
-
                 var startOfMonth = new DateTime(today.Year, today.Month, 1);
                 var endOfMonth = startOfMonth.AddMonths(1).AddTicks(-1);
+                var totalCasesList = allAgents.Select(UserName => recordDatasQuery.Count(r => r.Agent == UserName)).ToList(); /*recordDatasQuery.Where().Count();*/
+                int totalCases = allAgents.Sum(UserName => recordDatasQuery.Count(r => r.Agent == UserName));
+
 
                 int casesCountToday = eventTableQuery
                     .Where(r => r.Datetime != null && r.Datetime >= startOfDay && r.Datetime <= endOfDay)
@@ -329,14 +313,6 @@ namespace CRM_Raviz.Controllers
                     .Select(r => r.AccountNo) // Select the accountno
                     .Distinct() // Get distinct accountno values
                     .Count(); // Count the distinct values
-
-
-
-
-                var totalCasesList = allAgents.Select(UserName => recordDatasQuery.Count(r => r.Agent == UserName)).ToList(); /*recordDatasQuery.Where().Count();*/
-
-                int totalCases = allAgents.Sum(UserName => recordDatasQuery.Count(r => r.Agent == UserName));
-
 
                 int totalCasesNotWorked = recordDatasQuery
                     .Where(r => r.ModifiedDate == null)
@@ -409,25 +385,6 @@ namespace CRM_Raviz.Controllers
                     .Distinct()
                     .ToList();
 
-                
-                ViewBag.totalCasesList = totalCasesList;
-                ViewBag.allAgents = fliterAllAgents;
-                ViewBag.Agents = allAgents;
-                ViewBag.allbatches = allbatches;
-                ViewBag.totalCasesNotWorked = totalCasesNotWorked;
-                ViewBag.totalCases = totalCases;
-                ViewBag.segmentNotWorked = segmentNotWorked;
-                ViewBag.TotalBatches = totalBatches;
-                ViewBag.BatchNotWorked = batchNotWorked;
-                ViewBag.BatchWorked = batchWorked;
-                ViewBag.segment2Counts = segment2Counts;
-                ViewBag.distinctSegments2 = distinctSegments2;
-                ViewBag.distinctSegments = distinctSegments;
-                ViewBag.segmentCounts = segmentCounts;
-                ViewBag.recentEvents = casesCountToday;
-                ViewBag.callbackCountThisMonth = callbackCountThisMonth;
-                ViewBag.CasesCountThisMonth = casesCountThisMonth;
-
                 var agentCasesCountToday = eventTableQuery
                     .Where(r => r.Datetime != null && r.Datetime >= startOfDay && r.Datetime <= endOfDay)
                     .GroupBy(r => r.Agent)
@@ -437,8 +394,6 @@ namespace CRM_Raviz.Controllers
                         //CasesCountToday = g.Count()
                     })
                     .ToList();
-
-               
 
                 var agentCasesCountThisMonth = eventTableQuery
                     .Where(r => r.Datetime != null && r.Datetime >= startOfMonth && r.Datetime <= endOfMonth)
@@ -476,20 +431,6 @@ namespace CRM_Raviz.Controllers
                     .Where(g => g.Count(r => r.Dispo == "RINGING" || r.Dispo == "SWITCH OFF") == g.Count())
                     .Select(g => new { Agent = g.Key, RingingToday = g.Count() });
 
-                //var casesRinging = eventTableQuery
-                //    .GroupBy(r => r.AccountNo)
-                //    .Where(g => g.Count(r => new[] {
-                //        "RINGING", "SWITCH OFF", "STATEMENT OF ACCOUNT REQUEST",
-                //        "THIRD PARTY CALLBACK", "THIRD PARTY CONTACT",
-                //        "THIRD PARTY CTC INFO UPDATE", "REFUSE TO DE-REGISTER",
-                //        "REFUSE TO RENEW", "PAYMENT MISSING", "INVALID NUMBER",
-                //        "LINE BUSY", "CUSTOMER HUNG UP", "CUSTOMER OUT OF COUNTRY",
-                //        "ACCOUNT EXCLUDED"
-                //    }.Contains(r.Dispo)) == g.Count())
-                //    .Select(g => new { Agent = g.Key, RingingToday = g.Count() });
-
-
-
                 var agentCallBackCount = allAgents
                     .Select(agent => new AgentCasesViewModel
                     {
@@ -498,12 +439,6 @@ namespace CRM_Raviz.Controllers
                         CallBackCountPrev = agentCallBackCountPrev.FirstOrDefault(ac => ac.ModifiedAgent == agent)?.CallBackCountPrev ?? 0
                     })
                     .ToList();
-
-                //var ringingAccounts1 = db.EventTables
-                //    .GroupBy(r => r.AccountNo)
-                //    .Where(g => g.Count() == g.Sum(r => r.Dispo == "RINGING" ? 1 : 0))
-                //    .Select(g => g.Key) // Select the account numbers
-                //    .ToList();
 
                 var validDispositions = new[] {
                     "RINGING", "SWITCH OFF", "STATEMENT OF ACCOUNT REQUEST",
@@ -532,21 +467,25 @@ namespace CRM_Raviz.Controllers
                     })
                     .ToList();
 
-
-
-
-                //var agentRing = allAgents
-                //   .Select(agent => new AgentCasesViewModel
-                //   {
-                //       Agent = agent,
-                //       ringingAccounts = ringingAccounts.FirstOrDefault(ac => ac.Agent == agent)?.RingingToday ?? 0,
-                //   })
-                //   .ToList();
-
+                ViewBag.totalCasesList = totalCasesList;
+                ViewBag.allAgents = fliterAllAgents;
+                ViewBag.Agents = allAgents;
+                ViewBag.allbatches = allbatches;
+                ViewBag.totalCasesNotWorked = totalCasesNotWorked;
+                ViewBag.totalCases = totalCases;
+                ViewBag.segmentNotWorked = segmentNotWorked;
+                ViewBag.TotalBatches = totalBatches;
+                ViewBag.BatchNotWorked = batchNotWorked;
+                ViewBag.BatchWorked = batchWorked;
+                ViewBag.segment2Counts = segment2Counts;
+                ViewBag.distinctSegments2 = distinctSegments2;
+                ViewBag.distinctSegments = distinctSegments;
+                ViewBag.segmentCounts = segmentCounts;
+                ViewBag.recentEvents = casesCountToday;
+                ViewBag.callbackCountThisMonth = callbackCountThisMonth;
+                ViewBag.CasesCountThisMonth = casesCountThisMonth;
                 ViewBag.RingingNos = ringingAccounts1.Count;
-
                 ViewBag.RingingAccounts = RingingAccounts;
-
                 ViewBag.AgentCallBackCount = agentCallBackCount;
 
                 return View(agentsWithCasesCount);
@@ -677,10 +616,6 @@ namespace CRM_Raviz.Controllers
             RecordData recordData = db.RecordDatas.Find(int.Parse(form["Id"].ToString()));
 
             EventTable eventTable = new EventTable();
-
-
-            
-                //db.EventTables.Find(int.Parse(form["Id"].ToString()));
             string val = form["Disposition"].ToString();
 
             if (val != "CALLBACK" && val != "CALLBACK LANGUAGE")
@@ -756,16 +691,6 @@ namespace CRM_Raviz.Controllers
                 recordData.ChangeStatus = form["ChangeStatus"].ToString();
                 recordData.ModifiedDate = DateTime.Now;
                 recordData.ModifiedAgent = form["AgentsName"].ToString();
-            //if (!string.IsNullOrEmpty(form["CallbackTime"]))
-            //{
-            //recordData.CallbackTime = DateTime.Parse(form["CallbackTime"]);
-            //}
-            //else
-            //{
-            //// Assign a specific default value if CallbackTime is null or empty
-            //recordData.CallbackTime = new DateTime(2000, 1, 1); // Example default value
-            //}
-
 
             db.Entry(recordData).State = System.Data.Entity.EntityState.Modified;
 
@@ -774,8 +699,6 @@ namespace CRM_Raviz.Controllers
 
             db.SaveChanges();
             return RedirectToAction("RealEditAllocation", new { id = form["Id"].ToString(), accountno = form["AccountNo"].ToString() });
-
-            //return RedirectToAction("RealEditAllocation");
         }
 
 
@@ -1049,25 +972,7 @@ namespace CRM_Raviz.Controllers
                 records = records.Where(et => et.Agent == drop4).AsQueryable();
             }
 
-            //if (drop4 == "Arshad")
-            //{
-            //    records = records.Where(et => et.Agent == "Arshad").AsQueryable();
-            //}
-            //else if (drop4 == "Shoeb")
-            //{
-            //    records = records.Where(et => et.Agent == "Shoeb").AsQueryable();
-            //}
-            //else if (drop4 == "Joshua")
-            //{
-            //    records = records.Where(et => et.Agent == "Joshua").AsQueryable();
-            //}
-            //  else if (drop4 == "TestAgent")
-            //{
-            //    records = records.Where(et => et.Agent == "TestAgent").AsQueryable();
-            //}
-
-
-
+           
             if (string.IsNullOrEmpty(query))
             {
                 if (User.IsInRole("Agent"))
@@ -1115,16 +1020,8 @@ namespace CRM_Raviz.Controllers
             var startOfMonth = new DateTime(today.Year, today.Month, 1);
             var endOfMonth = startOfMonth.AddMonths(1).AddTicks(-1);
 
-
-
             if (state == "ringing")
             {
-                ////records = records.Where(item => item.ModifiedAgent == query && item.CallbackTime >= startOfDay && item.CallbackTime <= endOfDay);
-                //IQueryable<EventTable> events = db.EventTables;
-                //eventTables = eventTables
-                //        .GroupBy(r => r.AccountNo)
-                //        .Where(g => g.Count() == g.Sum(r => r.Dispo == "RINGING" ? 1 : 0))
-                //        .Select(g => g.Key);
 
                 var settings = new JsonSerializerSettings
                     {
@@ -1246,11 +1143,6 @@ namespace CRM_Raviz.Controllers
                 {
                     records = records.Where(item => item.DerbyBatch == query && item.ModifiedDate != null);
                 }
-                //if (button == "clicked")
-                //{
-                //    return DownloadAgentCases(records.ToList());
-                //}
-                //ViewBag.Data = records;
                 var settings = new JsonSerializerSettings
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
@@ -1262,11 +1154,6 @@ namespace CRM_Raviz.Controllers
             else
             {
                 records = records.Where(item => item.Agent == query);
-                //if (button == "clicked")
-                //{
-                //    return DownloadAgentCases(records.ToList());
-                //}
-                //ViewBag.Data = records;
                 var settings = new JsonSerializerSettings
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
@@ -1308,19 +1195,10 @@ namespace CRM_Raviz.Controllers
 
                 if (aspNetUser != null)
                 {
-                    // Convert uploaded file to byte array
                     aspNetUser.Images = ConvertToBytes(file);
-
-                    // Update existing user
                     db.Entry(aspNetUser).State = EntityState.Modified;
                     db.SaveChanges();
                 }
-
-                //user.Images = ConvertToBytes(file);
-
-
-                //db.AspNetUsers.Add(user);
-                //db.SaveChanges();
                 return PartialView();
             }
             else
@@ -1691,7 +1569,7 @@ namespace CRM_Raviz.Controllers
             return fieldNames;
         }
 
-        public ActionResult DownloadCases(string Users, string CallType,string Disposition,string SubDisposition, DateTime? CallbackTime = null, DateTime? specificDate = null, DateTime? endDate = null)
+        public ActionResult DownloadCases(string Users, string CallType,string Disposition,string SubDisposition, string DerbyBatch, DateTime? CallbackTime = null, DateTime? specificDate = null, DateTime? endDate = null)
         {
             CPVDBEntities db = new CPVDBEntities();
             HttpResponseBase Response = HttpContext.Response;
@@ -1707,8 +1585,13 @@ namespace CRM_Raviz.Controllers
             bouncedRecords = db.BouncedRecords.ToList();    
 
             var key = "";
-
-          
+                
+            if(DerbyBatch != "")
+            {
+                var accountNumbers = db.RecordDatas.Where(rd => rd.DerbyBatch == DerbyBatch).Select(rd => rd.AccountNo).ToList();
+                query = query.Where(et => accountNumbers.Contains(et.AccountNo));
+                caseTables = query.ToList();
+            }
 
             if (Users != "")
             {
@@ -1764,7 +1647,7 @@ namespace CRM_Raviz.Controllers
 
             var header1 = new List<string>()
             {
-                "AccountNo","Agent", "DialedNumber", "EmailUsed", "Dispo", "SubDispo", "CallbackTime", "Comments", "Segments","DateTime"
+                "AccountNo","Agent", "DialedNumber", "EmailUsed", "Dispo", "SubDispo", "CallbackTime", "Comments", "Segments","Datetime"
             };
 
             var header2 = new List<string>()
@@ -1866,17 +1749,24 @@ namespace CRM_Raviz.Controllers
                     col = 1;
                     foreach (var headerName in bouncedDetailHeaders)
                     {
+                        
+                        
                         var property = typeof(BouncedRecord).GetProperty(headerName, BindingFlags.Public | BindingFlags.Instance);
-                        object value = property.GetValue(bouncedDetail);
 
-                        if (property.PropertyType == typeof(DateTime))
+                        if (property != null && bouncedDetail != null)
                         {
-                            bouncedWorksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
+                            object value = property.GetValue(bouncedDetail);
+
+                            if (property.PropertyType == typeof(DateTime))
+                            {
+                                bouncedWorksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
+                            }
+                            else
+                            {
+                                bouncedWorksheet.Cells[row, col++].Value = value != null ? value.ToString() : string.Empty;
+                            }
                         }
-                        else
-                        {
-                            bouncedWorksheet.Cells[row, col++].Value = value != null ? value.ToString() : string.Empty;
-                        }
+                           
                     }
 
 
@@ -1913,7 +1803,7 @@ namespace CRM_Raviz.Controllers
 
             var key = "";
 
-            if(DerbyBatch != null)
+            if(DerbyBatch != "")
             {
                 query = query.Where(et => et.DerbyBatch == DerbyBatch);
                 caseTables = query.ToList();
@@ -1971,17 +1861,17 @@ namespace CRM_Raviz.Controllers
                 "Utility_Billing", "Others", "OS_Billing", "License_expiry", "Contact_Person","ModifiedDate", "Nationality", "Mobile1",
                 "Mobile2", "Mobile3", "Mobile4", "Email_1", "Email_2", "Email_3", "ExpectedRenewalFee",
                  "SRNumber", "EmployeeVisaQuota", "EmployeeVisaUtilized", "ProjectBundleName",
-                "LicenseType", "FacilityType", "NoYears", "DerbyBatch", "CallType","Segments"};
+                "LicenseType", "FacilityType", "NoYears", "DerbyBatch", "CallType"};
 
 
             var header1 = new List<string>()
             {
-                "AccountNo","Agent", "DialedNumber", "EmailUsed", "Dispo", "SubDispo", "CallbackTime", "Comments", "Segments"
+                "AccountNo","Agent", "DialedNumber", "EmailUsed", "Dispo", "SubDispo", "CallbackTime", "Comments"
             };
 
             var header2 = new List<string>()
             {
-                "Account No","Event Created by", "Dialed Number", "Email Used", "Disposition", "Sub Disposition", "CallbackTime", "Comments", "Segments"
+                "Account No","Event Created by", "Dialed Number", "Email Used", "Disposition", "Sub Disposition", "CallbackTime", "Comments","Segments"
             };
 
             var bouncedDetailHeaders = new List<string>()
@@ -1989,6 +1879,10 @@ namespace CRM_Raviz.Controllers
                  "AccountNo","ChequeNumber", "ReasonCode","Text","DateBounced", "ChequeDate","TotalAmount"
             };
 
+            var ReqAsked = new List<string>()
+            {
+                "Segments"
+            };
 
             using (var package = new ExcelPackage())
             {
@@ -2041,7 +1935,7 @@ namespace CRM_Raviz.Controllers
                     foreach (var itemcase in eventTables)
                     {
 
-                        col = 32;
+                        col = 31;
                         foreach (var headName in header1)
                         {
                             var property = typeof(EventTable).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
@@ -2057,6 +1951,20 @@ namespace CRM_Raviz.Controllers
                                 worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
                             }
                         }
+
+                    }
+
+                    col = 39;
+
+
+
+                    foreach (var headName in ReqAsked)
+                    {
+                        var property = typeof(RecordData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
+                        object value = property.GetValue(items);
+
+                        
+                        worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
 
                     }
 
