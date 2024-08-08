@@ -280,6 +280,7 @@
     <Compile Include="Models\AspNetUserLogin.cs">
       <DependentUpon>RakizCRM.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\BatchStatus.cs" />
     <Compile Include="Models\BouncedRecord.cs">
       <DependentUpon>RakizCRM.tt</DependentUpon>
     </Compile>
@@ -347,9 +348,12 @@
     <Content Include="Content\Images\copy.png" />
     <Content Include="Content\Images\derbylogo.png" />
     <Content Include="Content\Images\derbylogo1.png" />
+    <Content Include="Content\Images\derbywhi.png" />
+    <Content Include="Content\Images\derbywhite.png" />
     <Content Include="Content\Images\edit1.png" />
     <Content Include="Content\Images\event1.png" />
     <Content Include="Content\Images\event2.png" />
+    <Content Include="Content\Images\line.png" />
     <Content Include="Content\Images\logo.png" />
     <Content Include="Content\Images\logo1.png" />
     <Content Include="Content\Images\phone-call.png" />
@@ -474,6 +478,8 @@
     <Content Include="Views\Home\_EmailId.cshtml" />
     <Content Include="Views\Home\_AgentCases.cshtml" />
     <Content Include="Views\Home\_ProfilePic.cshtml" />
+    <Content Include="Views\Home\BatchMaster.cshtml" />
+    <Content Include="Views\Home\AllocationReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

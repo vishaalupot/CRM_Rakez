@@ -130,7 +130,7 @@
         justify-content: center;
         align-items: center;
         background-color: #082948;
-        transition-duration: 0.3s;
+        transition-duration: 0.3s;z
     }
 
         .stats-logo2:hover {
@@ -199,6 +199,7 @@
         opacity: 0;
         width: max-content;
         height: 400px;
+        width: 1000px;
         overflow: scroll;
     }
 
@@ -239,13 +240,7 @@
             padding: 10px; /* Padding */
         }
 
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-    }
-
+  
     body {
         background-color: #f5f5f5;
     }
@@ -255,13 +250,12 @@
         padding: 0px;
         display: flex;
     }
-
     .sidebar {
         width: 20%;
         margin: 20px 0px;
         padding: 20px;
         background-color: #fff;
-        height: 80vh;
+        height: 100%;
         box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
         border-radius: 8px;
         background-color: #082948;
@@ -311,11 +305,9 @@
     table {
         width: 100%;
         border-collapse: collapse;
-/*        border-radius: 4px;
-*/        overflow: hidden;
+        overflow: hidden;
         background-color: white;
-        /*        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    */
+        font-family: 'Jaldi', sans-serif;
     }
 
     thead {
@@ -324,7 +316,7 @@
 
     th, td {
         padding: 12px 15px;
-        text-align: left;
+        text-align: center;
     }
 
     th {
@@ -332,6 +324,8 @@
         background-color: #4CAF50;
         color: white;
         height: 55px;
+        font-size: 20px;
+        /*color: #082948 !important;*/
     }
     tr {
         height: max-content;
@@ -367,19 +361,33 @@
 
     .chart-container2 {
         width: 500px;
+        height: 300px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background: linear-gradient(to right,#082948 25%, #035c5e 95%) /*linear-gradient(to right,#035c5e 5%, #00806e 95%)*/;
+        margin: 10px 0px;
+    }
+
+    .chart-container4 {
+        width: 100%;
         height: 380px;
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        background: linear-gradient(to right,#035c5e 5%, #00806e 95%);
+        background: linear-gradient(to right,#082948 15%, #035c5e 95%);
     }
 
     .chart-container3 {
         height: 100%;
+        max-height: 300px;
         display: flex;
         justify-content: center;
         flex-direction: column;
-        background: linear-gradient(to right,#082948 25%, #035c5e 95%);
+        background: linear-gradient(to right,#035c5e 5%, #00806e 95%); /*linear-gradient(to right,#082948 25%, #035c5e 95%);*/
+        margin: 10px 0px;
+        overflow: auto;
+        padding-top: 30px;
     }
 
     #myChart {
@@ -473,7 +481,6 @@
 
     
 </style>
-
 <style>
     .closebutton {
         position: relative;
@@ -554,7 +561,6 @@
         }
     }
 </style>
-
 <style>
     #overlay {
         display: none;
@@ -677,6 +683,8 @@
         /*font-family: 'Poppins', sans-serif;*/
         font-weight: 700;
         font-style: normal;
+        display: flex;
+        align-items: center;
     }
 
     .drop1 {
@@ -727,7 +735,7 @@
     }
 
         .beautiful-table th, .beautiful-table td {
-            border: 1px solid #ddd;
+           /* border: 1px solid #ddd;*/
             padding: 8px;
             text-align: left;
             font-family: 'Jaldi', sans-serif;
@@ -735,7 +743,7 @@
         }
 
         .beautiful-table th {
-            background-color: #808080ad;
+            background-color: #80808000;
             color: white;
             height: 45px;
         }
@@ -752,12 +760,323 @@
         .beautiful-table th, .beautiful-table td {
             white-space: nowrap;
         }
+
+    .cover {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        display: none;
+    }
+
+    .loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 80px;
+  position: relative;
+}
+
+.loader:before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+}
+
+.loader-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.loader-block {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 2px;
+  background-color: #fff;
+  box-shadow: 0 0 20px #fff;
+  animation: loader_562 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.loader-block:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.loader-block:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loader-block:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.loader-block:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.loader-block:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+.loader-block:nth-child(6) {
+  animation-delay: 0.6s;
+}
+
+.loader-block:nth-child(7) {
+  animation-delay: 0.7s;
+}
+
+.loader-block:nth-child(8) {
+  animation-delay: 0.8s;
+}
+
+@@keyframes loader_562 {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+
+  20% {
+    transform: scale(1, 2.5);
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.7);
+  }
+
+  40% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+}
+
+
+    /* Popup backdrop - hidden by default */
+    .popupBackdrop {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    /* Popup box */
+    .popupBox {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 300px;
+        text-align: center;
+    }
+
+    /* Close button */
+    .popupClose {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .popupClose:hover,
+        .popupClose:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .status{
+        cursor: pointer;
+    }
+
+    /* Buttons */
+   
+
+
+</style>
+
+<style>
+    table.custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        table.custom-table thead tr {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        table.custom-table thead th {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        table.custom-table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table.custom-table tbody tr:hover {
+            background-color: #ddd;
+        }
+
+        table.custom-table tbody th,
+        table.custom-table tbody td {
+            text-align: center;
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+            table.custom-table tbody th.status {
+                background-color: #f9f9f9;
+                cursor: pointer;
+            }
+
+            table.custom-table tbody td.rowclick {
+                cursor: pointer;
+                font-size: 20px;
+            }
+</style>
+
+<style>
+    /* Custom CSS for unique table */
+    #uniqueTable {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: 'Jaldi', sans-serif;
+    }
+
+        #uniqueTable th, #uniqueTable td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #uniqueTable th {
+            background-color: WHITE;
+            color: #082948;
+            text-align: center;
+            font-size: 20px;
+            white-space: nowrap;
+        }
+
+        #uniqueTable tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #uniqueTable tbody tr:hover {
+            background-color: #ddd;
+        }
+
+        #uniqueTable .clickable {
+            cursor: pointer;
+        }
+
+    #uniqueTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        #uniqueTable thead, #uniqueTable tfoot {
+            background-color: #f9f9f9;
+        }
+
+        #uniqueTable tfoot {
+            position: sticky;
+            bottom: 0;
+            z-index: 1;
+        }
+
 </style>
 <html lang="en">
 <head>
     <title>Dashboard</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let currentBatch = '';
+      function showPopup(Batch) {
+    document.getElementById("popupContainer").style.display = "block";
+
+    currentBatch = Batch;
+    let url = '@Url.Action("ChangeStatus")';
+
+    const popupContainer = document.querySelector('#popupContainer');
+    const newPopupContainer = popupContainer.cloneNode(true);
+    popupContainer.parentNode.replaceChild(newPopupContainer, popupContainer);
+
+    newPopupContainer.addEventListener('click', function (event) {
+        if (event.target.classList.contains('changeStatus')) {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    batch: currentBatch,
+                },
+                success: function (response) {
+                    if (response.success) {
+                        location.reload(); // Reload the page on success
+                    } else {
+                        // Optionally handle the error response
+                        alert("Failed to change status: " + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle the error
+                    alert("An error occurred: " + error);
+                }
+            });
+        }
+    });
+
+}
+
+
+
+
+
+
+        function closePopup() {
+            document.getElementById("popupContainer").style.display = "none";
+        }
+
+        @*function changeStatus(status) {
+
+                let url = '@Url.Action("ChangeStatus")';
+                let batch = $(this).data("value");
+
+                alert(batch)
+
+                //$.ajax({
+                //    url: url,
+                //    type: "Post",
+                //    data: {
+                //        query: agentCasesValue
+                //    },
+                //    success: function (dataview) {
+                //        $('#AgentcasesView').html(dataview);
+                //      //  console.log(dataview);
+                //      /*  $("#AgentcasesView").load = dataview;*/
+                //    }
+                //})
+
+            closePopup();
+        }*@
+    </script>
 
     <script>
 
@@ -834,31 +1153,24 @@
             window.addEventListener('click', (event) => {
                 if (event.target == popup1) {
                     popup1.style.display = 'none';
-                    clearPopupContent(popup1);
-
                 }
 
                 if (event.target == popup2) {
                     popup2.style.display = 'none';
-                    clearPopupContent(popup2);
                 }
 
                 if (event.target == popup3) {
                     popup3.style.display = 'none';
-                    clearPopupContent(popup3);
                 }
 
                 if (event.target == popup4) {
                     popup4.style.display = 'none';
-                    clearPopupContent(popup4);
                 }
                 if (event.target == popup5) {
                     popup5.style.display = 'none';
-                    clearPopupContent(popup5);
                 }
                 if (event.target == popup6) {
                     popup6.style.display = 'none';
-                    clearPopupContent(popup6);
                 }
             });
         });
@@ -923,18 +1235,13 @@
         let button;
 
 
+
         $(document).ready(function () {
                  $(".downloadRep").click(function () {
                      const popup5 = document.getElementById('popup5');
                      popup5.style.display = 'flex';
 
-                      button = "clicked";
-
-                     //alert(url)
-                     //alert(agentCasesValue)
-                     //alert(state)
-                     //alert(sec)
-                     //alert(button)
+                      button = "clicked"
 
                         $.ajax({
                             url: url,
@@ -945,69 +1252,107 @@
                                 state: state,
                                 button: button,
                             },
-                            //success: function (dataview) {
-                            //    $('#segments1').html(dataview);
-                            //}
                         })
                  })
         });
 
+
         $(document).ready(function () {
-                     $(".segment1").click(function () {
-                         const popup5 = document.getElementById('popup5');
-                         popup5.style.display = 'flex';
+            $(".segment1").click(function () {
+            url = '@Url.Action("_AgentCases")';
+            agentCasesValue = $(this).data("value");
+            state = "segment1";
+            sec = $(this).data("sec");
+            button = "@(ViewBag.Filter)";
 
-                     url = '@Url.Action("_AgentCases")';
-                     agentCasesValue = $(this).data("value");
-                     state = "segment1"
-                     sec = $(this).data("sec");
-
-                    button = "@(ViewBag.Filter)";
+            $(".cover").css("display", "flex");
 
 
-                    $.ajax({
-                        url: url,
-                        type: "Post",
-                        data: {
-                            query: agentCasesValue,
-                            section: sec,
-                            state: state,
-                            button:button
-                        },
-                        success: function (dataview) {
-                            $('#segments1').html(dataview);
-                        //    console.log(dataview);
-                        }
-                    })
-                })
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    query: agentCasesValue,
+                    section: sec,
+                    state: state,
+                    button: button
+                },
+                success: function (dataview) {
+                    $(".cover").css("display", "none");
+
+                    const popup5 = document.getElementById('popup5');
+                    popup5.style.display = 'flex';
+                    $('#segments1').html(dataview);
+                },
+                complete: function () {
+                    // Close the loading SweetAlert
+                    Swal.close();
+                }
+            });
         });
+        });
+
 
         $(document).ready(function () {
                      $(".segment2").click(function () {
-                         const popup5 = document.getElementById('popup5');
-                         popup5.style.display = 'flex';
-
+                         $(".cover").css("display", "flex");
                  url = '@Url.Action("_AgentCases")';
                  agentCasesValue = $(this).data("value");
                  state = "segment2"
                  sec = $(this).data("sec");
+
+                button = "@(ViewBag.Filter)";
                 $.ajax({
                     url: url,
                     type: "Post",
                     data: {
                         query: agentCasesValue,
                         section: sec,
-                        state: state
+                        state: state,
+                        button:button
                     },
                     success: function (dataview) {
+                        $(".cover").css("display", "none");
+                        const popup5 = document.getElementById('popup5');
+                        popup5.style.display = 'flex';
                         $('#segments1').html(dataview);
                     }
                 })
             })
         });
 
+         $(document).ready(function () {
+              $(".Mainsegment").click(function () {
+              $(".cover").css("display", "flex");
+
+              url = '@Url.Action("_AgentCases")';
+              agentCasesValue = $(this).data("value");
+                  state = "segmentCombo"
+                  sec = $(this).data("sec");
+                  batch = $(this).data("value");
+                  query = "@(ViewBag.Filter)";
+
+             $.ajax({
+                 url: url,
+                 type: "Post",
+                 data: {
+                     section: sec,
+                     state: state,
+                     button: batch,
+                     query : query
+                 },
+                 success: function (dataview) {
+                     $(".cover").css("display", "none");
+                     const popup5 = document.getElementById('popup5');
+                     popup5.style.display = 'flex';
+                     $('#segments1').html(dataview);
+                 }
+                 })
+            })
+         });
+
         $(document).ready(function () {
-    $(".ringing").click(function () {
+            $(".ringing").click(function () {
         var url = '@Url.Action("Ringing")';
         var agent = $(this).data("value");
         $.ajax({
@@ -1017,8 +1362,6 @@
                 Agent: agent
             },
             success: function (data) {
-                // Handle the JSON data here
-                console.log(data);
                 // For example, you might want to populate a table:
                 populateTable(data);
             },
@@ -1101,7 +1444,6 @@
                 if (e.key === "Escape") {
                     hideOverlay();
                     hideOverlayfe();
-
                 }
             });
 
@@ -1109,20 +1451,20 @@
                 $("#overlayFe").fadeOut(200);
             }
 
-
-
         });
     </script>
     <script>
 
     function handleSegmentClick(label, value, datasetIndex) {
-        const popup5 = document.getElementById('popup5');
-        popup5.style.display = 'flex';
 
+        $(".cover").css("display", "flex");
         let url = '@Url.Action("_AgentCases")';
         let query = label;
         let state = "segment2";
         let sec = "";
+
+
+        alert(button)
 
         if (datasetIndex === 0) {
              sec = "all";
@@ -1139,120 +1481,76 @@
                  section: sec,
              },
              success: function (dataview) {
+                 $(".cover").css("display", "none");
+
+                 const popup5 = document.getElementById('popup5');
+                 popup5.style.display = 'flex';
                  $('#segments1').html(dataview);
              }
          });
     }
 
-
-
-    const data2 = {
-        labels: @Html.Raw(Json.Encode(ViewBag.distinctSegments2)),
-        datasets: [
-            {
-                label: 'Total Cases',
-                data: @Html.Raw(Json.Encode(ViewBag.segment2Counts)),
-                backgroundColor: '#082948' // Yellow
-            },
-            {
-                label: 'Cases Worked',
-                data: @Html.Raw(Json.Encode(ViewBag.BatchNotWorked)),
-                backgroundColor: '#00806e' // Blue
-            }
-        ]
-    };
-
-    const config2 = {
-        type: 'bar',
-        data: data2,
-        options: {
-            scales: {
-                x: {
-                    grid: {
-                        display: false // Remove gridlines from the x-axis
-                    }
-                },
-                y: {
-                    grid: {
-                        display: false // Remove gridlines from the y-axis
-                    },
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: {
-                        usePointStyle: true
-                    }
-                }
-            },
-            categorySpacing: 0,
-            onClick: function(event, elements) {
-                // Check if a segment was clicked
-                if (elements.length > 0) {
-                    const clickedElement = elements[0];
-                    const segmentLabel = data2.labels[clickedElement.index];
-                    const datasetIndex = clickedElement.datasetIndex;
-                    const segmentValue = data2.datasets[datasetIndex].data[clickedElement.index];
-
-                    // Call your function with segment information
-                    handleSegmentClick(segmentLabel, segmentValue, datasetIndex);
-                }
-            }
-        }
-    };
-
-    // Ensure the DOM is fully loaded before initializing the chart
-    window.addEventListener('load', () => {
-        const ctx = document.getElementById('myChart2').getContext('2d');
-        const myChart2 = new Chart(ctx, config2);
-    });
     </script>
+
     <script>
-        $(document).ready(function () {
-            document.getElementById('agentDropdown').addEventListener('change', function () {
-                var selectedValue = this.value;
-                let url = '@Url.Action("Index", "Home")';
+            $(document).ready(function ()  { 
+                document.getElementById('agentDropdown').addEventListener('change', function () {
+                    var selectedValue = this.value;
+                    let url = '@Url.Action("Index", "Home")';
 
-              /*  alert(selectedValue)*/
+                  /*  alert(selectedValue)*/
 
-                $.ajax({
-                    url: url,
-                    type: "POST",
-                    data:{
-                        filter: selectedValue
-                    },
-                    success: function (dataview) {
-                        window.location.href = url + '?filter=' + encodeURIComponent(selectedValue);
-                        
-                    }
-                })
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        data:{
+                            filter: selectedValue
+                        },
+                        success: function (dataview) {
+                            window.location.href = url + '?filter=' + encodeURIComponent(selectedValue);
 
+                        }
+                    })
+
+                });
             });
-        });
     </script>
-
 </head>
 <body>
     <div style="display: flex; flex-direction: column;">
+
+        <div class="cover">
+            <div class="loader">
+                <div class="loader-inner">
+                    <div class="loader-block"></div>
+                    <div class="loader-block"></div>
+                    <div class="loader-block"></div>
+                    <div class="loader-block"></div>
+                    <div class="loader-block"></div>
+                    <div class="loader-block"></div>
+                    <div class="loader-block"></div>
+                    <div class="loader-block"></div>
+                </div>
+            </div>
+        </div>
+
+
         <div style="padding: 5px 10px 0px 10px; display: flex; flex-direction: row; align-items:center;">
             <img src="@Url.Action("DisplayProfilePic", "Home", new { snr = @User.Identity.GetUserId() })" alt="Profile Picture" class="dp" onerror="this.src='@Url.Content("~/Content/Images/placeholder.png")'" />
 
-           
             <div style="display: flex; flex-direction: column; padding: 0px 10px;">
                 <div style="display: flex; flex-direction: row;">
                     <div class="welcome">WELCOME &nbsp;</div>
                     <div class="welcome">@User.Identity.GetUserName().ToUpper()</div>
                 </div>
-               
+
                 <div style="padding: 0px 10px; display: flex; flex-direction: row;">
                     <div class="focus">Focus : </div>
                     @{
                         var agents = ViewBag.allAgents as List<string>;
                     }
 
-                    <div class="drop1" style=" padding-bottom: 10px;">
-
+                    <div class="drop1">
                         <select class="dropdown1" id="agentDropdown">
                             <option></option>
                             @if (agents != null)
@@ -1269,10 +1567,11 @@
                         </select>
                     </div>
                 </div>
+
             </div>
         </div>
 
-        <div class="container">
+        <div class="container" style="height: 90vh;">
             <div class="sidebar">
                 <div class="stat-box">
                     <div class="stats-text">
@@ -1300,7 +1599,7 @@
                 <div class="stat-box">
                     <div class="stats-text">
                         <div class="stat-text2">@ViewBag.RingingNos</div>
-                        <div class="stat-text1">Pending cases</div>
+                        <div class="stat-text1">Non-Contactable</div>
                     </div>
                     <div class="stats-logo  ring">
                         <div class="stats-img3"> </div>
@@ -1433,10 +1732,6 @@
                             <span class="Y"></span>
                             <div class="close">Close</div>
                         </button>
-                        @*<button class="downloadRep">
-                    <span>Download</span>
-                </button>*@
-
                         <span class="close-btn">&times;</span>
                         <div id="segments1">
 
@@ -1465,7 +1760,7 @@
                                 {
                                     <tr>
                                         <td>@(agent?.GetType().GetProperty("AgentName")?.GetValue(agent, null) ?? "Unknown")</td>
-                                        <td class="rowclick ringing" data-value="@(agent?.GetType().GetProperty("AgentName")?.GetValue(agent, null) ?? "Unknown")" >@(agent?.GetType().GetProperty("AccountCount")?.GetValue(agent, null) ?? "Unknown")</td>
+                                        <td class="rowclick ringing" data-value="@(agent?.GetType().GetProperty("AgentName")?.GetValue(agent, null) ?? "Unknown")">@(agent?.GetType().GetProperty("AccountCount")?.GetValue(agent, null) ?? "Unknown")</td>
                                     </tr>
                                 }
                             </tbody>
@@ -1481,21 +1776,124 @@
 
                 <div style="display: flex; flex-direction: row;">
                 </div>
-                <div class="charts-row">
+                <div class="chart chart-container4">
+                    <div style="width: 100%; height: 100%; overflow-x: auto;">
+                        @*<table id="uniqueTable">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Bounced Cheque</th>
+                                    <th>Bounced Cheque & Renewal</th>
+                                    <th>Renewal</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    <tr>
+                                        <th>Total</th>
+                                        <td>@(ViewBag.segmentCountsComb[0])</td>
+                                        <td>@(ViewBag.segmentCountsComb[1])</td>
+                                        <td>@(ViewBag.segmentCountsComb[2])</td>
+                                    </tr>
+                                }
+
+
+                                @if (ViewBag.allbatchesComb != null)
+                                {
+                                    int count = ViewBag.allbatchesComb.Count;
+                                    for (int index = count - 1; index >= 0; index--)
+                                    {
+                                        var batch = ViewBag.allbatchesComb[index];
+                                        <tr>
+                                            <th class="clickable" data-value="@batch" onclick="showPopup('@batch')">
+                                                @batch
+                                            </th>
+                                            <td style="text-align: center; font-size: 20px;" class="segment2 rowclick" data-sec="worked" data-value="@batch">
+                                                @(ViewBag.BCBatches != null && ViewBag.BCBatches.Count > index && ViewBag.BCBatches[index] != null && ViewBag.BCBatches[index] > 0 ? ViewBag.BCBatches[index] : 0)
+                                            </td>
+                                            <td style="text-align: center; font-size: 20px;" class="segment2 rowclick" data-sec="notworked" data-value="@batch">
+                                                @(ViewBag.BBatches != null && ViewBag.BBatches.Count > index && ViewBag.BBatches[index] != null && ViewBag.BBatches[index] >= 0 ? ViewBag.BBatches[index] : 0)
+                                            </td>
+                                            <td style="text-align: center; font-size: 20px;">
+                                                @(ViewBag.RBatches != null && ViewBag.RBatches.Count > index && ViewBag.RBatches[index] != null && ViewBag.RBatches[index] >= 0 ? ViewBag.RBatches[index] : 0)
+                                            </td>
+                                            <td style="text-align: center; font-size: 20px;">
+                                                @(ViewBag.totalBatchesComb != null && ViewBag.totalBatchesComb.Count > index && ViewBag.totalBatchesComb[index] != null && ViewBag.totalBatchesComb[index] >= 0 ? ViewBag.totalBatchesComb[index] : 0)
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>*@
+
+
+
+                        <table id="uniqueTable">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Bounced Cheque</th>
+                                    <th>Bounced Cheque & Renewal</th>
+                                    <th>Renewal</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>@(ViewBag.segmentCountsComb[0])</th>
+                                    <th>@(ViewBag.segmentCountsComb[1])</th>
+                                    <th>@(ViewBag.segmentCountsComb[2])</th>
+                                    <th>@(ViewBag.totalCases)</th>
+                                </tr>
+                            @if (ViewBag.allbatchesComb != null)
+                            {
+                                int count = ViewBag.allbatchesComb.Count;
+                                for (int index = count - 1; index >= 0; index--)
+                                {
+                                    var batch = ViewBag.allbatchesComb[index];
+                                    <tr>
+                                        <th class="clickable" data-value="@batch" onclick="showPopup('@batch')">
+                                            @batch
+                                        </th>
+                                        <td style="text-align: center; font-size: 20px;" class="Mainsegment rowclick" data-sec="Bounced Cheque" data-value="@batch">
+                                            @(ViewBag.BCBatches != null && ViewBag.BCBatches.Count > index && ViewBag.BCBatches[index] != null && ViewBag.BCBatches[index] > 0 ? ViewBag.BCBatches[index] : 0)
+                                        </td>
+                                        <td style="text-align: center; font-size: 20px;" class="Mainsegment rowclick" data-sec="Bounced Cheque and Renewal" data-value="@batch">
+                                            @(ViewBag.BBatches != null && ViewBag.BBatches.Count > index && ViewBag.BBatches[index] != null && ViewBag.BBatches[index] >= 0 ? ViewBag.BBatches[index] : 0)
+                                        </td>
+                                        <td style="text-align: center; font-size: 20px;" class="Mainsegment rowclick" data-sec="Renewal" data-value="@batch">
+                                            @(ViewBag.RBatches != null && ViewBag.RBatches.Count > index && ViewBag.RBatches[index] != null && ViewBag.RBatches[index] >= 0 ? ViewBag.RBatches[index] : 0)
+                                        </td>
+                                        <td style="text-align: center; font-size: 20px;" >
+                                            @(ViewBag.totalBatchesComb != null && ViewBag.totalBatchesComb.Count > index && ViewBag.totalBatchesComb[index] != null && ViewBag.totalBatchesComb[index] >= 0 ? ViewBag.totalBatchesComb[index] : 0)
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+                @*<div class="charts-row">
+
+
 
                     <div class="chart chart-container">
                         <div style="display: flex; flex-direction: row; justify-content:space-between;">
                             <div>
                                 <h3>Segments</h3>
                             </div>
-                            
+
                             <div style="display: flex; flex-direction: row; color: white; justify-content:flex-end; align-items:center;">
                                 <h5>Total</h5>
                                 <h5>Non Worked</h5>
                             </div>
                         </div>
-                        
-                        
+
+
                         <div>
                             <table>
                                 <tbody>
@@ -1552,7 +1950,6 @@
 
                     <div class="chart chart-container2">
                         <h4>Batches</h4>
-
                         <div style="width: 100%; height: 100%; overflow-x: auto;">
                             <table>
                                 <thead>
@@ -1570,10 +1967,23 @@
                                         for (int index = count - 1; index >= 0; index--)
                                         {
                                             var batch = ViewBag.allbatches[index];
+
+
+
                                             <tr>
-                                                <th style="background-color: white; color: black;" class="segment2 rowclick" data-value="@batch">
+                                                <div id="popupContainer" class="popupBackdrop">
+                                                    <div class="popupBox">
+                                                        <span class="popupClose" onclick="closePopup()">&times;</span>
+                                                        <p>Do you want to change the batch status?</p>
+                                                        <button style="padding: 10px; margin: 10px; border: none; cursor: pointer; font-size: 16px;background-color:red; color: white;" class="changeStatus" data-value="@batch">Disable</button>
+                                                        <button style="padding: 10px; margin: 10px; border: none; cursor: pointer; font-size: 16px; background-color: green; color: white;" class="changeStatus" data-value="@batch">Enable</button>
+                                                    </div>
+                                                </div>
+
+                                                <th style="background-color: white; color: black;" data-value="@batch" class="status" onclick="showPopup('@batch')">
                                                     @batch
                                                 </th>
+
                                                 <td style="text-align: center; font-size: 20px;" class="segment2 rowclick" data-sec="worked" data-value="@batch">
                                                     @(ViewBag.BatchWorked != null && ViewBag.BatchWorked.Count > index && ViewBag.BatchWorked[index] != null && ViewBag.BatchWorked[index] > 0 ? ViewBag.BatchWorked[index] : 0)
                                                 </td>
@@ -1586,51 +1996,112 @@
                                             </tr>
                                         }
                                     }
-
                                 </tbody>
+
                             </table>
-
-
-
                         </div>
                     </div>
-                </div>
-                <div class="charts-row">
-                    <div class="chart chart-container3">
-                        <div>
+                </div>*@
 
-                            <table class="beautiful-table">
-                                <tbody>
-                                    <tr style="height: 45px;">
-                                        <th style="text-align:center;">Agents</th>
-                                        <th style="text-align:center;">Cases</th>
-                                    </tr>
 
-                                    @if (ViewBag.allAgents != null && ViewBag.totalCasesList != null)
+            <div class="charts-row">
+                <div class="chart chart-container2">
+                    @*<h4>Batches</h4>*@
+                    <div style="width: 100%; height: 100%; overflow-x: auto;">
+                        <table style="font-family: 'Jaldi', sans-serif;">
+                            <thead>
+                                <tr style="white-space: nowrap;">
+                                    <th style="background-color: white; color: black;">BATCHES</th>
+                                    <th style="background-color: white; color: black;">WORKED</th>
+                                    <th style="background-color: white; color: black;">NOT WORKED</th>
+                                    @*<th style="background-color: white; color: black;">Total</th>*@
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.allbatches != null)
+                                {
+                                    int count = ViewBag.allbatches.Count;
+                                    for (int index = count - 1; index >= 0; index--)
                                     {
-                                        int index = 0;
-                                        foreach (var agent in ViewBag.Agents)
-                                        {
-                                            <tr>
-                                                <td class="segment2" style="text-align:center;" data-value="@agent">
-                                                    @agent
-                                                </td>
-                                                <td class="segment2" style="text-align:center;">
-                                                    @(ViewBag.totalCasesList.Count > index ? (ViewBag.totalCasesList[index] != null && ViewBag.totalCasesList[index] > 0 ? ViewBag.totalCasesList[index] : 0) : 0)
-                                                </td>
-                                            </tr>
-                                            index++;
-                                        }
+                                        var batch = ViewBag.allbatches[index];
+
+
+
+                                        <tr>
+                                            <div id="popupContainer" class="popupBackdrop">
+                                                <div class="popupBox">
+                                                    <span class="popupClose" onclick="closePopup()">&times;</span>
+                                                    <p>Do you want to change the batch status?</p>
+                                                    <button style="padding: 10px; margin: 10px; border: none; cursor: pointer; font-size: 16px;background-color:red; color: white;" class="changeStatus" data-value="@batch">Disable</button>
+                                                    <button style="padding: 10px; margin: 10px; border: none; cursor: pointer; font-size: 16px; background-color: green; color: white;" class="changeStatus" data-value="@batch">Enable</button>
+                                                </div>
+                                            </div>
+
+                                            <th style="background-color: white; color: black;" data-value="@batch" class="status" onclick="showPopup('@batch')">
+                                                @batch
+                                            </th>
+
+                                            <td style="text-align: center; font-size: 20px;" class="segment2 rowclick" data-sec="worked" data-value="@batch">
+                                                @(ViewBag.BatchWorked != null && ViewBag.BatchWorked.Count > index && ViewBag.BatchWorked[index] != null && ViewBag.BatchWorked[index] > 0 ? ViewBag.BatchWorked[index] : 0)
+                                            </td>
+                                            <td style="text-align: center; font-size: 20px;" class="segment2 rowclick" data-sec="notworked" data-value="@batch">
+                                                @(ViewBag.BatchNotWorked != null && ViewBag.BatchNotWorked.Count > index && ViewBag.BatchNotWorked[index] != null && ViewBag.BatchNotWorked[index] >= 0 ? ViewBag.BatchNotWorked[index] : 0)
+                                            </td>
+                                            @*<td style="text-align: center; font-size: 20px;">
+                                        @(ViewBag.TotalBatches != null && ViewBag.TotalBatches.Count > index && ViewBag.TotalBatches[index] != null && ViewBag.TotalBatches[index] >= 0 ? ViewBag.TotalBatches[index] : 0)
+                                    </td>*@
+                                        </tr>
                                     }
-                                </tbody>
-                            </table>
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+                <div class="chart chart-container3">
+                    <div>
+
+                        <table class="beautiful-table">
+                            <tbody>
+                                <tr style="height: 45px; background: linear-gradient(to right,#035c5e 5%, #00806e 95%)">
+                                    <th style="text-align:center;">Agents</th>
+                                    <th style="text-align:center;">Cases</th>
+                                </tr>
+                              
+
+                                @if (ViewBag.allAgents != null && ViewBag.totalCasesList != null)
+                                {
+                                    int index = 0;
+                                    foreach (var agent in ViewBag.Agents)
+                                    {
+                                        <tr>
+                                            <td class="segment2" style="text-align:center;" data-value="@agent">
+                                                @agent
+                                            </td>
+                                            <td class="segment2" style="text-align:center;">
+                                                @(ViewBag.totalCasesList.Count > index ? (ViewBag.totalCasesList[index] != null && ViewBag.totalCasesList[index] > 0 ? ViewBag.totalCasesList[index] : 0) : 0)
+                                            </td>
+                                        </tr>
+                                        index++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
 
 
-                        </div>
                     </div>
 
+
                 </div>
+
+
+
             </div>
+
+
+            </div>
+
+
         </div>
 
         <div id="overlay">

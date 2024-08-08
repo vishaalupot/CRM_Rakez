@@ -154,22 +154,47 @@
             if ((disposition == 'CALLBACK' && $('#CallBackDateTime').val() == '01/01/2000 12:00 AM') ||
                 (disposition == 'CALLBACK LANGUAGE' && $('#SubDisposition').val() == '-') ||
                 ((callType == 'OUTBOUND' || callType == 'INBOUND') && $('#Disposition').val() == '-') ||
-                (callType == 'EMAIL UPDATE' && $('#Dropdown').val() == '-')) {
+                (callType == 'EMAIL UPDATE' && $('#Dropdown').val() == '-') ||(callType == "-")) {
                 // If one or both dropdowns are not selected, show SweetAlert
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
                     text: 'Please make sure to select all required options before submitting!',
+
                 });
                 return false; // Prevent form submission
             }
             return true; // Proceed with form submission
         }
 
+        //function validateSelections() {
+        //    var disposition = $('#Disposition').val();
+        //    var callType = $('#CallType').val();
+
+        //    // Check if both dropdowns are required to be selected
+        //    if ((disposition == '-') ||
+        //        $('#SubDisposition').val() == '-' ||
+        //        $('#Disposition').val() == '-' ||
+        //        ) {
+        //        // If one or both dropdowns are not selected, show SweetAlert
+        //        Swal.fire({
+        //            icon: 'error',
+        //            title: 'Oops...',
+        //            text: 'Please make sure to select all required options before submitting!',
+        //        });
+        //        return false; // Prevent form submission
+        //    }
+        //    return true; // Proceed with form submission
+        //}
+
+
         $(document).ready(function () {
 
             $('#firstDropdown').hide();
             $('#Dropdown').hide();
+            $('#Dropdown2').hide();
+            $('#secondDropdown').hide();
+
             // Function to show or hide the second dropdown based on the selection of the first dropdown
             $('#Disposition').change(function () {
                 var selectedValue = $(this).val();
@@ -187,13 +212,31 @@
                     $('#Dropdown').hide(); // Show the second dropdown
                     $('#Dialed').show();
                     $('#Email').hide();
+                    $('#Dropdown2').hide();
 
                 } else if (selectedValue === 'EMAIL UPDATE') {
                     $('#firstDropdown').hide(); // Hide the second dropdown
                     $('#Dropdown').show(); // Hide the second dropdown
                     $('#Dialed').hide();
                     $('#Email').show();
+                    $('#Dropdown2').hide();
 
+                }
+                else if (selectedValue === 'ACCOUNT UPDATE') {
+                    $('#secondDropdown').hide(); // Hide the second dropdown
+                    $('#firstDropdown').hide(); // Hide the second dropdown
+                    $('#Dropdown').hide(); // Hide the second dropdown
+                    $('#Dropdown2').show(); // Hide the second dropdown
+                    $('#Dialed').hide();
+                    $('#Email').hide();
+                }
+                else if (selectedValue == '-') {
+                    $('#secondDropdown').hide(); // Hide the second dropdown
+                    $('#firstDropdown').hide(); // Hide the second dropdown
+                    $('#Dropdown').hide(); // Hide the second dropdown
+                    $('#Dropdown2').hide(); // Hide the second dropdown
+                    $('#Dialed').hide();
+                    $('#Email').hide();
                 }
             });
         });
@@ -473,18 +516,25 @@
                         @Html.LabelFor(model => model.License_expiry, "License Expiry", htmlAttributes: new { @class = "control-label label" })
                     </div>
                 </div>
+
                 <div class="col-md-12">
                     @{
-                        // Extract the date part from the License_expiry string
-                        string datePart = string.Empty;
+                        // Extract the date part from the License_expiry string and format it as MM-dd-YYYY
+                        string formattedDate = string.Empty;
                         if (!string.IsNullOrEmpty(Model.License_expiry) && Model.License_expiry.Length >= 10)
                         {
-                            datePart = Model.License_expiry.Substring(0, 10);
+                            DateTime dateValue;
+                            if (DateTime.TryParse(Model.License_expiry, out dateValue))
+                            {
+                                formattedDate = dateValue.ToString("MM-dd-yyyy");
+                            }
+
                         }
                     }
 
-                    @Html.TextBox("License_expiry", datePart, new { @class = "form-control box", @readonly = true })
+                    @Html.TextBox("License_expiry", formattedDate, new { @class = "form-control box", @readonly = true })
                 </div>
+
             </div>
 
             <div class="form-group col-sm-12 col-md-4 col-xl-3">
@@ -508,6 +558,7 @@
                     @Html.TextBoxFor(model => model.SRNumber, new { @class = "form-control box", @readonly = true })
                 </div>
             </div>
+
             <div class="form-group col-sm-12 col-md-4 col-xl-3">
                 <div class="row">
                     <div class="col-md-12">
@@ -590,6 +641,84 @@
                 </div>
             </div>
 
+            <div class="form-group col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.BatchHistory, "Batch History", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    @Html.TextBoxFor(model => model.BatchHistory, new { @class = "form-control box", @readonly = true })
+                </div>
+            </div>
+
+            <div class="form-group col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.BatchDate, "Batch Date", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    @Html.TextBoxFor(model => model.BatchDate, "{0:dd-MM-yyyy}", new { @class = "form-control box", @readonly = true })
+                </div>
+            </div>
+
+            <!-- Include jQuery library -->
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+            <div class="form-group col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.BatchDeadline, "Batch Deadline", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    @Html.TextBoxFor(model => model.BatchDeadline, "{0:dd-MM-yyyy}", new { @class = "form-control box", @readonly = true, @id = "batchDeadlineTextbox" })
+                </div>
+            </div>
+
+            <div class="form-group col-sm-12 col-md-4 col-xl-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.Label("Due In", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+
+                </div>
+                <div class="col-md-12">
+                    @*@Html.TextBoxFor(model => model.BatchDeadline, new { @class = "form-control box", @readonly = true,@id="batch"  })*@
+                    <input type="text" id="batch" class="form-control box" readonly />
+
+                </div>
+            </div>
+
+            <script>
+                $(document).ready(function () {
+                    // Parse the batch deadline date from the textboxContact Info
+
+
+                    var batchDeadlineText = $("#batchDeadlineTextbox").val();
+                    var batchDeadline = new Date(batchDeadlineText.split('-').reverse().join('-'));
+
+                    // Get today's date
+                    var today = new Date();
+                    today.setHours(0, 0, 0, 0); // Set time to midnight for accurate comparison
+
+                    // Calculate the difference in days
+                    var timeDiff = batchDeadline.getTime() - today.getTime();
+                    var daysDiff = Math.ceil((timeDiff / (1000 * 3600 * 24)) - 1);
+
+                    // Update the textbox with the remaining days
+                    if (daysDiff >= 0) {
+                        $("#batch").val(daysDiff + " Days");
+                    } else {
+                        $("#batch").val("Deadline passed");
+                    }
+                });
+            </script>
+
+
+
+
             <div style=" padding: 20px 10px;">
                 @{
                     var bouncedRecords = ViewBag.Bounce as List<BouncedRecord>;
@@ -632,7 +761,8 @@
                         new SelectListItem { Text = "-", Value = "-" },
                         new SelectListItem { Text = "OUTBOUND", Value = "OUTBOUND" },
                         new SelectListItem { Text = "INBOUND", Value = "INBOUND" },
-                        new SelectListItem { Text = "EMAIL UPDATE", Value = "EMAIL UPDATE" }
+                        new SelectListItem { Text = "EMAIL UPDATE", Value = "EMAIL UPDATE" },
+                        new SelectListItem { Text = "ACCOUNT UPDATE", Value = "ACCOUNT UPDATE" }
                     }, new { @class = "form-control box dropdown-styled" })
                     @Html.ValidationMessageFor(model => model.CallType, "", new { @class = "text-danger" })
                 </div>
@@ -705,7 +835,24 @@
                         new SelectListItem { Text = "CUSTOMER'S EMAIL REPLIED", Value = "CUSTOMER'S EMAIL REPLIED" },
                     }, new { @class = "form-control box dropdown-styled" })
                     @Html.ValidationMessageFor(model => model.Disposition, "", new { @class = "text-danger" })
-                </div>  
+                </div>
+            </div>
+
+            <div class="form-group  col-sm-12 col-md-4 col-xl-3" id="Dropdown2">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.LabelFor(model => model.DispositionThird, "Disposition", htmlAttributes: new { @class = "control-label label" })
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.DispositionThird, new List<SelectListItem>
+                    {
+                        new SelectListItem {  Text = "-", Value = "-"  },
+                        new SelectListItem { Text = "EXCLUDE ACCOUNT", Value = "EXCLUDE ACCOUNT" },
+                        new SelectListItem { Text = "RECALLED ACCOUNT", Value = "RECALLED ACCOUNT" }
+                    }, new { @class = "form-control box dropdown-styled" })
+                    @Html.ValidationMessageFor(model => model.DispositionThird, "", new { @class = "text-danger" })
+                </div>
             </div>
 
 
@@ -756,7 +903,7 @@
 
                     @if (ViewBag.DialedNumber != null)
                     {
-                        <select id="dialedNumberDropdown" name="DialedNumber" class = "form-control box dropdown-styled">
+                        <select id="dialedNumberDropdown" name="DialedNumber" class="form-control box dropdown-styled">
                             <option value="">-</option> <!-- Initial placeholder option -->
                             @foreach (var item in ViewBag.DialedNumber)
                             {
@@ -768,10 +915,6 @@
                     {
                         <p>No data available</p>
                     }
-
-
-
-
                 </div>
 
             </div>
@@ -823,8 +966,8 @@
             </div>
 
             @Html.Label("History", htmlAttributes: new { @class = "control-label label" })
-            <div >
-                <div id="History" >
+            <div>
+                <div id="History">
 
                 </div>
             </div>
@@ -847,8 +990,7 @@
         </div>
         }
     </div>
-    <div style=" margin: 100px 0px 0px 50px;">
-
+    <div style=" margin: 0 auto; ">
         <div class="card" style="height: max-content;">
             <div class="card-details" style="height: max-content;">
                 <p class="text-title">Contact Info</p>
@@ -862,7 +1004,7 @@
                     Html.RenderPartial("_MobileNo", mobileNumbers);
                 }
 
-                 @{
+                @{
                     var EmailIds = db.EmailIds.Where(m => m.RecordId == Model.Id).ToList();
                     Html.RenderPartial("_EmailId", EmailIds);
                 }
@@ -904,7 +1046,14 @@
             </div>
         </div>
 
+        @*<div class="card" style="height: max-content;">
+            <div class="card-details" style="height: max-content;">
+                <p class="text-title">Batch History</p>
 
+                @Html.DisplayFor(model => model.BatchHistory)
+
+            </div>
+        </div>*@
 
         <script>
            $(document).ready(function () {
@@ -983,6 +1132,7 @@
         overflow: visible;
         font-family: 'Jaldi', sans-serif;
         line-height: 1.2;
+        margin: 20px 0px;
     }
 
     .card-details {

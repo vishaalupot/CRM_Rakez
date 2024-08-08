@@ -234,7 +234,7 @@
     <div>
         <div class="heading">Upload Cases</div>
 
-        @using (Html.BeginForm("UploadCases", "Home", FormMethod.Post, new { enctype = "multipart/form-data"}))
+        @using (Html.BeginForm("UploadCases", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <div style="display: flex; align-items: center; flex-direction: row; justify-content: center; font-family: 'Jaldi', sans-serif; font-weight: 500; font-size: 22PX; ">
                 <div style="text-align:center; padding-right: 10px;"> Select Segment</div>
@@ -282,6 +282,33 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    $(document).ready(function() {
+        @if(ViewBag.Message != null)
+        {
+            <text>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '@ViewBag.Message'
+                });
+            </text>
+        }
+
+        @if(ViewBag.Error != null)
+        {
+            <text>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '@ViewBag.Error'
+                });
+            </text>
+        }
+    });
+    </script>
+
     <script>
         function downloadExcel() {
             const workbook = new ExcelJS.Workbook();
@@ -295,7 +322,7 @@
                     " IP Telephone billing ", " Utility billing ", " Others ", " O/S Balance ",
                     "Closed Account", "Dormant Account", "Insufficient Funds", "Other Reason", "Signature Irregular",
                     "Technical Reason", "Others", "Employee Visa Quota", "Employee Visa Utilized", "Product Bundle Name",
-                    "License Type", "Facility Type", "No of Years", "Derby Batch", "Agent"]
+                    "License Type", "Facility Type", "No of Years", "Derby Batch", "Agent","Batch Date"]
             ];
             sheet1.addRows(dataSheet1);
 

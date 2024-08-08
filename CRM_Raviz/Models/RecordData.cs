@@ -66,13 +66,17 @@ namespace CRM_Raviz.Models
         public string LicenseType { get; set; }
         public string FacilityType { get; set; }
         public string NoYears { get; set; }
-        public string AgentsName { get; set; }
-        public string DispositionSecond { get; set; }
-        public string EmailUsed { get; set; }
-
         public string DerbyBatch { get; set; }
         public string CallType { get; set; }
         public string ModifiedAgent { get; set; }
+        public string BatchHistory { get; set; }
+        public string DispositionSecond { get; set; }
+        public string DispositionThird { get; set; }
+        public string EmailUsed { get; set; }
+        public string AgentsName { get; set; }
+        public Nullable<System.DateTime> BatchDate { get; set; }
+        public Nullable<System.DateTime> BatchDeadline { get; set; }
+        public string Status { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EmailId> EmailIds { get; set; }

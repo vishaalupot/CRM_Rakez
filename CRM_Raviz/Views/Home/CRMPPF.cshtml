@@ -69,7 +69,7 @@
         <div>
             <h1 class="heading">CRM Post Production File</h1>
 
-            <div class="container1">
+            <div class="container1" style="display: flex; flex-wrap: wrap;">
                 @using (Html.BeginForm("DownloadCases", "Home", FormMethod.Get))
                 {
                     <div class="row space">
@@ -80,7 +80,7 @@
 
                 
 
-                        <div class="form-group col-sm-12 col-md-4 col-xl-3">
+                        <div class="form-group col-sm-12 col-md-4 col-xl-6">
                             <div class="row">
                                 <div class="col-md-12">
                                     @Html.Label("DerbyBatch", htmlAttributes: new { @class = "control-label label" })
@@ -94,7 +94,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-sm-12 col-md-4 col-xl-3">
+                        <div class="form-group col-sm-12 col-md-4 col-xl-6">
                             <div class="row">
                                 <div class="col-md-12">
                                     @Html.Label("Agents", htmlAttributes: new { @class = "control-label label" })
@@ -105,7 +105,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-sm-12 col-md-4 col-xl-3">
+                        <div class="form-group col-sm-12 col-md-4 col-xl-6">
                             <div class="row">
                                 <div class="col-md-12">
                                     @Html.Label("Calltype", htmlAttributes: new { @class = "control-label label" })
@@ -123,7 +123,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-sm-12 col-md-3 col-xl-3" id="firstDropdown">
+                        <div class="form-group col-sm-12 col-md-3 col-xl-6" id="firstDropdown">
                             <div class="row">
                                 <div class="col-md-12">
                                     @Html.Label("Disposition", htmlAttributes: new { @class = "control-label label" })
@@ -172,7 +172,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-sm-12 col-md-3 col-xl-3" id="secondDropdown" style="display:none;">
+                        <div class="form-group col-sm-12 col-md-3 col-xl-6" id="secondDropdown" style="display:none;">
                             <div class="row">
                                 <div class="col-md-12">
                                     @Html.Label("SubDisposition", htmlAttributes: new { @class = "control-label label" })

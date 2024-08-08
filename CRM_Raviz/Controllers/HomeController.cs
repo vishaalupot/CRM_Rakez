@@ -18,10 +18,12 @@ using ClosedXML.Excel;
 using System.Data.Entity;
 using Newtonsoft.Json;
 using System.Net;
+using System.ComponentModel.Design;
 
 
 namespace CRM_Raviz.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private ApplicationUserManager _userManager;
@@ -31,6 +33,68 @@ namespace CRM_Raviz.Controllers
             CPVDBEntities db = new CPVDBEntities();
             List<string> listRoles = db.AspNetRoles.Select(s => s.Name).ToList();
             ViewBag.Roles = listRoles;
+            return View();
+        }
+
+
+        public ActionResult BatchMaster()
+        {
+            CPVDBEntities db = new CPVDBEntities();
+            RecordData recordData = new RecordData();
+            var records = db.RecordDatas.ToList();
+
+            List<string> allbatches = records
+                   .Where(r => !string.IsNullOrEmpty(r.DerbyBatch))
+                   .Select(r => r.DerbyBatch)
+                   .Distinct()
+                   .OrderBy(DerbyBatch => int.Parse(DerbyBatch.Split(' ')[1]))
+                   .ToList();
+
+            //var batchStatuses = records
+            //.Where(r => !string.IsNullOrEmpty(r.DerbyBatch))
+            //.GroupBy(r => r.DerbyBatch)
+            //.Select(g => new
+            //{
+            //    Batch = g.Key,
+            //    Status = g.Select(r => r.Status).Distinct().SingleOrDefault()
+            //})
+            //.ToList();
+
+            List<BatchStatus> batchStatuses = records
+            .Where(r => !string.IsNullOrEmpty(r.DerbyBatch))
+            .GroupBy(r => r.DerbyBatch)
+            .Select(g => new BatchStatus
+            {
+                Batch = g.Key,
+                Status = g.Select(r => r.Status).Distinct().SingleOrDefault(),
+                Count = g.Count()
+            })
+            .OrderBy(bs => int.Parse(bs.Batch.Split(' ')[1]))
+            .ToList();
+
+
+
+            List<int> batchWorked = allbatches
+            .Select(batch => records
+                .Where(r => (!string.IsNullOrEmpty(r.DerbyBatch) && r.ModifiedDate != null && r.DerbyBatch == batch && r.BatchDate == null) || (r.ModifiedDate >= r.BatchDate && r.BatchDate != null && r.DerbyBatch == batch))
+                .Count())
+            .ToList();
+
+            List<int> totalBatches = allbatches
+               .Select(DerbyBatch => records
+                   .Count(r => r.DerbyBatch == DerbyBatch))
+               .ToList();
+
+            List<int> batchNotWorked = allbatches
+            .Select(batch => records
+                .Where(r => (!string.IsNullOrEmpty(r.DerbyBatch) && r.ModifiedDate == null && r.DerbyBatch == batch) || (r.ModifiedDate < r.BatchDate && r.BatchDate != null && r.DerbyBatch == batch))
+                .Count())
+                .ToList();
+
+            ViewBag.batchStatuses = batchStatuses;
+            ViewBag.allbatches = allbatches;
+            ViewBag.totalBatches = totalBatches;
+
             return View();
         }
 
@@ -200,6 +264,57 @@ namespace CRM_Raviz.Controllers
             return Json(new { success = true }); 
         }
 
+        public ActionResult ChangeStatus(string batch, string status)
+        {
+
+            try
+            {
+                using (CPVDBEntities db = new CPVDBEntities())
+                {
+                    List<RecordData> records = db.RecordDatas.Where(r => r.DerbyBatch == batch).ToList();
+
+                    foreach (var record in records)
+                    {
+                        record.Status = status;
+                        db.Entry(record).State = System.Data.Entity.EntityState.Modified;
+                    }
+
+                    db.SaveChanges();
+                }
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                // return a JSON response with success set to false and include the exception message
+                return Json(new { success = false, message = ex.Message });
+            }
+
+            return Json(new { success = true });
+        }
+
+
+        //public ActionResult ChangeStatus(string batch)
+        //{
+
+        //    CPVDBEntities db = new CPVDBEntities();
+        //    List<RecordData> records = db.RecordDatas.Where(r => r.DerbyBatch == batch).ToList();
+        //    //EmailId mail = db.EmailIds.Find(id);
+
+        //    foreach (var record in records)
+        //    {
+        //        record.Status = "True";
+        //    }
+
+
+        //    db.Entry(records).State = System.Data.Entity.EntityState.Modified;
+        //    db.SaveChanges();
+
+        //    // Return any response if needed
+        //    return Json(new { success = true });
+        //}
+
         public ActionResult AddEmail(int id, string emailId)
         {
             using (CPVDBEntities db = new CPVDBEntities())
@@ -222,11 +337,19 @@ namespace CRM_Raviz.Controllers
 
             using (CPVDBEntities db = new CPVDBEntities())
             {
-                var records = db.RecordDatas.ToList();
+                var startOfDay = today.Date;
+                var endOfDay = today.Date.AddDays(1).AddTicks(-1);
+                var startOfMonth = new DateTime(today.Year, today.Month, 1);
+                var endOfMonth = startOfMonth.AddMonths(1).AddTicks(-1);
+                var records = db.RecordDatas.Where(r => r.Status == "true").ToList();
                 string currentUser = User.Identity.GetUserName();
 
                 IQueryable<RecordData> recordDatasQuery = db.RecordDatas;
+                IQueryable<RecordData> ExclusiveRecord = db.RecordDatas;
                 IQueryable<EventTable> eventTableQuery = db.EventTables;
+
+                recordDatasQuery = db.RecordDatas.Where(r => r.Status == "true");
+                ExclusiveRecord = db.RecordDatas.Where(r => (r.Status) == "true");
 
                 var allAgents = db.AspNetUsers
                       .Where(r => r.UserRole == "Agent")
@@ -244,6 +367,17 @@ namespace CRM_Raviz.Controllers
 
                 if (User.IsInRole("Agent"))
                 {
+                    recordDatasQuery = db.RecordDatas.Where(r => (r.ModifiedAgent ?? r.Agent) == currentUser);
+                    ExclusiveRecord = db.RecordDatas.Where(r => (r.Agent) == currentUser);
+                    eventTableQuery = db.EventTables.Where(r => r.Agent == currentUser);
+
+                    allAgents = db.AspNetUsers
+                      .Where(r => r.UserRole == "Agent" && r.UserName == currentUser)
+                      .Select(r => r.UserName)
+                      .Distinct()
+                      .ToList();
+
+                    ViewBag.Filter = currentUser;
                     fliterAllAgents = db.AspNetUsers
                       .Where(r => r.UserRole == "Agent" && r.UserName == currentUser)
                       .Select(r => r.UserName)
@@ -268,6 +402,7 @@ namespace CRM_Raviz.Controllers
                     eventTableQuery = db.EventTables.Where(r => r.Agent == filter);
 
                     recordDatasQuery = db.RecordDatas.Where(r => (r.ModifiedAgent ?? r.Agent) == filter);
+                    ExclusiveRecord = db.RecordDatas.Where(r => (r.Agent) == filter);
 
 
                     allAgents = db.AspNetUsers
@@ -278,117 +413,27 @@ namespace CRM_Raviz.Controllers
 
                     ViewBag.Filter = filter;
                 }
-               
-               
-                if (User.IsInRole("Agent"))
-                {
-                    recordDatasQuery = db.RecordDatas.Where(r => (r.ModifiedAgent ?? r.Agent) == currentUser);
-                    eventTableQuery = db.EventTables.Where(r => r.Agent == currentUser);
+              
+                //Total Cases for each Agents
+                var totalCasesList = allAgents.Select(UserName => ExclusiveRecord.Count(r => r.Agent == UserName && r.Status =="True" )).ToList(); /*recordDatasQuery.Where().Count();*/
 
-                     allAgents = db.AspNetUsers
-                       .Where(r => r.UserRole == "Agent" && r.UserName == currentUser)
-                       .Select(r => r.UserName)
-                       .Distinct()
-                       .ToList();
-
-                    ViewBag.Filter = currentUser;
-                }
-
-                var startOfDay = today.Date;
-                var endOfDay = today.Date.AddDays(1).AddTicks(-1);
-                var startOfMonth = new DateTime(today.Year, today.Month, 1);
-                var endOfMonth = startOfMonth.AddMonths(1).AddTicks(-1);
-                var totalCasesList = allAgents.Select(UserName => recordDatasQuery.Count(r => r.Agent == UserName)).ToList(); /*recordDatasQuery.Where().Count();*/
-                int totalCases = allAgents.Sum(UserName => recordDatasQuery.Count(r => r.Agent == UserName));
-
-
+                //Events
                 int casesCountToday = eventTableQuery
                     .Where(r => r.Datetime != null && r.Datetime >= startOfDay && r.Datetime <= endOfDay)
-                     .Select(r => r.AccountNo) // Select the accountno
-                    .Distinct() // Get distinct accountno values
-                    .Count(); // Count the distinct values
+                     .Select(r => r.AccountNo) 
+                    .Distinct()
+                    .Count();
 
                 int casesCountThisMonth = eventTableQuery
                     .Where(r => r.Datetime != null && r.Datetime >= startOfMonth && r.Datetime <= endOfMonth)
-                    .Select(r => r.AccountNo) // Select the accountno
-                    .Distinct() // Get distinct accountno values
-                    .Count(); // Count the distinct values
-
-                int totalCasesNotWorked = recordDatasQuery
-                    .Where(r => r.ModifiedDate == null)
+                    .Select(r => r.AccountNo) 
+                    .Distinct() 
                     .Count();
-
-                int callbackCountThisMonth = recordDatasQuery
-                    .Where(r => r.CallbackTime.HasValue && r.CallbackTime >= startOfDay && r.CallbackTime <= endOfDay)
-                    .Count();
-
-
-                List<string> allSegments = records
-                .Where(r => !string.IsNullOrEmpty(r.Segments)) // Ensure we only consider non-null and non-empty segments
-                .Select(r => r.Segments)
-                .Distinct()
-                .OrderBy(segment => segment)
-                .ToList();
-
-                List<int> segmentCounts = allSegments
-                    .Select(segment => recordDatasQuery
-                        .Count(r => r.Segments == segment))
-                    .ToList();
-
-                List<int> segmentNotWorked = allSegments
-                    .Select(segment => recordDatasQuery
-                        .Count(r => r.Segments == segment && r.ModifiedDate == null))
-                    .ToList();
-
-                var distinctSegments = recordDatasQuery
-                    .Where(r => !string.IsNullOrEmpty(r.Segments))
-                    .Select(r => r.Segments)
-                    .OrderBy(segment => segment)
-                    .Distinct()
-                    .ToList();
-
-                var segment2Counts = recordDatasQuery
-                    .Where(r => !string.IsNullOrEmpty(r.Segments))
-                    .GroupBy(r => r.DerbyBatch)
-                    .OrderBy(g => g.Key)
-                    .Select(g => g.Count())
-                    .ToList();
-
-                List<string> allbatches = records
-                   .Where(r => !string.IsNullOrEmpty(r.DerbyBatch))
-                   .Select(r => r.DerbyBatch)
-                   .Distinct()
-                   .OrderBy(DerbyBatch => DerbyBatch)
-                   .ToList();
-
-                List<int> batchWorked = allbatches
-                .Select(batch => recordDatasQuery
-                    .Where(r => !string.IsNullOrEmpty(r.DerbyBatch) && r.ModifiedDate != null && r.DerbyBatch == batch)
-                    .Count())
-                .ToList();
-
-                List<int> totalBatches = allbatches
-                   .Select(DerbyBatch => recordDatasQuery
-                       .Count(r => r.DerbyBatch == DerbyBatch))
-                   .ToList();
-
-                List<int> batchNotWorked = allbatches
-                .Select(batch => recordDatasQuery
-                    .Where(r => !string.IsNullOrEmpty(r.DerbyBatch) && r.ModifiedDate == null && r.DerbyBatch == batch)
-                    .Count())
-                .ToList();
-
-                var distinctSegments2 = recordDatasQuery
-                    .Where(r => !string.IsNullOrEmpty(r.Segments))
-                    .Select(r => r.DerbyBatch)
-                    .OrderBy(DerbyBatch => DerbyBatch)
-                    .Distinct()
-                    .ToList();
 
                 var agentCasesCountToday = eventTableQuery
                     .Where(r => r.Datetime != null && r.Datetime >= startOfDay && r.Datetime <= endOfDay)
                     .GroupBy(r => r.Agent)
-                    .Select(g => new { 
+                    .Select(g => new {
                         Agent = g.Key,
                         CasesCountToday = g.Select(r => r.AccountNo).Distinct().Count()
                         //CasesCountToday = g.Count()
@@ -399,7 +444,7 @@ namespace CRM_Raviz.Controllers
                     .Where(r => r.Datetime != null && r.Datetime >= startOfMonth && r.Datetime <= endOfMonth)
                     .GroupBy(r => r.Agent)
                     .Select(g => new {
-                        Agent = g.Key, 
+                        Agent = g.Key,
                         CasesCountThisMonth = g.Select(r => r.AccountNo).Distinct().Count()
                     })
                     .ToList();
@@ -413,11 +458,85 @@ namespace CRM_Raviz.Controllers
                     })
                     .ToList();
 
-                var agentCallBackCountToday = recordDatasQuery
-                    .Where(r => r.CallbackTime.HasValue && r.CallbackTime >= startOfDay && r.CallbackTime <= endOfDay)
-                    .GroupBy(r => r.ModifiedAgent)
-                    .Select(g => new { ModifiedAgent = g.Key, CallBackCountToday = g.Count() })
+                //Batches+Seg
+
+                List<string> allbatchesComb = records
+                   .Where(r => !string.IsNullOrEmpty(r.DerbyBatch))
+                   .Select(r => r.DerbyBatch)
+                   .Distinct()
+                   .OrderBy(DerbyBatch => int.Parse(DerbyBatch.Split(' ')[1]))
+                   .ToList();
+
+                List<int> BCBatches = allbatchesComb
+                .Select(batch => ExclusiveRecord
+                    .Where(r => !string.IsNullOrEmpty(r.Segments) && r.Segments == "Bounced Cheque" && r.DerbyBatch==batch)
+                    .Count())
+                .ToList();
+
+                List<int> BBatches = allbatchesComb
+                .Select(batch => ExclusiveRecord
+                    .Where(r => (!string.IsNullOrEmpty(r.Segments) && r.Segments == "Bounced Cheque and Renewal" && r.DerbyBatch == batch))
+                    .Count())
+                .ToList();
+
+                List<int> RBatches = allbatchesComb
+                .Select(batch => ExclusiveRecord
+                    .Where(r => (!string.IsNullOrEmpty(r.Segments) && r.Segments == "Renewal" && r.DerbyBatch == batch))
+                    .Count())
+                .ToList();
+
+                List<int> totalBatchesComb = allbatchesComb
+                   .Select(DerbyBatch => ExclusiveRecord
+                       .Count(r => r.DerbyBatch == DerbyBatch))
+                   .ToList();
+
+                
+
+                //Batches
+
+                List<string> allbatches = records
+                   .Where(r => !string.IsNullOrEmpty(r.DerbyBatch))
+                   .Select(r => r.DerbyBatch)
+                   .Distinct()
+                   .OrderBy(DerbyBatch => int.Parse(DerbyBatch.Split(' ')[1]))
+                   .ToList();
+
+                List<int> batchWorked = allbatches
+                .Select(batch => ExclusiveRecord
+                    .Where(r => (!string.IsNullOrEmpty(r.DerbyBatch) && r.ModifiedDate >= r.BatchDate && r.DerbyBatch == batch))
+                    .Count())
+                .ToList();
+
+                List<int> totalBatches = allbatches
+                   .Select(DerbyBatch => ExclusiveRecord
+                       .Count(r => r.DerbyBatch == DerbyBatch))
+                   .ToList();
+
+                List<int> batchNotWorked = allbatches   
+                .Select(batch => ExclusiveRecord
+                    .Where(r => (!string.IsNullOrEmpty(r.DerbyBatch) && (r.ModifiedDate<r.BatchDate && r.DerbyBatch == batch) || (r.ModifiedDate == null && r.DerbyBatch == batch)))
+                    .Count())
+                .ToList();
+
+                List<string> allSegmentsComb = records
+                .Where(r => !string.IsNullOrEmpty(r.Segments)) // Ensure we only consider non-null and non-empty segments
+                .Select(r => r.Segments)
+                .Distinct()
+                .OrderBy(segment => segment)
+                .ToList();
+
+                List<int> segmentCountsComb = allSegmentsComb
+                    .Select(segment => ExclusiveRecord
+                        .Count(r => r.Segments == segment && r.Status=="True"))
                     .ToList();
+               
+
+
+                //Callback
+
+                int callbackCountThisMonth = recordDatasQuery
+                    .Where(r => r.CallbackTime.HasValue && r.CallbackTime >= startOfDay && r.CallbackTime <= endOfDay)
+                    .Count();
 
                 var agentCallBackCountPrev = recordDatasQuery
                     .Where(r => r.CallbackTime.HasValue && r.CallbackTime <= startOfDay && r.CallbackTime != new DateTime(2000, 1, 1))
@@ -425,11 +544,11 @@ namespace CRM_Raviz.Controllers
                     .Select(g => new { ModifiedAgent = g.Key, CallBackCountPrev = g.Count() })
                     .ToList();
 
-
-                var casesRinging = eventTableQuery
-                    .GroupBy(r => r.AccountNo)
-                    .Where(g => g.Count(r => r.Dispo == "RINGING" || r.Dispo == "SWITCH OFF") == g.Count())
-                    .Select(g => new { Agent = g.Key, RingingToday = g.Count() });
+                var agentCallBackCountToday = recordDatasQuery
+                   .Where(r => r.CallbackTime.HasValue && r.CallbackTime >= startOfDay && r.CallbackTime <= endOfDay)
+                   .GroupBy(r => r.ModifiedAgent)
+                   .Select(g => new { ModifiedAgent = g.Key, CallBackCountToday = g.Count() })
+                   .ToList();
 
                 var agentCallBackCount = allAgents
                     .Select(agent => new AgentCasesViewModel
@@ -439,6 +558,33 @@ namespace CRM_Raviz.Controllers
                         CallBackCountPrev = agentCallBackCountPrev.FirstOrDefault(ac => ac.ModifiedAgent == agent)?.CallBackCountPrev ?? 0
                     })
                     .ToList();
+
+                //Segments
+
+                 List<string> allSegments = records
+                .Where(r => !string.IsNullOrEmpty(r.Segments)) // Ensure we only consider non-null and non-empty segments
+                .Select(r => r.Segments)
+                .Distinct()
+                .OrderBy(segment => segment)
+                .ToList();
+
+                int totalCases = allAgents.Sum(UserName => ExclusiveRecord.Count(r => r.Agent == UserName && r.Status == "True"));
+
+                int totalCasesNotWorked = ExclusiveRecord
+                    .Where(r => r.ModifiedDate == null)
+                    .Count();
+                
+                List<int> segmentCounts = allSegments
+                    .Select(segment => ExclusiveRecord
+                        .Count(r => r.Segments == segment))
+                    .ToList();
+
+                List<int> segmentNotWorked = allSegments
+                    .Select(segment => ExclusiveRecord
+                        .Count(r => r.Segments == segment && r.ModifiedDate == null))
+                    .ToList();
+
+                //Pending Cases
 
                 var validDispositions = new[] {
                     "RINGING", "SWITCH OFF", "STATEMENT OF ACCOUNT REQUEST",
@@ -452,13 +598,11 @@ namespace CRM_Raviz.Controllers
                 var ringingAccounts1 = db.EventTables
                     .GroupBy(r => r.AccountNo)
                     .Where(g => g.Count() == g.Count(r => validDispositions.Contains(r.Dispo)))
-                    .Select(g => g.Key) // Select the account numbers
+                    .Select(g => g.Key)
                     .ToList();
 
-
-                // Second query to get the count of these accounts grouped by agent
                 var RingingAccounts = db.RecordDatas
-                    .Where(r => ringingAccounts1.Contains(r.AccountNo)) // Use the list of account numbers
+                    .Where(r => ringingAccounts1.Contains(r.AccountNo)) 
                     .GroupBy(r => r.Agent ?? r.ModifiedAgent)
                     .Select(g => new
                     {
@@ -466,6 +610,43 @@ namespace CRM_Raviz.Controllers
                         AccountCount = g.Count()
                     })
                     .ToList();
+
+                //var distinctSegments = recordDatasQuery
+                //    .Where(r => !string.IsNullOrEmpty(r.Segments))
+                //    .Select(r => r.Segments)
+                //    .OrderBy(segment => segment)
+                //    .Distinct()
+                //    .ToList();
+
+                //var segment2Counts = recordDatasQuery
+                //    .Where(r => !string.IsNullOrEmpty(r.Segments))
+                //    .GroupBy(r => r.DerbyBatch)
+                //    .OrderBy(g => g.Key)
+                //    .Select(g => g.Count())
+                //    .ToList();
+
+
+
+                //var distinctSegments2 = recordDatasQuery
+                //    .Where(r => !string.IsNullOrEmpty(r.Segments))
+                //    .Select(r => r.DerbyBatch)
+                //    .OrderBy(DerbyBatch => DerbyBatch)
+                //    .Distinct()
+                //    .ToList();
+
+
+                //var casesRinging = eventTableQuery
+                //    .GroupBy(r => r.AccountNo)
+                //    .Where(g => g.Count(r => r.Dispo == "RINGING" || r.Dispo == "SWITCH OFF") == g.Count())
+                //    .Select(g => new { Agent = g.Key, RingingToday = g.Count() });
+
+
+                ViewBag.allbatchesComb = allbatchesComb;
+                ViewBag.BCBatches = BCBatches;
+                ViewBag.BBatches = BBatches;
+                ViewBag.RBatches = RBatches;
+                ViewBag.totalBatchesComb = totalBatchesComb;
+                ViewBag.segmentCountsComb = segmentCountsComb;
 
                 ViewBag.totalCasesList = totalCasesList;
                 ViewBag.allAgents = fliterAllAgents;
@@ -477,9 +658,6 @@ namespace CRM_Raviz.Controllers
                 ViewBag.TotalBatches = totalBatches;
                 ViewBag.BatchNotWorked = batchNotWorked;
                 ViewBag.BatchWorked = batchWorked;
-                ViewBag.segment2Counts = segment2Counts;
-                ViewBag.distinctSegments2 = distinctSegments2;
-                ViewBag.distinctSegments = distinctSegments;
                 ViewBag.segmentCounts = segmentCounts;
                 ViewBag.recentEvents = casesCountToday;
                 ViewBag.callbackCountThisMonth = callbackCountThisMonth;
@@ -487,6 +665,10 @@ namespace CRM_Raviz.Controllers
                 ViewBag.RingingNos = ringingAccounts1.Count;
                 ViewBag.RingingAccounts = RingingAccounts;
                 ViewBag.AgentCallBackCount = agentCallBackCount;
+
+                //ViewBag.segment2Counts = segment2Counts;
+                //ViewBag.distinctSegments2 = distinctSegments2;
+                //ViewBag.distinctSegments = distinctSegments;
 
                 return View(agentsWithCasesCount);
             }
@@ -613,6 +795,7 @@ namespace CRM_Raviz.Controllers
         {
             CPVDBEntities db = new CPVDBEntities();
 
+
             RecordData recordData = db.RecordDatas.Find(int.Parse(form["Id"].ToString()));
 
             EventTable eventTable = new EventTable();
@@ -671,6 +854,11 @@ namespace CRM_Raviz.Controllers
                 {
                     eventTable.Dispo = form["DispositionSecond"].ToString();
                     recordData.Disposition = form["DispositionSecond"].ToString();
+                }
+                else if (form["CallType"].ToString() == "ACCOUNT UPDATE")
+                {
+                    eventTable.Dispo = form["DispositionThird"].ToString();
+                    recordData.Disposition = form["DispositionThird"].ToString();
                 }
 
             if (form["Disposition"].ToString() == "INVALID NUMBER")
@@ -746,6 +934,8 @@ namespace CRM_Raviz.Controllers
                         break;
                 }
 
+
+
                 try
                 {
                     db.Entry(recordData).State = System.Data.Entity.EntityState.Modified;
@@ -775,12 +965,21 @@ namespace CRM_Raviz.Controllers
                    .Where(item => item.Agent == @User.Identity.GetUserName())
                    .ToList();
             }
+
+            //List<string> allbatches = db.RecordDatas
+            //      .Where(r => !string.IsNullOrEmpty(r.DerbyBatch))
+            //      .Select(r => r.DerbyBatch)
+            //      .Distinct()
+            //      .OrderBy(DerbyBatch => DerbyBatch)
+            //      .ToList();
+
             List<string> allbatches = db.RecordDatas
-                  .Where(r => !string.IsNullOrEmpty(r.DerbyBatch))
-                  .Select(r => r.DerbyBatch)
-                  .Distinct()
-                  .OrderBy(DerbyBatch => DerbyBatch)
-                  .ToList();
+                .Where(r => !string.IsNullOrEmpty(r.DerbyBatch))
+                .Select(r => r.DerbyBatch)
+                .Distinct()
+                .OrderBy(batch => int.Parse(System.Text.RegularExpressions.Regex.Match(batch, @"\d+$").Value))
+                .ToList();
+
 
             var allAgents = db.AspNetUsers
                      .Where(r => r.UserRole == "Agent")
@@ -803,7 +1002,7 @@ namespace CRM_Raviz.Controllers
             var userName = User.Identity.GetUserName();
 
 
-
+            
 
             var AgentNames = db.AspNetUsers
                          .Where(r => r.UserRole == "Agent")
@@ -1011,8 +1210,16 @@ namespace CRM_Raviz.Controllers
             List<RecordData> recordDatas = new List<RecordData>();
             List<EventTable> eventTables = new List<EventTable>();
 
-            IQueryable<RecordData> records = db.RecordDatas;
+            IQueryable<RecordData> records = db.RecordDatas.Where(r=> r.Status == "True");
             IQueryable<EventTable> events = db.EventTables;
+
+            bool userExists = db.AspNetUsers
+                    .Any(r => r.UserRole == "Agent" && r.UserName == query);
+
+            if (userExists)
+            {
+                records = records.Where(item => item.Agent == query);
+            }
 
             DateTime today = DateTime.Today;
             var startOfDay = today.Date;
@@ -1024,14 +1231,29 @@ namespace CRM_Raviz.Controllers
             {
 
                 var settings = new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                };
+
+                ViewBag.Data = JsonConvert.SerializeObject(events, settings);
+
+
+                return PartialView("_AgentCases", events);
+            }
+            else if (state == "segmentCombo")
+            {
+                
+                    records = records.Where(item => item.Segments == section && item.DerbyBatch == button);
+
+                    var settings = new JsonSerializerSettings
                     {
                         ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                     };
 
-                    ViewBag.Data = JsonConvert.SerializeObject(events, settings);
+                    ViewBag.Data = JsonConvert.SerializeObject(records, settings);
+                return PartialView("_AgentCases", records);
 
-               
-                return PartialView("_AgentCases", events);
+
             }
             else if (state == "callback")
             {
@@ -1045,6 +1267,8 @@ namespace CRM_Raviz.Controllers
                     };
 
                     ViewBag.Data = JsonConvert.SerializeObject(records, settings);
+
+
 
                 }
                 else if (section == "prev")
@@ -1065,10 +1289,10 @@ namespace CRM_Raviz.Controllers
                 {
                     //records = records.Where(item => item.Agent == query && item.ModifiedDate >= startOfDay && item.ModifiedDate <= endOfDay);
                     var filteredRecords = from record in db.RecordDatas
-                              where (from eventRecord in db.EventTables
-                                     where eventRecord.Agent == query &&
-                                                       eventRecord.Datetime >= startOfDay && eventRecord.Datetime <= endOfDay
-                                     select eventRecord.AccountNo).Distinct().Contains(record.AccountNo)
+                                          where (from eventRecord in db.EventTables
+                                                 where eventRecord.Agent == query &&
+                                                                   eventRecord.Datetime >= startOfDay && eventRecord.Datetime <= endOfDay
+                                                 select eventRecord.AccountNo).Distinct().Contains(record.AccountNo)
                                           select record;
 
                     var settings = new JsonSerializerSettings
@@ -1090,6 +1314,7 @@ namespace CRM_Raviz.Controllers
                                                                    eventRecord.Datetime >= startOfMonth && eventRecord.Datetime <= endOfMonth
                                                  select eventRecord.AccountNo).Distinct().Contains(record.AccountNo)
                                           select record;
+
                     var settings = new JsonSerializerSettings
                     {
                         ReferenceLoopHandling = ReferenceLoopHandling.Ignore
@@ -1107,11 +1332,26 @@ namespace CRM_Raviz.Controllers
 
                 if (section == "all")
                 {
-                    records = records.Where(item => item.Segments == query && item.ModifiedAgent == button);
+                    if (button == "All")
+                    {
+                        records = records.Where(item => item.Segments == query);
+                    }
+                    else
+                    {
+                        records = records.Where(item => item.Segments == query && item.Agent == button);
+
+                    }
                 }
                 else if (section == "notworked")
                 {
-                    records = records.Where(item => item.Segments == query && item.ModifiedDate == null && item.ModifiedAgent == button);
+                    if (button == "All")
+                    {
+                        records = records.Where(item => item.Segments == query && item.ModifiedDate == null);
+                    }
+                    else
+                    {
+                        records = records.Where(item => item.Segments == query && item.ModifiedDate == null && item.Agent == button);
+                    }
                 }
                 //ViewBag.Data = records;
                 var settings = new JsonSerializerSettings
@@ -1123,25 +1363,24 @@ namespace CRM_Raviz.Controllers
                 return PartialView("_AgentCases", records);
 
             }
-            else if (state == "segment2")
+            else if(state == "segment2")
             {
                 string currentUser = User.Identity.GetUserName();
 
                 bool isAgent = db.AspNetUsers
-                    .Any(r => r.UserRole == "Agent" && r.UserName == currentUser);
-
+                    .Any(r => r.UserRole == "Agent" && r.UserName == currentUser || r.UserRole == "Agent" && r.UserName == button);
                 if (isAgent)
                 {
-                    records = records.Where(item => (item.ModifiedAgent ?? item.Agent) == currentUser);
+                    records = records.Where(item => (item.Agent) == currentUser || ( item.Agent) == button);
                 }
 
                 if (section == "notworked")
                 {
-                    records = records.Where(item => item.DerbyBatch == query && item.ModifiedDate == null);
+                    records = records.Where(item => (item.DerbyBatch == query && item.ModifiedDate == null) || (item.ModifiedDate < item.BatchDate && item.BatchDate != null && item.DerbyBatch == query));
                 }
                 else if (section == "worked")
                 {
-                    records = records.Where(item => item.DerbyBatch == query && item.ModifiedDate != null);
+                    records = records.Where(item => (item.ModifiedDate >= item.BatchDate  && item.DerbyBatch == query));
                 }
                 var settings = new JsonSerializerSettings
                 {
@@ -1242,8 +1481,8 @@ namespace CRM_Raviz.Controllers
                 return File(emptyImage, "image/jpeg");
             }
         }
-       
 
+        [ValidateInput(false)]
         public ActionResult DownloadAgentCases(string records)
         {
             try
@@ -1271,7 +1510,11 @@ namespace CRM_Raviz.Controllers
                         // Add column headers
                         for (int i = 0; i < properties.Length; i++)
                         {
-                            worksheet.Cells[currentRow, i + 1].Value = properties[i].Name;
+                            if(properties[i].Name != "EmailIds" && properties[i].Name != "MobileNos")
+                            {
+                                worksheet.Cells[currentRow, i + 1].Value = properties[i].Name;
+
+                            }
                         }
 
                         // Add data rows
@@ -1280,8 +1523,12 @@ namespace CRM_Raviz.Controllers
                             currentRow++;
                             for (int i = 0; i < properties.Length; i++)
                             {
-                                worksheet.Cells[currentRow, i + 1].Value = properties[i].GetValue(record)?.ToString();
-                            }
+                                if (properties[i].Name != "EmailIds" && properties[i].Name != "MobileNos")
+                                {
+                                    worksheet.Cells[currentRow, i + 1].Value = properties[i].GetValue(record)?.ToString();
+
+                                }
+                                }
                         }
                     }
 
@@ -1351,10 +1598,8 @@ namespace CRM_Raviz.Controllers
 
             return PartialView("_History", results2);
         }
-
-       
-
         [HttpPost]
+        [Authorize]
         public ActionResult UploadCases(HttpPostedFileBase file, string dropdown)
         {
             CPVDBEntities dbSheet1 = new CPVDBEntities(); // Database context for the first sheet
@@ -1375,83 +1620,169 @@ namespace CRM_Raviz.Controllers
 
                         for (int row = 2; row <= rowCount1; row++) // Start from row 2 to skip headers
                         {
-                            var caseEntity1 = new RecordData
+                            var accountNo = worksheet1.Cells[row, 1].Value?.ToString();
+
+                            // Check if the AccountNo exists in the RecordData table
+                            bool accountExists = dbSheet1.RecordDatas.Any(rd => rd.AccountNo == accountNo);
+                            if (accountExists)
                             {
-                                AccountNo = worksheet1.Cells[row, 1].Value?.ToString(),
-                                CustomerName = worksheet1.Cells[row, 2].Value?.ToString(),
-                                Contact_Person = worksheet1.Cells[row, 3].Value?.ToString(),
-                                Nationality = worksheet1.Cells[row, 4].Value?.ToString(),
-                                Mobile1 = worksheet1.Cells[row, 5].Value?.ToString(),
-                                Mobile2 = worksheet1.Cells[row, 6].Value?.ToString(),
-                                Mobile3 = worksheet1.Cells[row, 7].Value?.ToString(),
-                                Mobile4 = worksheet1.Cells[row, 8].Value?.ToString(),
-                                Email_1 = worksheet1.Cells[row, 9].Value?.ToString(),
-                                Email_2 = worksheet1.Cells[row, 10].Value?.ToString(),
-                                Email_3 = worksheet1.Cells[row, 11].Value?.ToString(),
-                                TenacyFacilityType = worksheet1.Cells[row, 12].Value?.ToString(),
-                                License_expiry = worksheet1.Cells[row, 13].Value?.ToString(),
-                                ExpectedRenewalFee = worksheet1.Cells[row, 14].Value?.ToString(),
-                                SRNumber = worksheet1.Cells[row, 15].Value?.ToString(),
-                                DeRegFee = worksheet1.Cells[row, 16].Value?.ToString(),
-                                BCheque = worksheet1.Cells[row, 17].Value?.ToString(),
-                                BCheque_P = worksheet1.Cells[row, 18].Value?.ToString(),
-                                IPTelephone_Billing= worksheet1.Cells[row, 19].Value?.ToString(),
-                                Utility_Billing = worksheet1.Cells[row, 20].Value?.ToString(),
-                                Others = worksheet1.Cells[row, 21].Value?.ToString(),
-                                OS_Billing = worksheet1.Cells[row, 22].Value?.ToString(),
-                                CloseAccount = worksheet1.Cells[row, 23].Value?.ToString(),
-                                DormantAccount = worksheet1.Cells[row, 24].Value?.ToString(),
-                                InsufficientFunds = worksheet1.Cells[row, 25].Value?.ToString(),
-                                OtherReason = worksheet1.Cells[row, 26].Value?.ToString(),
-                                SignatureIrregular = worksheet1.Cells[row, 27].Value?.ToString(),
-                                TechnicalReason = worksheet1.Cells[row, 28].Value?.ToString(),
-                                BOthers = worksheet1.Cells[row, 29].Value?.ToString(),
-                                EmployeeVisaQuota = worksheet1.Cells[row, 30].Value?.ToString(),
-                                EmployeeVisaUtilized = worksheet1.Cells[row, 31].Value?.ToString(),
-                                ProjectBundleName = worksheet1.Cells[row, 32].Value?.ToString(),
-                                LicenseType = worksheet1.Cells[row, 33].Value?.ToString(),
-                                FacilityType = worksheet1.Cells[row, 34].Value?.ToString(),
-                                NoYears = worksheet1.Cells[row, 35].Value?.ToString(),
-                                DerbyBatch = worksheet1.Cells[row, 36].Value?.ToString(),
-                                Agent = worksheet1.Cells[row, 37].Value?.ToString(),
+                                var existingRecord = dbSheet1.RecordDatas.SingleOrDefault(rd => rd.AccountNo == accountNo);
+                                if (existingRecord != null)
+                                {
+                                    existingRecord.BatchHistory = existingRecord.BatchHistory + existingRecord.DerbyBatch;
+                                    existingRecord.CustomerName = worksheet1.Cells[row, 2].Value?.ToString();
+                                    existingRecord.Contact_Person = worksheet1.Cells[row, 3].Value?.ToString();
+                                    existingRecord.Nationality = worksheet1.Cells[row, 4].Value?.ToString();
+                                    existingRecord.Mobile1 = worksheet1.Cells[row, 5].Value?.ToString();
+                                    existingRecord.Mobile2 = worksheet1.Cells[row, 6].Value?.ToString();
+                                    existingRecord.Mobile3 = worksheet1.Cells[row, 7].Value?.ToString();
+                                    existingRecord.Mobile4 = worksheet1.Cells[row, 8].Value?.ToString();
+                                    existingRecord.Email_1 = worksheet1.Cells[row, 9].Value?.ToString();
+                                    existingRecord.Email_2 = worksheet1.Cells[row, 10].Value?.ToString();
+                                    existingRecord.Email_3 = worksheet1.Cells[row, 11].Value?.ToString();
+                                    existingRecord.TenacyFacilityType = worksheet1.Cells[row, 12].Value?.ToString();
+                                    existingRecord.License_expiry = worksheet1.Cells[row, 13].Value?.ToString();
+                                    existingRecord.ExpectedRenewalFee = worksheet1.Cells[row, 14].Value?.ToString();
+                                    existingRecord.SRNumber = worksheet1.Cells[row, 15].Value?.ToString();
+                                    existingRecord.DeRegFee = worksheet1.Cells[row, 16].Value?.ToString();
+                                    existingRecord.BCheque = worksheet1.Cells[row, 17].Value?.ToString();
+                                    existingRecord.BCheque_P = worksheet1.Cells[row, 18].Value?.ToString();
+                                    existingRecord.IPTelephone_Billing = worksheet1.Cells[row, 19].Value?.ToString();
+                                    existingRecord.Utility_Billing = worksheet1.Cells[row, 20].Value?.ToString();
+                                    existingRecord.Others = worksheet1.Cells[row, 21].Value?.ToString();
+                                    existingRecord.OS_Billing = worksheet1.Cells[row, 22].Value?.ToString();
+                                    existingRecord.CloseAccount = worksheet1.Cells[row, 23].Value?.ToString();
+                                    existingRecord.DormantAccount = worksheet1.Cells[row, 24].Value?.ToString();
+                                    existingRecord.InsufficientFunds = worksheet1.Cells[row, 25].Value?.ToString();
+                                    existingRecord.OtherReason = worksheet1.Cells[row, 26].Value?.ToString();
+                                    existingRecord.SignatureIrregular = worksheet1.Cells[row, 27].Value?.ToString();
+                                    existingRecord.TechnicalReason = worksheet1.Cells[row, 28].Value?.ToString();
+                                    existingRecord.BOthers = worksheet1.Cells[row, 29].Value?.ToString();
+                                    existingRecord.EmployeeVisaQuota = worksheet1.Cells[row, 30].Value?.ToString();
+                                    existingRecord.EmployeeVisaUtilized = worksheet1.Cells[row, 31].Value?.ToString();
+                                    existingRecord.ProjectBundleName = worksheet1.Cells[row, 32].Value?.ToString();
+                                    existingRecord.LicenseType = worksheet1.Cells[row, 33].Value?.ToString();
+                                    existingRecord.FacilityType = worksheet1.Cells[row, 34].Value?.ToString();
+                                    existingRecord.NoYears = worksheet1.Cells[row, 35].Value?.ToString();
+                                    existingRecord.DerbyBatch = worksheet1.Cells[row, 36].Value?.ToString();
+                                    existingRecord.Agent = worksheet1.Cells[row, 37].Value?.ToString();
+                                    existingRecord.BatchDate = DateTime.TryParse(worksheet1.Cells[row, 38].Value?.ToString(), out DateTime parsedDate) ? parsedDate : (DateTime?)null;
+                                    existingRecord.BatchDeadline = DateTime.TryParse(worksheet1.Cells[row, 38].Value?.ToString(), out DateTime parsedDate1)
+                                        ? parsedDate1.AddDays(60)
+                                        : (DateTime?)null;
+                                    existingRecord.Status = "True";
 
 
-                                
-                            };
+                                    if (!(existingRecord.OS_Billing == null || existingRecord.OS_Billing == "-" || existingRecord.OS_Billing.Trim() == "0") && !(existingRecord.ExpectedRenewalFee == null || existingRecord.ExpectedRenewalFee == "-" || existingRecord.ExpectedRenewalFee.Trim() == "0"))
+                                    {
+                                        existingRecord.Segments = "Bounced Cheque and Renewal";
+                                    }
+                                    else if (!(existingRecord.OS_Billing == null || existingRecord.OS_Billing == "-" || existingRecord.OS_Billing.Trim() == "0"))
+                                    {
+                                        existingRecord.Segments = "Bounced Cheque";
+                                    }
+                                    else if (!(existingRecord.ExpectedRenewalFee == null || existingRecord.ExpectedRenewalFee == "-" || existingRecord.ExpectedRenewalFee.Trim() == "0"))
+                                    {
+                                        existingRecord.Segments = "Renewal";
+                                    }
+                                    else
+                                    {
+                                        existingRecord.Segments = " ";
+                                    }
 
-                            if (!(caseEntity1.OS_Billing == null || caseEntity1.OS_Billing == "-" || caseEntity1.OS_Billing.Trim() == "0") && !(caseEntity1.ExpectedRenewalFee == null || caseEntity1.ExpectedRenewalFee == "-" || caseEntity1.ExpectedRenewalFee.Trim() == "0"))
-                            {
-                                caseEntity1.Segments = "Bounced Cheque and Renewal";
-                            }
-                            else if(!(caseEntity1.OS_Billing == null || caseEntity1.OS_Billing == "-" || caseEntity1.OS_Billing.Trim() == "0"))
-                            {
-                                caseEntity1.Segments = "Bounced Cheque";
-                            }
-                            else if(!(caseEntity1.ExpectedRenewalFee == null || caseEntity1.ExpectedRenewalFee == "-" || caseEntity1.ExpectedRenewalFee.Trim() == "0"))
-                            {
-                                caseEntity1.Segments = "Renewal";
+                                    dbSheet1.SaveChanges();
+
+                                    int recordId = existingRecord.Id; // Get the auto-generated Id after saving
+
+                                    InsertMobileNo(dbSheet1, recordId, existingRecord.Mobile1);
+                                    InsertMobileNo(dbSheet1, recordId, existingRecord.Mobile2);
+                                    InsertMobileNo(dbSheet1, recordId, existingRecord.Mobile3);
+                                    InsertMobileNo(dbSheet1, recordId, existingRecord.Mobile4);
+
+                                    InsertEmailId(dbSheet1, recordId, existingRecord.Email_1);
+                                    InsertEmailId(dbSheet1, recordId, existingRecord.Email_2);
+                                    InsertEmailId(dbSheet1, recordId, existingRecord.Email_3);
+                                }
                             }
                             else
                             {
-                                caseEntity1.Segments = " ";
+                                var caseEntity1 = new RecordData
+                                {
+                                    AccountNo = worksheet1.Cells[row, 1].Value?.ToString(),
+                                    CustomerName = worksheet1.Cells[row, 2].Value?.ToString(),
+                                    Contact_Person = worksheet1.Cells[row, 3].Value?.ToString(),
+                                    Nationality = worksheet1.Cells[row, 4].Value?.ToString(),
+                                    Mobile1 = worksheet1.Cells[row, 5].Value?.ToString(),
+                                    Mobile2 = worksheet1.Cells[row, 6].Value?.ToString(),
+                                    Mobile3 = worksheet1.Cells[row, 7].Value?.ToString(),
+                                    Mobile4 = worksheet1.Cells[row, 8].Value?.ToString(),
+                                    Email_1 = worksheet1.Cells[row, 9].Value?.ToString(),
+                                    Email_2 = worksheet1.Cells[row, 10].Value?.ToString(),
+                                    Email_3 = worksheet1.Cells[row, 11].Value?.ToString(),
+                                    TenacyFacilityType = worksheet1.Cells[row, 12].Value?.ToString(),
+                                    License_expiry = worksheet1.Cells[row, 13].Value?.ToString(),
+                                    ExpectedRenewalFee = worksheet1.Cells[row, 14].Value?.ToString(),
+                                    SRNumber = worksheet1.Cells[row, 15].Value?.ToString(),
+                                    DeRegFee = worksheet1.Cells[row, 16].Value?.ToString(),
+                                    BCheque = worksheet1.Cells[row, 17].Value?.ToString(),
+                                    BCheque_P = worksheet1.Cells[row, 18].Value?.ToString(),
+                                    IPTelephone_Billing = worksheet1.Cells[row, 19].Value?.ToString(),
+                                    Utility_Billing = worksheet1.Cells[row, 20].Value?.ToString(),
+                                    Others = worksheet1.Cells[row, 21].Value?.ToString(),
+                                    OS_Billing = worksheet1.Cells[row, 22].Value?.ToString(),
+                                    CloseAccount = worksheet1.Cells[row, 23].Value?.ToString(),
+                                    DormantAccount = worksheet1.Cells[row, 24].Value?.ToString(),
+                                    InsufficientFunds = worksheet1.Cells[row, 25].Value?.ToString(),
+                                    OtherReason = worksheet1.Cells[row, 26].Value?.ToString(),
+                                    SignatureIrregular = worksheet1.Cells[row, 27].Value?.ToString(),
+                                    TechnicalReason = worksheet1.Cells[row, 28].Value?.ToString(),
+                                    BOthers = worksheet1.Cells[row, 29].Value?.ToString(),
+                                    EmployeeVisaQuota = worksheet1.Cells[row, 30].Value?.ToString(),
+                                    EmployeeVisaUtilized = worksheet1.Cells[row, 31].Value?.ToString(),
+                                    ProjectBundleName = worksheet1.Cells[row, 32].Value?.ToString(),
+                                    LicenseType = worksheet1.Cells[row, 33].Value?.ToString(),
+                                    FacilityType = worksheet1.Cells[row, 34].Value?.ToString(),
+                                    NoYears = worksheet1.Cells[row, 35].Value?.ToString(),
+                                    DerbyBatch = worksheet1.Cells[row, 36].Value?.ToString(),
+                                    Agent = worksheet1.Cells[row, 37].Value?.ToString(),
+                                    Status = "True",
+                                    BatchDate = DateTime.TryParse(worksheet1.Cells[row, 38].Value?.ToString(), out DateTime parsedDate) ? parsedDate : (DateTime?)null,
+                                    BatchDeadline = DateTime.TryParse(worksheet1.Cells[row, 38].Value?.ToString(), out DateTime parsedDate1)
+                                        ? parsedDate1.AddDays(60)
+                                        : (DateTime?)null
+                            };
+
+                                if (!(caseEntity1.OS_Billing == null || caseEntity1.OS_Billing == "-" || caseEntity1.OS_Billing.Trim() == "0") && !(caseEntity1.ExpectedRenewalFee == null || caseEntity1.ExpectedRenewalFee == "-" || caseEntity1.ExpectedRenewalFee.Trim() == "0"))
+                                {
+                                    caseEntity1.Segments = "Bounced Cheque and Renewal";
+                                }
+                                else if (!(caseEntity1.OS_Billing == null || caseEntity1.OS_Billing == "-" || caseEntity1.OS_Billing.Trim() == "0"))
+                                {
+                                    caseEntity1.Segments = "Bounced Cheque";
+                                }
+                                else if (!(caseEntity1.ExpectedRenewalFee == null || caseEntity1.ExpectedRenewalFee == "-" || caseEntity1.ExpectedRenewalFee.Trim() == "0"))
+                                {
+                                    caseEntity1.Segments = "Renewal";
+                                }
+                                else
+                                {
+                                    caseEntity1.Segments = " ";
+                                }
+
+                                dbSheet1.RecordDatas.Add(caseEntity1);
+                                dbSheet1.SaveChanges();
+
+                                int recordId = caseEntity1.Id; // Get the auto-generated Id after saving
+
+                                InsertMobileNo(dbSheet1, recordId, caseEntity1.Mobile1);
+                                InsertMobileNo(dbSheet1, recordId, caseEntity1.Mobile2);
+                                InsertMobileNo(dbSheet1, recordId, caseEntity1.Mobile3);
+                                InsertMobileNo(dbSheet1, recordId, caseEntity1.Mobile4);
+
+                                InsertEmailId(dbSheet1, recordId, caseEntity1.Email_1);
+                                InsertEmailId(dbSheet1, recordId, caseEntity1.Email_2);
+                                InsertEmailId(dbSheet1, recordId, caseEntity1.Email_3);
                             }
-
-                            dbSheet1.RecordDatas.Add(caseEntity1);
-                            dbSheet1.SaveChanges();
-
-                            int recordId = caseEntity1.Id; // Get the auto-generated Id after saving
-
-                            InsertMobileNo(dbSheet1, recordId, caseEntity1.Mobile1);
-                            InsertMobileNo(dbSheet1, recordId, caseEntity1.Mobile2);
-                            InsertMobileNo(dbSheet1, recordId, caseEntity1.Mobile3);
-                            InsertMobileNo(dbSheet1, recordId, caseEntity1.Mobile4);    
-
-                            InsertEmailId(dbSheet1, recordId, caseEntity1.Email_1);
-                            InsertEmailId(dbSheet1, recordId, caseEntity1.Email_2);
-                            InsertEmailId(dbSheet1, recordId, caseEntity1.Email_3);  
-
-
-
                             // Insert mobile numbers into MobileNos table
 
 
@@ -1465,9 +1796,20 @@ namespace CRM_Raviz.Controllers
                         ExcelWorksheet worksheet2 = package.Workbook.Worksheets["BC Details"];
                         int rowCount2 = worksheet2.Dimension.Rows;
 
+
                         for (int row = 2; row <= rowCount2; row++) // Start from row 2 to skip headers
                         {
-                            var caseEntity2 = new BouncedRecord // Assuming you have a different model for the second sheet
+                            var accountNo = worksheet2.Cells[row, 1].Value?.ToString();
+
+                            // Find all records with the same accountNo and remove them
+                            var existingRecords = dbSheet2.BouncedRecords.Where(rd => rd.AccountNo == accountNo).ToList();
+                            foreach (var record in existingRecords)
+                            {
+                                dbSheet2.BouncedRecords.Remove(record);
+                            }
+
+                            // Create and add the new record
+                            var newRecord = new BouncedRecord
                             {
                                 AccountNo = worksheet2.Cells[row, 1].Value?.ToString(),
                                 ChequeNumber = worksheet2.Cells[row, 2].Value?.ToString(),
@@ -1475,12 +1817,30 @@ namespace CRM_Raviz.Controllers
                                 TotalAmount = worksheet2.Cells[row, 4].Value?.ToString(),
                                 ReasonCode = worksheet2.Cells[row, 5].Value?.ToString(),
                                 Text = worksheet2.Cells[row, 6].Value?.ToString(),
-                                //ChequeDate = (DateTime)worksheet2.Cells[row, 6].Value,
-
                             };
 
-                            dbSheet2.BouncedRecords.Add(caseEntity2);
+                            dbSheet2.BouncedRecords.Add(newRecord);
                         }
+
+
+
+                        //for (int row = 2; row <= rowCount2; row++) // Start from row 2 to skip headers
+                        //{
+
+                        //    var caseEntity2 = new BouncedRecord // Assuming you have a different model for the second sheet
+                        //    {
+                        //        AccountNo = worksheet2.Cells[row, 1].Value?.ToString(),
+                        //        ChequeNumber = worksheet2.Cells[row, 2].Value?.ToString(),
+                        //        DateBounced = (DateTime?)worksheet2.Cells[row, 3].Value,
+                        //        TotalAmount = worksheet2.Cells[row, 4].Value?.ToString(),
+                        //        ReasonCode = worksheet2.Cells[row, 5].Value?.ToString(),
+                        //        Text = worksheet2.Cells[row, 6].Value?.ToString(),
+                        //        //ChequeDate = (DateTime)worksheet2.Cells[row, 6].Value,
+
+                        //    };
+
+                        //    dbSheet2.BouncedRecords.Add(caseEntity2);
+                        //}
 
 
 
@@ -1503,35 +1863,83 @@ namespace CRM_Raviz.Controllers
 
    
 
+        //void InsertMobileNo(CPVDBEntities context, int recordId, string mobileNo)
+        //{
+        //    if (!string.IsNullOrEmpty(mobileNo))
+        //    {
+        //        var mobileRecord = new MobileNo
+        //        {
+        //            RecordId = recordId,
+        //            Numbers = mobileNo
+        //        };
+
+        //        context.Set<MobileNo>().Add(mobileRecord);
+        //        context.SaveChanges();
+        //    }
+        //}
+
         void InsertMobileNo(CPVDBEntities context, int recordId, string mobileNo)
         {
             if (!string.IsNullOrEmpty(mobileNo))
             {
-                var mobileRecord = new MobileNo
+                var existingMobile = context.MobileNos.FirstOrDefault(m => m.RecordId == recordId && m.Numbers == mobileNo);
+                if (existingMobile != null)
                 {
-                    RecordId = recordId,
-                    Numbers = mobileNo
-                };
+                    existingMobile.Numbers = mobileNo; // Update the number if it exists
+                }
+                else
+                {
+                    var mobileRecord = new MobileNo
+                    {
+                        RecordId = recordId,
+                        Numbers = mobileNo
+                    };
 
-                context.Set<MobileNo>().Add(mobileRecord);
+                    context.Set<MobileNo>().Add(mobileRecord); // Add a new number if it does not exist
+                }
                 context.SaveChanges();
             }
         }
+
+
+        //void InsertEmailId(CPVDBEntities context, int recordId, string emailId)
+        //{
+        //    if (!string.IsNullOrEmpty(emailId))
+        //    {
+        //        var emailRecord = new EmailId
+        //        {
+        //            RecordId = recordId,
+        //            Emails = emailId
+        //        };
+
+        //        context.Set<EmailId>().Add(emailRecord);
+        //        context.SaveChanges();
+        //    }
+        //}
 
         void InsertEmailId(CPVDBEntities context, int recordId, string emailId)
         {
             if (!string.IsNullOrEmpty(emailId))
             {
-                var emailRecord = new EmailId
+                var existingEmail = context.EmailIds.SingleOrDefault(e => e.RecordId == recordId && e.Emails == emailId);
+                if (existingEmail != null)
                 {
-                    RecordId = recordId,
-                    Emails = emailId
-                };
+                    existingEmail.Emails = emailId; // Update the email if it exists
+                }
+                else
+                {
+                    var emailRecord = new EmailId
+                    {
+                        RecordId = recordId,
+                        Emails = emailId
+                    };
 
-                context.Set<EmailId>().Add(emailRecord);
+                    context.Set<EmailId>().Add(emailRecord); // Add a new email if it does not exist
+                }
                 context.SaveChanges();
             }
         }
+
 
         public static List<string> GetAllUsers()
         {
@@ -1547,7 +1955,7 @@ namespace CRM_Raviz.Controllers
         }
 
 
-
+        [Authorize]
         public ActionResult UploadCases()
         {
 
@@ -1569,74 +1977,103 @@ namespace CRM_Raviz.Controllers
             return fieldNames;
         }
 
-        public ActionResult DownloadCases(string Users, string CallType,string Disposition,string SubDisposition, string DerbyBatch, DateTime? CallbackTime = null, DateTime? specificDate = null, DateTime? endDate = null)
+        public ActionResult AllocationReport()
+        {
+            CPVDBEntities db = new CPVDBEntities();
+            RecordData recordData = new RecordData();
+
+            var AgentNames = db.AspNetUsers
+                         .Where(r => r.UserRole == "Agent")
+                         .Select(r => r.UserName)
+                         .Distinct()
+                         .ToList();
+            ViewBag.AgentNames = AgentNames;
+
+            List<string> allbatches = db.RecordDatas
+                  .Where(r => !string.IsNullOrEmpty(r.DerbyBatch))
+                  .Select(r => r.DerbyBatch)
+                  .Distinct()
+                  .OrderBy(DerbyBatch => DerbyBatch)
+                  .ToList();
+
+            ViewBag.allbatches = allbatches;
+
+            return View(recordData);
+        }
+
+        public ActionResult AllocationReportDownload(string Users, string CallType, string Disposition, string SubDisposition, string DerbyBatch, DateTime? CallbackTime = null, DateTime? specificDate = null, DateTime? endDate = null)
         {
             CPVDBEntities db = new CPVDBEntities();
             HttpResponseBase Response = HttpContext.Response;
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             var query = db.EventTables.AsQueryable();
-            var caseTables = query.ToList();
 
             List<RecordData> recordDatas = new List<RecordData>(); // Initialize with an empty list
             List<EventTable> eventTables = new List<EventTable>();
             List<BouncedRecord> bouncedRecords = new List<BouncedRecord>();
 
-            bouncedRecords = db.BouncedRecords.ToList();    
+            bouncedRecords = db.BouncedRecords.ToList();
+
+
 
             var key = "";
-                
-            if(DerbyBatch != "")
+
+            if (DerbyBatch != "")
             {
                 var accountNumbers = db.RecordDatas.Where(rd => rd.DerbyBatch == DerbyBatch).Select(rd => rd.AccountNo).ToList();
                 query = query.Where(et => accountNumbers.Contains(et.AccountNo));
-                caseTables = query.ToList();
+
             }
 
             if (Users != "")
             {
                 query = query.Where(et => et.Agent == Users);
                 var hasRows = query.Any();
-                caseTables = query.ToList();
 
             }
 
             if (CallType != "-")
             {
                 query = query.Where(et => et.CallType == CallType);
-                caseTables = query.ToList();
             }
 
             if (Disposition != "-")
             {
                 query = query.Where(et => et.Dispo == Disposition);
-                caseTables = query.ToList();
             }
 
             if (SubDisposition != "-")
             {
                 query = query.Where(et => et.SubDispo == SubDisposition);
-                caseTables = query.ToList();
             }
 
             if (CallbackTime != null)
             {
                 query = query.Where(et => et.CallbackTime == CallbackTime);
-                caseTables = query.ToList();
-            } 
+            }
 
             if (specificDate != null)
             {
                 query = query.Where(et => et.Datetime >= specificDate);
-                caseTables = query.ToList();
             }
 
             if (endDate != null)
             {
                 query = query.Where(et => et.Datetime <= endDate);
-                caseTables = query.ToList();
             }
-         
+
+            var caseTables = query;
+
+            var accountNos = caseTables.Select(ct => ct.AccountNo).ToList();
+
+            //recordDatas = accountNos
+            //   .SelectMany(accountNo => db.RecordDatas
+            //       .Where(rd => rd.AccountNo == accountNo))
+            //   .ToList();
+
+            //recordDatas = db.RecordDatas.Where(rd => rd.AccountNo == key).ToList();
+
 
             var header = new List<string>() {  "AccountNo","Agent","CustomerName", "BCheque", "BCheque_P", "IPTelephone_Billing",
                 "Utility_Billing", "Others", "OS_Billing", "License_expiry", "Contact_Person","ModifiedDate", "Nationality", "Mobile1",
@@ -1709,7 +2146,6 @@ namespace CRM_Raviz.Controllers
                     }
 
                     recordDatas = db.RecordDatas.Where(rd => rd.AccountNo == key).ToList();
-
                     foreach (var itemcase in recordDatas)
                     {
 
@@ -1729,11 +2165,235 @@ namespace CRM_Raviz.Controllers
                                 worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
                             }
                         }
-
                     }
 
                     row++;
                 }
+
+
+                var bouncedWorksheet = package.Workbook.Worksheets.Add("BouncedDetails");
+                col = 1;
+                foreach (var headerName in bouncedDetailHeaders)
+                {
+                    bouncedWorksheet.Cells[1, col++].Value = headerName.ToString();
+                }
+
+
+                row = 2;
+
+                foreach (var bouncedDetail in bouncedRecords)
+                {
+                    col = 1;
+                    foreach (var headerName in bouncedDetailHeaders)
+                    {
+
+
+                        var property = typeof(BouncedRecord).GetProperty(headerName, BindingFlags.Public | BindingFlags.Instance);
+
+                        if (property != null && bouncedDetail != null)
+                        {
+                            object value = property.GetValue(bouncedDetail);
+
+                            if (property.PropertyType == typeof(DateTime))
+                            {
+                                bouncedWorksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
+                            }
+                            else
+                            {
+                                bouncedWorksheet.Cells[row, col++].Value = value != null ? value.ToString() : string.Empty;
+                            }
+                        }
+
+                    }
+
+
+                    row++;
+                }
+
+                Response.Clear();
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", "attachment;filename=Caselist" + (specificDate.HasValue ? specificDate.Value.ToString("yyyy-MM-dd") : DateTime.Today.ToString("yyyy-MM-dd")) + ".xlsx");
+
+                Response.BinaryWrite(package.GetAsByteArray());
+                Response.Flush();
+                Response.SuppressContent = true;
+                HttpContext.ApplicationInstance.CompleteRequest();
+
+                return File(Response.OutputStream, Response.ContentType);
+            }
+        }
+
+
+        public ActionResult DownloadCases(string Users, string CallType,string Disposition,string SubDisposition, string DerbyBatch, DateTime? CallbackTime = null, DateTime? specificDate = null, DateTime? endDate = null)
+        {
+            CPVDBEntities db = new CPVDBEntities();
+            HttpResponseBase Response = HttpContext.Response;
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            var query = db.EventTables.AsQueryable();
+           
+            List<RecordData> recordDatas = new List<RecordData>(); // Initialize with an empty list
+            List<EventTable> eventTables = new List<EventTable>();
+            List<BouncedRecord> bouncedRecords = new List<BouncedRecord>();
+
+            bouncedRecords = db.BouncedRecords.ToList();  
+            
+
+
+            var key = "";
+                
+            if(DerbyBatch != "")
+            {
+                var accountNumbers = db.RecordDatas.Where(rd => rd.DerbyBatch == DerbyBatch).Select(rd => rd.AccountNo).ToList();
+                query = query.Where(et => accountNumbers.Contains(et.AccountNo));
+               
+            }
+
+            if (Users != "")
+            {
+                query = query.Where(et => et.Agent == Users);
+                var hasRows = query.Any();
+
+            }
+
+            if (CallType != "-")
+            {
+                query = query.Where(et => et.CallType == CallType);
+            }
+
+            if (Disposition != "-")
+            {
+                query = query.Where(et => et.Dispo == Disposition);
+            }
+
+            if (SubDisposition != "-")
+            {
+                query = query.Where(et => et.SubDispo == SubDisposition);
+            }
+
+            if (CallbackTime != null)
+            {
+                query = query.Where(et => et.CallbackTime == CallbackTime);
+            } 
+
+            if (specificDate != null)
+            {
+                query = query.Where(et => et.Datetime >= specificDate);
+            }
+
+            if (endDate != null)
+            {
+                query = query.Where(et => et.Datetime <= endDate);
+            }
+
+            var caseTables = query;
+
+            var accountNos = caseTables.Select(ct => ct.AccountNo).ToList();
+
+            //recordDatas = accountNos
+            //   .SelectMany(accountNo => db.RecordDatas
+            //       .Where(rd => rd.AccountNo == accountNo))
+            //   .ToList();
+
+            //recordDatas = db.RecordDatas.Where(rd => rd.AccountNo == key).ToList();
+
+
+            var header = new List<string>() {  "AccountNo","Agent","CustomerName", "BCheque", "BCheque_P", "IPTelephone_Billing",
+                "Utility_Billing", "Others", "OS_Billing", "License_expiry", "Contact_Person","ModifiedDate", "Nationality", "Mobile1",
+                "Mobile2", "Mobile3", "Mobile4", "Email_1", "Email_2", "Email_3", "ExpectedRenewalFee",
+                 "SRNumber", "EmployeeVisaQuota", "EmployeeVisaUtilized", "ProjectBundleName",
+                "LicenseType", "FacilityType", "NoYears", "DerbyBatch", "CallType"};
+
+
+            var header1 = new List<string>()
+            {
+                "AccountNo","Agent", "DialedNumber", "EmailUsed", "Dispo", "SubDispo", "CallbackTime", "Comments", "Segments","Datetime"
+            };
+
+            var header2 = new List<string>()
+            {
+                "Account No","Event Created by", "Dialed Number", "Email Used", "Disposition", "Sub Disposition", "CallbackTime", "Comments", "Segments","DateTime"
+            };
+
+            var bouncedDetailHeaders = new List<string>()
+            {
+                 "AccountNo","ChequeNumber", "ReasonCode","Text","DateBounced", " ChequeDate","TotalAmount"
+            };
+
+
+            using (var package = new ExcelPackage())
+            {
+                int col = 1;
+                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+                var combinedList = header.Concat(header2).ToList();
+                List<string> accountNoList = new List<string>();
+
+
+                foreach (var headerName in combinedList)
+                {
+                    worksheet.Cells[1, col++].Value = headerName.ToString();
+                }
+
+
+
+                int row = 2;
+
+                foreach (var items in caseTables)
+                {
+                    col = 31;
+                    foreach (var headName in header1)
+                    {
+                        var property = typeof(EventTable).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
+
+                        if (property != null && items != null)
+                        {
+
+                            object value = property.GetValue(items);
+
+                            if (property != null && property.Name == "AccountNo")
+                            {
+                                key = value.ToString();
+                                accountNoList.Add(value?.ToString());
+                            }
+
+                            if (value != null && value.ToString() == "1/1/2000 12:00:00 AM")
+                            {
+
+                                worksheet.Cells[row, col++].Value = "-";
+                            }
+                            else
+                            {
+                                worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
+                            }
+                        }
+                    }
+
+                    recordDatas = db.RecordDatas.Where(rd => rd.AccountNo == key).ToList();
+                    foreach (var itemcase in recordDatas)
+                    {
+
+                        col = 1;
+                        foreach (var headName in header)
+                        {
+                            var property = typeof(RecordData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
+
+                            object value = property.GetValue(itemcase);
+
+                            if (property.PropertyType == typeof(DateTime))
+                            {
+                                worksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
+                            }
+                            else
+                            {
+                                worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
+                            }
+                        }
+                    }
+
+                    row++;
+                }
+
+               
                 var bouncedWorksheet = package.Workbook.Worksheets.Add("BouncedDetails");
                 col = 1;
                 foreach (var headerName in bouncedDetailHeaders)
@@ -1786,14 +2446,13 @@ namespace CRM_Raviz.Controllers
             }
         }
 
-        public ActionResult DownloadRecordCases(string Users, string CallType, string Disposition, string SubDisposition, string DerbyBatch, DateTime? CallbackTime = null, DateTime? specificDate = null, DateTime? endDate = null)
+        public ActionResult DownloadRecordCases(string Users, string CallType, string Disposition, string SubDisposition, string DerbyBatch, string Status, DateTime? CallbackTime = null, DateTime? specificDate = null, DateTime? endDate = null)
         {
             CPVDBEntities db = new CPVDBEntities();
             HttpResponseBase Response = HttpContext.Response;
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             var query = db.RecordDatas.AsQueryable();
-            var caseTables = query.ToList();
 
             List<RecordData> recordDatas = new List<RecordData>(); // Initialize with an empty list
             List<EventTable> eventTables = new List<EventTable>();
@@ -1806,55 +2465,98 @@ namespace CRM_Raviz.Controllers
             if(DerbyBatch != "")
             {
                 query = query.Where(et => et.DerbyBatch == DerbyBatch);
-                caseTables = query.ToList();
+               
             }
 
             if (Users != "")
             {
                 query = query.Where(et => et.Agent == Users);
                 var hasRows = query.Any();
-                caseTables = query.ToList();
 
             }
 
             if (CallType != "-")
             {
                 query = query.Where(et => et.CallType == CallType);
-                caseTables = query.ToList();
             }
 
             if (Disposition != "-")
             {
                 query = query.Where(et => et.Disposition == Disposition);
-                caseTables = query.ToList();
             }
 
             if (SubDisposition != "-")
             {
                 query = query.Where(et => et.SubDisposition == SubDisposition);
-                caseTables = query.ToList();
             }
 
             if (CallbackTime != null)
             {
                 query = query.Where(et => et.CallbackTime == CallbackTime);
-                caseTables = query.ToList();
             }
 
             if (specificDate != null)
             {
                 query = query.Where(et => et.ModifiedDate >= specificDate);
-                caseTables = query.ToList();
             }
 
             if (endDate != null)
             {
                 query = query.Where(et => et.ModifiedDate <= endDate.Value.Date);
-                caseTables = query.ToList();
             }
 
+            if(Status == "Active")
+            {
+                query = query.Where(et => et.Status == "True");
+            }
+            else if(Status == "Inactive")
+            {
+                query = query.Where(et => et.Status == "False");
+            }
 
+            var caseTables = query;
 
+            var accountNos = caseTables.Select(ct => ct.AccountNo).ToList();
+
+            //var matchingEvents = db.EventTables
+            //.Where(et => accountNos.Contains(et.AccountNo))
+            //.ToList();
+
+            //var latestEvents = matchingEvents
+            //.GroupBy(et => et.AccountNo)
+            //.Select(g => g.OrderByDescending(et => et.Datetime).FirstOrDefault())
+            //.ToList();
+
+            //var latestEvents = db.EventTables
+            //        .Where(et => accountNos.Contains(et.AccountNo))
+            //       .GroupBy(et => et.AccountNo)
+            //       .Select(g => g.OrderByDescending(et => et.Datetime).FirstOrDefault())
+            //       .ToList();
+
+            //eventTables = db.EventTables
+            //                 //.Where(rd => rd.AccountNo == key)
+            //                .Where(rd => accountNos.Contains(rd.AccountNo))
+            //                 .GroupBy(rd => rd.AccountNo)
+            //                 .Select(g => g.OrderByDescending(rd => rd.Datetime).FirstOrDefault())
+            //                 .ToList();
+
+            //eventTables = db.EventTables
+            //       .Where(rd => accountNos.Contains(rd.AccountNo))
+            //       .OrderByDescending(rd => rd.Datetime) // Optional: if you want to keep the events ordered by Datetime
+            //       .ToList();
+
+             //eventTables = db.EventTables
+             //       .Where(rd => accountNos.Contains(rd.AccountNo))
+             //       .GroupBy(rd => rd.AccountNo)
+             //       .Select(g => g.OrderByDescending(rd => rd.Datetime).FirstOrDefault())
+             //       .ToList();
+
+             eventTables = accountNos
+                .Select(accountNo => db.EventTables
+                    .Where(rd => rd.AccountNo == accountNo)
+                    .OrderByDescending(rd => rd.Datetime)
+                    .FirstOrDefault())
+                .ToList();
 
 
             var header = new List<string>() {  "AccountNo","Agent","CustomerName", "BCheque", "BCheque_P", "IPTelephone_Billing",
@@ -1897,8 +2599,7 @@ namespace CRM_Raviz.Controllers
                     worksheet.Cells[1, col++].Value = headerName.ToString();
                 }
 
-
-
+               
                 int row = 2;
 
                 foreach (var items in caseTables)
@@ -1906,7 +2607,8 @@ namespace CRM_Raviz.Controllers
                     col = 1;
                     foreach (var headName in header)
                     {
-                        var property = typeof(RecordData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
+                       var property = typeof(RecordData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
+                        
                         object value = property.GetValue(items);
 
                         if (property != null && property.Name == "AccountNo")
@@ -1925,45 +2627,22 @@ namespace CRM_Raviz.Controllers
                             worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
                         }
                     }
+                    //eventTables = db.EventTables
+                    //                 .Where(rd => rd.AccountNo == key)
+                    //                 .GroupBy(rd => rd.AccountNo)
+                    //                 .Select(g => g.OrderByDescending(rd => rd.Datetime).FirstOrDefault())
+                    //                 .ToList();
 
-                    eventTables = db.EventTables
-                                     .Where(rd => rd.AccountNo == key)
-                                     .GroupBy(rd => rd.AccountNo)
-                                     .Select(g => g.OrderByDescending(rd => rd.Datetime).FirstOrDefault())
-                                     .ToList();
-
-                    foreach (var itemcase in eventTables)
-                    {
-
-                        col = 31;
-                        foreach (var headName in header1)
-                        {
-                            var property = typeof(EventTable).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
-
-                            object value = property.GetValue(itemcase);
-
-                            if (property.PropertyType == typeof(DateTime))
-                            {
-                                worksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
-                            }
-                            else
-                            {
-                                worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
-                            }
-                        }
-
-                    }
-
-                    col = 39;
 
 
 
+                    col = 39;
                     foreach (var headName in ReqAsked)
                     {
                         var property = typeof(RecordData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
                         object value = property.GetValue(items);
 
-                        
+
                         worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
 
                     }
@@ -1971,16 +2650,47 @@ namespace CRM_Raviz.Controllers
                     row++;
                 }
 
+                row = 2;
+                foreach (var itemcase1 in eventTables)
+                {
+                    col = 31;   
+                    foreach (var headName1 in header1)
+                    {
+                        var property = typeof(EventTable).GetProperty(headName1, BindingFlags.Public | BindingFlags.Instance);
+
+                        if (property != null && itemcase1 != null)
+                        {
+                            var value1 = property.GetValue(itemcase1);
+
+                            if (property.PropertyType == typeof(DateTime))
+                            {
+                                worksheet.Cells[row, col++].Value = ((DateTime)value1).ToString("yyyy-MM-dd HH:mm:ss");
+                            }
+                            else if (value1 != null && value1.ToString() == "1/1/2000 12:00:00 AM")
+                            {
+
+                                worksheet.Cells[row, col++].Value = "-";
+                            }
+                            else
+                            {
+                                worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value1?.ToString()) ? value1.ToString() : "-";
+                            }
+                        }
+
+                    }
+                    row++;
+
+                }
+
+
+
                 var bouncedWorksheet = package.Workbook.Worksheets.Add("BouncedDetails");
                 col = 1;
                 foreach (var headerName in bouncedDetailHeaders)
                 {
                     bouncedWorksheet.Cells[1, col++].Value = headerName.ToString();
                 }
-
-
                 row = 2;
-
                 foreach (var bouncedDetail in bouncedRecords)
                 {
                     col = 1;
@@ -1998,14 +2708,19 @@ namespace CRM_Raviz.Controllers
                             bouncedWorksheet.Cells[row, col++].Value = value != null ? value.ToString() : string.Empty;
                         }
                     }
-
-
                     row++;
                 }
 
                 Response.Clear();
                 Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                Response.AddHeader("content-disposition", "attachment;filename=Caselist" + (specificDate.HasValue ? specificDate.Value.ToString("yyyy-MM-dd") : DateTime.Today.ToString("yyyy-MM-dd")) + ".xlsx");
+
+                string batchName = string.IsNullOrEmpty(DerbyBatch) ? "_AllBatch_" : "_"+DerbyBatch+"_";
+                string fileName = "Caselist" + batchName + DateTime.Today.ToString("yyyy-MM-dd") + ".xlsx";
+                Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
+
+
+
+                //Response.AddHeader("content-disposition", "attachment;filename=Caselist" + DerbyBatch + (DateTime.Today.ToString("yyyy-MM-dd")) + ".xlsx");
 
                 Response.BinaryWrite(package.GetAsByteArray());
                 Response.Flush();

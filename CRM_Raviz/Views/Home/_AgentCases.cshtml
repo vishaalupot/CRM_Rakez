@@ -158,13 +158,27 @@
 
 
 <script>
+    $(document).ready(function () {
+        $(".downloadRep").click(function () {
+            let url = '@Url.Action("DownloadAgentCases", "Home")';
+            let records = JSON.stringify(@Html.Raw(Json.Encode(ViewBag.Data)));
 
+            let form = $('<form method="POST" action="' + url + '"></form>');
+            let input = $('<input type="hidden" name="records" />').val(records);
+            form.append(input);
+            $('body').append(form);
+            form.submit();
+            form.remove();
+        });
+    });
+</script>
 
-
-$(document).ready(function () {
+@*$(document).ready(function () {
     $(".downloadRep").click(function () {
         let url = '@Url.Action("DownloadAgentCases", "Home")';
         let records = JSON.stringify(@Html.Raw(Json.Encode(ViewBag.Data)));
+
+        console.log(records)
 
         $.ajax({
             url: url,
@@ -172,95 +186,86 @@ $(document).ready(function () {
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify({ records }),
             xhrFields: {
-                responseType: 'blob' // Set the response type to blob (binary large object)
-            },
+                responseType: 'blob'             },
             success: function (response, status, xhr) {
-                // Check if the content type of the response is Excel
                 var contentType = xhr.getResponseHeader('Content-Type');
                 if (contentType.toLowerCase().indexOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") !== -1) {
-                    // Create a blob object from the response
                     var blob = new Blob([response], { type: contentType });
 
-                    // Create a temporary anchor element
                     var a = document.createElement('a');
                     var url = window.URL.createObjectURL(blob);
 
-                    // Set the anchor element's attributes
                     a.href = url;
-                    a.download = 'CaseReport.xlsx'; // Set the file name
+                    a.download = 'CaseReport.xlsx';
 
-                    // Append the anchor element to the body and trigger a click event to start the download
                     document.body.appendChild(a);
                     a.click();
 
-                    // Remove the anchor element after download
                     window.URL.revokeObjectURL(url);
                     document.body.removeChild(a);
                 } else {
-                    // Handle non-Excel responses
                     alert('Unexpected response type: ' + contentType);
                 }
             },
             error: function (xhr, status, error) {
-                alert('AJAX error: ' + error);
+                alert(' error: ' + error);
             }
         });
     });
-});
+});*@
 
 
 
 </script>
 
 <div>
- 
+
 
     <button class="downloadRep">
         <span>Download</span>
     </button>
 
+    @{
+        int index = 1; // Initialize the counter variable
+    }
+
     <table style="display: flex; justify-content: center;">
         <tr>
+            <td class="tableHead">Index</td>
             <td class="tableHead">Account no</td>
             <td class="tableHead">Customer Name</td>
             <td class="tableHead">O/S Balance</td>
+            <td class="tableHead">Agent</td>
             <td class="tableHead">Renewal Fee</td>
-            <td class="tableHead">
-                Last Event
-            </td>
-            <td class="tableHead">
-                Batch
-            </td>
-            <td class="tableHead">
-                Segment
-            </td>
+            <td class="tableHead">Last Event</td>
+            <td class="tableHead">Batch</td>
+            <td class="tableHead">Segment</td>
         </tr>
 
-        @{
-            foreach (var item in Model)
-            {
-                <tr class="redirectCase" data-id="@item.Id" data-accountno="@item.AccountNo" style=" cursor: pointer;">
-
-
-                    <td>@Html.DisplayFor(modelItem => item.AccountNo, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.CustomerName, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.OS_Billing, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.ExpectedRenewalFee, new { @class = "tablecont" })</td>
-                    <td class="tablecont">
-                        @if (item.ModifiedDate.HasValue)
-                        {
-                            @item.ModifiedDate.Value.Date.ToString("MM/dd/yyyy")
-                            <br />
-                            @item.ModifiedDate.Value.ToString("hh:mm tt")}
-                    </td>
-                    <td style="white-space: nowrap;">@Html.DisplayFor(modelItem => item.DerbyBatch, new { @class = "tablecont" })</td>
-                    <td>@Html.DisplayFor(modelItem => item.Segments, new { @class = "tablecont" })</td>
-                </tr>
-            }
+        @foreach (var item in Model)
+        {
+            <tr class="redirectCase" data-id="@item.Id" data-accountno="@item.AccountNo" style="cursor: pointer;">
+                <td>@index</td> <!-- Display the index number -->
+                <td>@Html.DisplayFor(modelItem => item.AccountNo, new { @class = "tablecont" })</td>
+                <td>@Html.DisplayFor(modelItem => item.CustomerName, new { @class = "tablecont" })</td>
+                <td>@Html.DisplayFor(modelItem => item.OS_Billing, new { @class = "tablecont" })</td>
+                <td>@Html.DisplayFor(modelItem => item.Agent, new { @class = "tablecont" })</td>
+                <td>@Html.DisplayFor(modelItem => item.ExpectedRenewalFee, new { @class = "tablecont" })</td>
+                <td class="tablecont">
+                    @if (item.ModifiedDate.HasValue)
+                    {
+                        @item.ModifiedDate.Value.Date.ToString("MM/dd/yyyy")
+                        <br />
+                        @item.ModifiedDate.Value.ToString("hh:mm tt")
+                    }
+                </td>
+                <td style="white-space: nowrap;">@Html.DisplayFor(modelItem => item.DerbyBatch, new { @class = "tablecont" })</td>
+                <td>@Html.DisplayFor(modelItem => item.Segments, new { @class = "tablecont" })</td>
+            </tr>
+            index++; // Increment the counter variable
         }
-
-
     </table>
+
 </div>
 
 

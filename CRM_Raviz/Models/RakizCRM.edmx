@@ -164,6 +164,10 @@
           <Property Name="DerbyBatch" Type="varchar(max)" />
           <Property Name="CallType" Type="varchar(max)" />
           <Property Name="ModifiedAgent" Type="varchar(max)" />
+          <Property Name="BatchHistory" Type="varchar(max)" />
+          <Property Name="BatchDate" Type="datetime" />
+          <Property Name="BatchDeadline" Type="datetime" />
+          <Property Name="Status" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="Test_4">
           <Key>
@@ -437,6 +441,10 @@
           <NavigationProperty Name="EmailIds" Relationship="RakezCRM.FK__EmailIds__Record__412EB0B6" FromRole="RecordData" ToRole="EmailId" />
           <NavigationProperty Name="MobileNos" Relationship="RakezCRM.FK__MobileNos__Recor__3E52440B" FromRole="RecordData" ToRole="MobileNo" />
           <Property Name="ModifiedAgent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="BatchHistory" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="BatchDate" Type="DateTime" Precision="3" />
+          <Property Name="BatchDeadline" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="BouncedRecord">
           <Key>
@@ -593,6 +601,10 @@
           <EntitySetMapping Name="RecordDatas">
             <EntityTypeMapping TypeName="RakezCRM.RecordData">
               <MappingFragment StoreEntitySet="RecordData">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="BatchDeadline" ColumnName="BatchDeadline" />
+                <ScalarProperty Name="BatchDate" ColumnName="BatchDate" />
+                <ScalarProperty Name="BatchHistory" ColumnName="BatchHistory" />
                 <ScalarProperty Name="ModifiedAgent" ColumnName="ModifiedAgent" />
                 <ScalarProperty Name="CallType" ColumnName="CallType" />
                 <ScalarProperty Name="DerbyBatch" ColumnName="DerbyBatch" />

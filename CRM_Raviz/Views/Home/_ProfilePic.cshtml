@@ -135,7 +135,19 @@
                         <div class="headname">@User.Identity.GetUserName()</div>
                         @{
                             CPVDBEntities db = new CPVDBEntities();
-                            string userrole = db.AspNetUsers.Find(User.Identity.GetUserId()).UserRole;
+                            var userId = User.Identity.GetUserId();
+
+                            string userrole = "No user";
+
+                            if (userId == null)
+                            {
+                                throw new InvalidOperationException("User is not authenticated.");
+                            }
+                            else
+                            {
+                               userrole = db.AspNetUsers.Find(User.Identity.GetUserId()).UserRole;
+
+                            }
                          }
                         <div class="headrole">@userrole</div>
                     </div>
