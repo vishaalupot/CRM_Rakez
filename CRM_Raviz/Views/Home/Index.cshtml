@@ -2075,10 +2075,10 @@
                                     foreach (var agent in ViewBag.Agents)
                                     {
                                         <tr>
-                                            <td class="segment2" style="text-align:center;" data-value="@agent">
+                                            <td  style="text-align:center;" >
                                                 @agent
                                             </td>
-                                            <td class="segment2" style="text-align:center;">
+                                            <td class="segment2 rowclick" style="text-align:center;" data-value="@agent">
                                                 @(ViewBag.totalCasesList.Count > index ? (ViewBag.totalCasesList[index] != null && ViewBag.totalCasesList[index] > 0 ? ViewBag.totalCasesList[index] : 0) : 0)
                                             </td>
                                         </tr>

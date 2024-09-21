@@ -20,6 +20,7 @@
         <EntityTypeShape EntityType="RakezCRM.MobileNo" Width="1.5" PointX="3" PointY="12.75" />
         <AssociationConnector Association="RakezCRM.FK__EmailIds__Record__412EB0B6" />
         <AssociationConnector Association="RakezCRM.FK__MobileNos__Recor__3E52440B" />
+        <EntityTypeShape EntityType="RakezCRM.AllocationData" Width="1.5" PointX="7.375" PointY="8.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

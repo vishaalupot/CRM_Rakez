@@ -5,6 +5,65 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="RakezCRM.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Rakez.dbo.AllocationData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AllocationData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AccountNo" Type="varchar(max)" />
+          <Property Name="CustomerName" Type="varchar(max)" />
+          <Property Name="BCheque" Type="varchar(max)" />
+          <Property Name="BCheque_P" Type="varchar(max)" />
+          <Property Name="IPTelephone_Billing" Type="varchar(max)" />
+          <Property Name="Utility_Billing" Type="varchar(max)" />
+          <Property Name="Others" Type="varchar(max)" />
+          <Property Name="OS_Billing" Type="varchar(max)" />
+          <Property Name="License_expiry" Type="varchar(max)" />
+          <Property Name="Contact_Person" Type="varchar(max)" />
+          <Property Name="Nationality" Type="varchar(max)" />
+          <Property Name="Mobile1" Type="varchar(max)" />
+          <Property Name="Mobile2" Type="varchar(max)" />
+          <Property Name="Mobile3" Type="varchar(max)" />
+          <Property Name="Mobile4" Type="varchar(max)" />
+          <Property Name="Email_1" Type="varchar(max)" />
+          <Property Name="Email_2" Type="varchar(max)" />
+          <Property Name="Email_3" Type="varchar(max)" />
+          <Property Name="Disposition" Type="varchar(max)" />
+          <Property Name="SubDisposition" Type="varchar(max)" />
+          <Property Name="Comments" Type="varchar(max)" />
+          <Property Name="ChangeStatus" Type="varchar(max)" />
+          <Property Name="CallbackTime" Type="datetime" />
+          <Property Name="Agent" Type="varchar(max)" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="CloseAccount" Type="varchar(max)" />
+          <Property Name="DormantAccount" Type="varchar(max)" />
+          <Property Name="InsufficientFunds" Type="varchar(max)" />
+          <Property Name="OtherReason" Type="varchar(max)" />
+          <Property Name="SignatureIrregular" Type="varchar(max)" />
+          <Property Name="BOthers" Type="varchar(max)" />
+          <Property Name="Segments" Type="varchar(max)" />
+          <Property Name="DialedNumber" Type="varchar(max)" />
+          <Property Name="TenacyFacilityType" Type="varchar(max)" />
+          <Property Name="ExpectedRenewalFee" Type="varchar(max)" />
+          <Property Name="SRNumber" Type="varchar(max)" />
+          <Property Name="DeRegFee" Type="varchar(max)" />
+          <Property Name="TechnicalReason" Type="varchar(max)" />
+          <Property Name="EmployeeVisaQuota" Type="varchar(max)" />
+          <Property Name="EmployeeVisaUtilized" Type="varchar(max)" />
+          <Property Name="ProjectBundleName" Type="varchar(max)" />
+          <Property Name="LicenseType" Type="varchar(max)" />
+          <Property Name="FacilityType" Type="varchar(max)" />
+          <Property Name="NoYears" Type="varchar(max)" />
+          <Property Name="DerbyBatch" Type="varchar(max)" />
+          <Property Name="CallType" Type="varchar(max)" />
+          <Property Name="ModifiedAgent" Type="varchar(max)" />
+          <Property Name="BatchHistory" Type="varchar(max)" />
+          <Property Name="BatchDate" Type="datetime" />
+          <Property Name="BatchDeadline" Type="datetime" />
+          <Property Name="Status" Type="varchar(max)" />
+        </EntityType>
         <EntityType Name="AspNetRoles">
           <Key>
             <PropertyRef Name="Id" />
@@ -248,6 +307,62 @@
           <EntitySet Name="MobileNos" EntityType="Self.MobileNos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RecordData" EntityType="Self.RecordData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Test_4" EntityType="Self.Test_4" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AllocationData" EntityType="Self.AllocationData" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [AllocationData].[Id] AS [Id], 
+    [AllocationData].[AccountNo] AS [AccountNo], 
+    [AllocationData].[CustomerName] AS [CustomerName], 
+    [AllocationData].[BCheque] AS [BCheque], 
+    [AllocationData].[BCheque_P] AS [BCheque_P], 
+    [AllocationData].[IPTelephone_Billing] AS [IPTelephone_Billing], 
+    [AllocationData].[Utility_Billing] AS [Utility_Billing], 
+    [AllocationData].[Others] AS [Others], 
+    [AllocationData].[OS_Billing] AS [OS_Billing], 
+    [AllocationData].[License_expiry] AS [License_expiry], 
+    [AllocationData].[Contact_Person] AS [Contact_Person], 
+    [AllocationData].[Nationality] AS [Nationality], 
+    [AllocationData].[Mobile1] AS [Mobile1], 
+    [AllocationData].[Mobile2] AS [Mobile2], 
+    [AllocationData].[Mobile3] AS [Mobile3], 
+    [AllocationData].[Mobile4] AS [Mobile4], 
+    [AllocationData].[Email_1] AS [Email_1], 
+    [AllocationData].[Email_2] AS [Email_2], 
+    [AllocationData].[Email_3] AS [Email_3], 
+    [AllocationData].[Disposition] AS [Disposition], 
+    [AllocationData].[SubDisposition] AS [SubDisposition], 
+    [AllocationData].[Comments] AS [Comments], 
+    [AllocationData].[ChangeStatus] AS [ChangeStatus], 
+    [AllocationData].[CallbackTime] AS [CallbackTime], 
+    [AllocationData].[Agent] AS [Agent], 
+    [AllocationData].[ModifiedDate] AS [ModifiedDate], 
+    [AllocationData].[CloseAccount] AS [CloseAccount], 
+    [AllocationData].[DormantAccount] AS [DormantAccount], 
+    [AllocationData].[InsufficientFunds] AS [InsufficientFunds], 
+    [AllocationData].[OtherReason] AS [OtherReason], 
+    [AllocationData].[SignatureIrregular] AS [SignatureIrregular], 
+    [AllocationData].[BOthers] AS [BOthers], 
+    [AllocationData].[Segments] AS [Segments], 
+    [AllocationData].[DialedNumber] AS [DialedNumber], 
+    [AllocationData].[TenacyFacilityType] AS [TenacyFacilityType], 
+    [AllocationData].[ExpectedRenewalFee] AS [ExpectedRenewalFee], 
+    [AllocationData].[SRNumber] AS [SRNumber], 
+    [AllocationData].[DeRegFee] AS [DeRegFee], 
+    [AllocationData].[TechnicalReason] AS [TechnicalReason], 
+    [AllocationData].[EmployeeVisaQuota] AS [EmployeeVisaQuota], 
+    [AllocationData].[EmployeeVisaUtilized] AS [EmployeeVisaUtilized], 
+    [AllocationData].[ProjectBundleName] AS [ProjectBundleName], 
+    [AllocationData].[LicenseType] AS [LicenseType], 
+    [AllocationData].[FacilityType] AS [FacilityType], 
+    [AllocationData].[NoYears] AS [NoYears], 
+    [AllocationData].[DerbyBatch] AS [DerbyBatch], 
+    [AllocationData].[CallType] AS [CallType], 
+    [AllocationData].[ModifiedAgent] AS [ModifiedAgent], 
+    [AllocationData].[BatchHistory] AS [BatchHistory], 
+    [AllocationData].[BatchDate] AS [BatchDate], 
+    [AllocationData].[BatchDeadline] AS [BatchDeadline], 
+    [AllocationData].[Status] AS [Status]
+    FROM [dbo].[AllocationData] AS [AllocationData]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
@@ -386,6 +501,7 @@
             <End Role="RecordData" EntitySet="RecordDatas" />
             <End Role="MobileNo" EntitySet="MobileNos" />
           </AssociationSet>
+          <EntitySet Name="AllocationDatas" EntityType="RakezCRM.AllocationData" />
         </EntityContainer>
         <EntityType Name="RecordData">
           <Key>
@@ -534,6 +650,63 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="AllocationData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AccountNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CustomerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="BCheque" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="BCheque_P" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="IPTelephone_Billing" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Utility_Billing" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Others" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="OS_Billing" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="License_expiry" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Contact_Person" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Nationality" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile1" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile2" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile3" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Mobile4" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Email_1" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Email_2" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Email_3" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Disposition" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SubDisposition" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ChangeStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CallbackTime" Type="DateTime" Precision="3" />
+          <Property Name="Agent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="CloseAccount" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DormantAccount" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="InsufficientFunds" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="OtherReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SignatureIrregular" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="BOthers" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Segments" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DialedNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="TenacyFacilityType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ExpectedRenewalFee" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SRNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DeRegFee" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="TechnicalReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EmployeeVisaQuota" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EmployeeVisaUtilized" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ProjectBundleName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="LicenseType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="FacilityType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="NoYears" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DerbyBatch" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CallType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedAgent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="BatchHistory" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="BatchDate" Type="DateTime" Precision="3" />
+          <Property Name="BatchDeadline" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -719,6 +892,64 @@
                 <ScalarProperty Name="Validity" ColumnName="Validity" />
                 <ScalarProperty Name="Numbers" ColumnName="Numbers" />
                 <ScalarProperty Name="RecordId" ColumnName="RecordId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AllocationDatas">
+            <EntityTypeMapping TypeName="RakezCRM.AllocationData">
+              <MappingFragment StoreEntitySet="AllocationData">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="BatchDeadline" ColumnName="BatchDeadline" />
+                <ScalarProperty Name="BatchDate" ColumnName="BatchDate" />
+                <ScalarProperty Name="BatchHistory" ColumnName="BatchHistory" />
+                <ScalarProperty Name="ModifiedAgent" ColumnName="ModifiedAgent" />
+                <ScalarProperty Name="CallType" ColumnName="CallType" />
+                <ScalarProperty Name="DerbyBatch" ColumnName="DerbyBatch" />
+                <ScalarProperty Name="NoYears" ColumnName="NoYears" />
+                <ScalarProperty Name="FacilityType" ColumnName="FacilityType" />
+                <ScalarProperty Name="LicenseType" ColumnName="LicenseType" />
+                <ScalarProperty Name="ProjectBundleName" ColumnName="ProjectBundleName" />
+                <ScalarProperty Name="EmployeeVisaUtilized" ColumnName="EmployeeVisaUtilized" />
+                <ScalarProperty Name="EmployeeVisaQuota" ColumnName="EmployeeVisaQuota" />
+                <ScalarProperty Name="TechnicalReason" ColumnName="TechnicalReason" />
+                <ScalarProperty Name="DeRegFee" ColumnName="DeRegFee" />
+                <ScalarProperty Name="SRNumber" ColumnName="SRNumber" />
+                <ScalarProperty Name="ExpectedRenewalFee" ColumnName="ExpectedRenewalFee" />
+                <ScalarProperty Name="TenacyFacilityType" ColumnName="TenacyFacilityType" />
+                <ScalarProperty Name="DialedNumber" ColumnName="DialedNumber" />
+                <ScalarProperty Name="Segments" ColumnName="Segments" />
+                <ScalarProperty Name="BOthers" ColumnName="BOthers" />
+                <ScalarProperty Name="SignatureIrregular" ColumnName="SignatureIrregular" />
+                <ScalarProperty Name="OtherReason" ColumnName="OtherReason" />
+                <ScalarProperty Name="InsufficientFunds" ColumnName="InsufficientFunds" />
+                <ScalarProperty Name="DormantAccount" ColumnName="DormantAccount" />
+                <ScalarProperty Name="CloseAccount" ColumnName="CloseAccount" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Agent" ColumnName="Agent" />
+                <ScalarProperty Name="CallbackTime" ColumnName="CallbackTime" />
+                <ScalarProperty Name="ChangeStatus" ColumnName="ChangeStatus" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="SubDisposition" ColumnName="SubDisposition" />
+                <ScalarProperty Name="Disposition" ColumnName="Disposition" />
+                <ScalarProperty Name="Email_3" ColumnName="Email_3" />
+                <ScalarProperty Name="Email_2" ColumnName="Email_2" />
+                <ScalarProperty Name="Email_1" ColumnName="Email_1" />
+                <ScalarProperty Name="Mobile4" ColumnName="Mobile4" />
+                <ScalarProperty Name="Mobile3" ColumnName="Mobile3" />
+                <ScalarProperty Name="Mobile2" ColumnName="Mobile2" />
+                <ScalarProperty Name="Mobile1" ColumnName="Mobile1" />
+                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
+                <ScalarProperty Name="Contact_Person" ColumnName="Contact_Person" />
+                <ScalarProperty Name="License_expiry" ColumnName="License_expiry" />
+                <ScalarProperty Name="OS_Billing" ColumnName="OS_Billing" />
+                <ScalarProperty Name="Others" ColumnName="Others" />
+                <ScalarProperty Name="Utility_Billing" ColumnName="Utility_Billing" />
+                <ScalarProperty Name="IPTelephone_Billing" ColumnName="IPTelephone_Billing" />
+                <ScalarProperty Name="BCheque_P" ColumnName="BCheque_P" />
+                <ScalarProperty Name="BCheque" ColumnName="BCheque" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

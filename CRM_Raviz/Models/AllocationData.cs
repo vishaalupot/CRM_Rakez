@@ -12,15 +12,8 @@ namespace CRM_Raviz.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class RecordData
+    public partial class AllocationData
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public RecordData()
-        {
-            this.EmailIds = new HashSet<EmailId>();
-            this.MobileNos = new HashSet<MobileNo>();
-        }
-    
         public int Id { get; set; }
         public string AccountNo { get; set; }
         public string CustomerName { get; set; }
@@ -52,7 +45,6 @@ namespace CRM_Raviz.Models
         public string InsufficientFunds { get; set; }
         public string OtherReason { get; set; }
         public string SignatureIrregular { get; set; }
-        public string TechnicalReason { get; set; }
         public string BOthers { get; set; }
         public string Segments { get; set; }
         public string DialedNumber { get; set; }
@@ -60,6 +52,7 @@ namespace CRM_Raviz.Models
         public string ExpectedRenewalFee { get; set; }
         public string SRNumber { get; set; }
         public string DeRegFee { get; set; }
+        public string TechnicalReason { get; set; }
         public string EmployeeVisaQuota { get; set; }
         public string EmployeeVisaUtilized { get; set; }
         public string ProjectBundleName { get; set; }
@@ -70,17 +63,8 @@ namespace CRM_Raviz.Models
         public string CallType { get; set; }
         public string ModifiedAgent { get; set; }
         public string BatchHistory { get; set; }
-        public string AgentsName { get; set; }
-        public string DispositionSecond { get; set; }
-        public string DispositionThird { get; set; }
-        public string EmailUsed { get; set; }
         public Nullable<System.DateTime> BatchDate { get; set; }
         public Nullable<System.DateTime> BatchDeadline { get; set; }
         public string Status { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EmailId> EmailIds { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<MobileNo> MobileNos { get; set; }
     }
 }

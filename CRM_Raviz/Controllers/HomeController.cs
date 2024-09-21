@@ -1001,7 +1001,7 @@ namespace CRM_Raviz.Controllers
             CPVDBEntities db = new CPVDBEntities();
             var userName = User.Identity.GetUserName();
 
-
+                
             
 
             var AgentNames = db.AspNetUsers
@@ -1123,7 +1123,7 @@ namespace CRM_Raviz.Controllers
                 default:
                     // Handle default case
                     break;
-            }
+            }   
 
 
 
@@ -1145,7 +1145,7 @@ namespace CRM_Raviz.Controllers
                   .Distinct()
                   .OrderBy(DerbyBatch => DerbyBatch)
                   .ToList();
-
+             
 
 
             if (allbatches.Contains(drop2))
@@ -1580,8 +1580,8 @@ namespace CRM_Raviz.Controllers
                  .ToList();
 
             if (query != "")
-            {
-
+           {
+ 
                  results2 = db.EventTables
                  .Where(item => item.CustomerName == query || item.AccountNo == query)
                  .OrderByDescending(item => item.Id) // Assuming EventDate is the property representing the time of the events
@@ -1750,7 +1750,7 @@ namespace CRM_Raviz.Controllers
                                     BatchDeadline = DateTime.TryParse(worksheet1.Cells[row, 38].Value?.ToString(), out DateTime parsedDate1)
                                         ? parsedDate1.AddDays(60)
                                         : (DateTime?)null
-                            };
+                                };
 
                                 if (!(caseEntity1.OS_Billing == null || caseEntity1.OS_Billing == "-" || caseEntity1.OS_Billing.Trim() == "0") && !(caseEntity1.ExpectedRenewalFee == null || caseEntity1.ExpectedRenewalFee == "-" || caseEntity1.ExpectedRenewalFee.Trim() == "0"))
                                 {
@@ -2003,26 +2003,24 @@ namespace CRM_Raviz.Controllers
 
         public ActionResult AllocationReportDownload(string Users, string CallType, string Disposition, string SubDisposition, string DerbyBatch, DateTime? CallbackTime = null, DateTime? specificDate = null, DateTime? endDate = null)
         {
+
             CPVDBEntities db = new CPVDBEntities();
             HttpResponseBase Response = HttpContext.Response;
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-            var query = db.EventTables.AsQueryable();
+            var query = db.AllocationDatas.AsQueryable();
 
-            List<RecordData> recordDatas = new List<RecordData>(); // Initialize with an empty list
+            List<AllocationData> AllocationDatas = new List<AllocationData>(); // Initialize with an empty list
             List<EventTable> eventTables = new List<EventTable>();
             List<BouncedRecord> bouncedRecords = new List<BouncedRecord>();
 
             bouncedRecords = db.BouncedRecords.ToList();
 
-
-
             var key = "";
 
             if (DerbyBatch != "")
             {
-                var accountNumbers = db.RecordDatas.Where(rd => rd.DerbyBatch == DerbyBatch).Select(rd => rd.AccountNo).ToList();
-                query = query.Where(et => accountNumbers.Contains(et.AccountNo));
+                query = query.Where(et => et.DerbyBatch == DerbyBatch);
 
             }
 
@@ -2040,12 +2038,12 @@ namespace CRM_Raviz.Controllers
 
             if (Disposition != "-")
             {
-                query = query.Where(et => et.Dispo == Disposition);
+                query = query.Where(et => et.Disposition == Disposition);
             }
 
             if (SubDisposition != "-")
             {
-                query = query.Where(et => et.SubDispo == SubDisposition);
+                query = query.Where(et => et.SubDisposition == SubDisposition);
             }
 
             if (CallbackTime != null)
@@ -2055,24 +2053,28 @@ namespace CRM_Raviz.Controllers
 
             if (specificDate != null)
             {
-                query = query.Where(et => et.Datetime >= specificDate);
+                query = query.Where(et => et.ModifiedDate >= specificDate);
             }
 
             if (endDate != null)
             {
-                query = query.Where(et => et.Datetime <= endDate);
+                query = query.Where(et => et.ModifiedDate <= endDate.Value.Date);
             }
+
+          
 
             var caseTables = query;
 
             var accountNos = caseTables.Select(ct => ct.AccountNo).ToList();
 
-            //recordDatas = accountNos
-            //   .SelectMany(accountNo => db.RecordDatas
-            //       .Where(rd => rd.AccountNo == accountNo))
-            //   .ToList();
 
-            //recordDatas = db.RecordDatas.Where(rd => rd.AccountNo == key).ToList();
+
+            eventTables = accountNos
+               .Select(accountNo => db.EventTables
+                   .Where(rd => rd.AccountNo == accountNo)
+                   .OrderByDescending(rd => rd.Datetime)
+                   .FirstOrDefault())
+               .ToList();
 
 
             var header = new List<string>() {  "AccountNo","Agent","CustomerName", "BCheque", "BCheque_P", "IPTelephone_Billing",
@@ -2084,19 +2086,23 @@ namespace CRM_Raviz.Controllers
 
             var header1 = new List<string>()
             {
-                "AccountNo","Agent", "DialedNumber", "EmailUsed", "Dispo", "SubDispo", "CallbackTime", "Comments", "Segments","Datetime"
+                "AccountNo","Agent", "DialedNumber", "EmailUsed", "Dispo", "SubDispo", "CallbackTime", "Comments"
             };
 
             var header2 = new List<string>()
             {
-                "Account No","Event Created by", "Dialed Number", "Email Used", "Disposition", "Sub Disposition", "CallbackTime", "Comments", "Segments","DateTime"
+                "Account No","Event Created by", "Dialed Number", "Email Used", "Disposition", "Sub Disposition", "CallbackTime", "Comments","Segments"
             };
 
             var bouncedDetailHeaders = new List<string>()
             {
-                 "AccountNo","ChequeNumber", "ReasonCode","Text","DateBounced", " ChequeDate","TotalAmount"
+                 "AccountNo","ChequeNumber", "ReasonCode","Text","DateBounced", "ChequeDate","TotalAmount"
             };
 
+            var ReqAsked = new List<string>()
+            {
+                "Segments"
+            };
 
             using (var package = new ExcelPackage())
             {
@@ -2112,63 +2118,88 @@ namespace CRM_Raviz.Controllers
                 }
 
 
-
                 int row = 2;
 
                 foreach (var items in caseTables)
                 {
-                    col = 31;
-                    foreach (var headName in header1)
+                    col = 1;
+                    foreach (var headName in header)
                     {
-                        var property = typeof(EventTable).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
+                        var property = typeof(AllocationData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
 
-                        if (property != null && items != null)
+                        object value = property.GetValue(items);
+
+                        if (property != null && property.Name == "AccountNo")
+                        {
+                            key = value.ToString();
+                            accountNoList.Add(value?.ToString());
+                        }
+
+                        if (value != null && value.ToString() == "1/1/2000 12:00:00 AM")
                         {
 
-                            object value = property.GetValue(items);
+                            worksheet.Cells[row, col++].Value = "-";
+                        }
+                        else
+                        {
+                            worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
+                        }
+                    }
+                    //eventTables = db.EventTables
+                    //                 .Where(rd => rd.AccountNo == key)
+                    //                 .GroupBy(rd => rd.AccountNo)
+                    //                 .Select(g => g.OrderByDescending(rd => rd.Datetime).FirstOrDefault())
+                    //                 .ToList();
 
-                            if (property != null && property.Name == "AccountNo")
+
+
+
+                    col = 39;
+                    foreach (var headName in ReqAsked)
+                    {
+                        var property = typeof(AllocationData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
+                        object value = property.GetValue(items);
+
+
+                        worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
+
+                    }
+
+                    row++;
+                }
+
+                row = 2;
+                foreach (var itemcase1 in eventTables)
+                {
+                    col = 31;
+                    foreach (var headName1 in header1)
+                    {
+                        var property = typeof(EventTable).GetProperty(headName1, BindingFlags.Public | BindingFlags.Instance);
+
+                        if (property != null && itemcase1 != null)
+                        {
+                            var value1 = property.GetValue(itemcase1);
+
+                            if (property.PropertyType == typeof(DateTime))
                             {
-                                key = value.ToString();
-                                accountNoList.Add(value?.ToString());
+                                worksheet.Cells[row, col++].Value = ((DateTime)value1).ToString("yyyy-MM-dd HH:mm:ss");
                             }
-
-                            if (value != null && value.ToString() == "1/1/2000 12:00:00 AM")
+                            else if (value1 != null && value1.ToString() == "1/1/2000 12:00:00 AM")
                             {
 
                                 worksheet.Cells[row, col++].Value = "-";
                             }
                             else
                             {
-                                worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
+                                worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value1?.ToString()) ? value1.ToString() : "-";
                             }
                         }
+
                     }
-
-                    recordDatas = db.RecordDatas.Where(rd => rd.AccountNo == key).ToList();
-                    foreach (var itemcase in recordDatas)
-                    {
-
-                        col = 1;
-                        foreach (var headName in header)
-                        {
-                            var property = typeof(RecordData).GetProperty(headName, BindingFlags.Public | BindingFlags.Instance);
-
-                            object value = property.GetValue(itemcase);
-
-                            if (property.PropertyType == typeof(DateTime))
-                            {
-                                worksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
-                            }
-                            else
-                            {
-                                worksheet.Cells[row, col++].Value = !string.IsNullOrEmpty(value?.ToString()) ? value.ToString() : "-";
-                            }
-                        }
-                    }
-
                     row++;
+
                 }
+
 
 
                 var bouncedWorksheet = package.Workbook.Worksheets.Add("BouncedDetails");
@@ -2177,42 +2208,37 @@ namespace CRM_Raviz.Controllers
                 {
                     bouncedWorksheet.Cells[1, col++].Value = headerName.ToString();
                 }
-
-
                 row = 2;
-
                 foreach (var bouncedDetail in bouncedRecords)
                 {
                     col = 1;
                     foreach (var headerName in bouncedDetailHeaders)
                     {
-
-
                         var property = typeof(BouncedRecord).GetProperty(headerName, BindingFlags.Public | BindingFlags.Instance);
+                        object value = property.GetValue(bouncedDetail);
 
-                        if (property != null && bouncedDetail != null)
+                        if (property.PropertyType == typeof(DateTime))
                         {
-                            object value = property.GetValue(bouncedDetail);
-
-                            if (property.PropertyType == typeof(DateTime))
-                            {
-                                bouncedWorksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
-                            }
-                            else
-                            {
-                                bouncedWorksheet.Cells[row, col++].Value = value != null ? value.ToString() : string.Empty;
-                            }
+                            bouncedWorksheet.Cells[row, col++].Value = ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
                         }
-
+                        else
+                        {
+                            bouncedWorksheet.Cells[row, col++].Value = value != null ? value.ToString() : string.Empty;
+                        }
                     }
-
-
                     row++;
                 }
 
                 Response.Clear();
                 Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                Response.AddHeader("content-disposition", "attachment;filename=Caselist" + (specificDate.HasValue ? specificDate.Value.ToString("yyyy-MM-dd") : DateTime.Today.ToString("yyyy-MM-dd")) + ".xlsx");
+
+                string batchName = string.IsNullOrEmpty(DerbyBatch) ? "_AllBatch_" : "_" + DerbyBatch + "_";
+                string fileName = "Caselist" + batchName + DateTime.Today.ToString("yyyy-MM-dd") + ".xlsx";
+                Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
+
+
+
+                //Response.AddHeader("content-disposition", "attachment;filename=Caselist" + DerbyBatch + (DateTime.Today.ToString("yyyy-MM-dd")) + ".xlsx");
 
                 Response.BinaryWrite(package.GetAsByteArray());
                 Response.Flush();
@@ -2518,38 +2544,7 @@ namespace CRM_Raviz.Controllers
 
             var accountNos = caseTables.Select(ct => ct.AccountNo).ToList();
 
-            //var matchingEvents = db.EventTables
-            //.Where(et => accountNos.Contains(et.AccountNo))
-            //.ToList();
-
-            //var latestEvents = matchingEvents
-            //.GroupBy(et => et.AccountNo)
-            //.Select(g => g.OrderByDescending(et => et.Datetime).FirstOrDefault())
-            //.ToList();
-
-            //var latestEvents = db.EventTables
-            //        .Where(et => accountNos.Contains(et.AccountNo))
-            //       .GroupBy(et => et.AccountNo)
-            //       .Select(g => g.OrderByDescending(et => et.Datetime).FirstOrDefault())
-            //       .ToList();
-
-            //eventTables = db.EventTables
-            //                 //.Where(rd => rd.AccountNo == key)
-            //                .Where(rd => accountNos.Contains(rd.AccountNo))
-            //                 .GroupBy(rd => rd.AccountNo)
-            //                 .Select(g => g.OrderByDescending(rd => rd.Datetime).FirstOrDefault())
-            //                 .ToList();
-
-            //eventTables = db.EventTables
-            //       .Where(rd => accountNos.Contains(rd.AccountNo))
-            //       .OrderByDescending(rd => rd.Datetime) // Optional: if you want to keep the events ordered by Datetime
-            //       .ToList();
-
-             //eventTables = db.EventTables
-             //       .Where(rd => accountNos.Contains(rd.AccountNo))
-             //       .GroupBy(rd => rd.AccountNo)
-             //       .Select(g => g.OrderByDescending(rd => rd.Datetime).FirstOrDefault())
-             //       .ToList();
+   
 
              eventTables = accountNos
                 .Select(accountNo => db.EventTables
